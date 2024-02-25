@@ -43,7 +43,8 @@ class WelcomePage extends StatelessWidget {
                           fontSize: 16,
                           color: black,
                           height: 2,
-                          decoration: TextDecoration.none
+                          decoration: TextDecoration.none,
+                          fontWeight: FontWeight.w500
                         ),
                       ),
                     ),
