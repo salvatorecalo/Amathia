@@ -1,4 +1,5 @@
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -35,24 +36,50 @@ class WelcomePage extends StatelessWidget {
                 children: [
                    Padding(
                     padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
-                    child: Text(
-                      "Un ultimo step per goderti la tua meritata vacanza in Salento",
+                    child: 
+                    RichText(
                       textAlign: TextAlign.center,
-                      style: GoogleFonts.inter(
-                        textStyle: const TextStyle(
-                          fontSize: 16,
-                          color: black,
-                          height: 2,
-                          decoration: TextDecoration.none,
-                          fontWeight: FontWeight.w500
+                          text: const TextSpan(
+                            style: TextStyle(
+                              height: 1.5,
+                             fontSize: 16,
+                             ),
+                            children: [
+                              TextSpan(
+                                text: 'Un ultimo step per ',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: 'goderti ',
+                                style: TextStyle(color: blue),
+                              ),
+                              TextSpan(
+                                text: 'la tua \n',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: 'vacanza ',
+                                style: TextStyle(color: blue),
+                              ),
+                              TextSpan(
+                                text: 'in Salento ',
+                                style: TextStyle(color: black),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                    ),
                   ),
                   SizedBox(
                     width: 300,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () async {
+                        Navigator.pushReplacement(
+                        // ignore: use_build_context_synchronously
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                               RegisterPage()));
+                      },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: white,
                         backgroundColor: blue,
