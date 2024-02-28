@@ -1,38 +1,42 @@
 import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/login_page/login_page.dart';
+import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
+import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
-  bool _obsureText = true;
+class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _emailController = TextEditingController();
-  late final TextEditingController _passwordController = TextEditingController();
-  late final TextEditingController _retypePasswordController = TextEditingController();
+  late final TextEditingController _passwordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String erroreLogin = "";
+  bool _obsureText = true;
 
   Future<String> setError(e) async {
     erroreLogin = e.statusCode;
     if (e.statusCode == "400") {
-      erroreLogin = "Account già esistente, effettua l'accesso con questo account";
+      erroreLogin = "Credenziali Invalide, ricontrolla e riprova";
     }
     return erroreLogin;
   }
 
-  Future<void> signUpNewUser() async {
+  Future<void> signIn() async {
     try {
       await supabase.auth
-        .signUp(email: _emailController.text.trim(), password: _passwordController.text.trim());
+        .signInWithPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim()
+      );
     } on AuthException catch (e) {
       setError(e);
     }
@@ -55,7 +59,7 @@ class _RegisterPageState extends State<RegisterPage> {
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('ok', style: TextStyle(color: Colors.white),),
+              child: const Text('ok',style: TextStyle(color: Colors.white),),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -66,6 +70,7 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -74,10 +79,10 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Stack(
           children: [
             Image.asset(
-              'images/esperienze_register_page.png',
-              fit: BoxFit.fill,
+              'images/smiling-young-friends-taking-selfie-cellphone.jpg',
+              fit: BoxFit.fitHeight,
               width: double.infinity,
-              height: 300,
+              height: 350,
               alignment: Alignment.center,
             ),
             SizedBox(
@@ -98,7 +103,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     child: ListView(
                       children: [
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
+                          padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: const TextSpan(
@@ -108,7 +113,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Registrati per ',
+                                  text: 'Accedi per ',
                                   style: TextStyle(color: Colors.black),
                                 ),
                                 TextSpan(
@@ -133,12 +138,12 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Padding(
                           padding:
-                              const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                              const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
                           child: TextFormField(
                             controller: _emailController,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
+                              if (value == null || value.trim().isEmpty) {
                                 return 'La mail non può essere vuota';
                               } else if (!EmailValidator.validate(value.trim())) {
                                 return 'la mail non è valida';
@@ -148,12 +153,12 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: const InputDecoration(
                                 border:  OutlineInputBorder(),
                                 hintText: 'Inserisci la tua email',
-                                prefixIcon:  Icon(Icons.email)),
+                                prefixIcon: Icon(Icons.email)),
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 12),
+                              horizontal: 8, vertical: 10),
                           child: TextFormField(
                             controller: _passwordController,
                             autovalidateMode: AutovalidateMode.onUserInteraction,
@@ -189,45 +194,24 @@ class _RegisterPageState extends State<RegisterPage> {
                             obscureText: _obsureText,
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 12),
-                          child: TextFormField(
-                            controller: _retypePasswordController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'La password non può essere vuota';
-                              } else if (value != _passwordController.text) {
-                                return 'le password non coincidono';
-                              }
-                              return null;
+                        SizedBox(
+                          width: double.maxFinite,
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        RecoveryPasswordPage()),
+                              );
                             },
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Ripeti la tua password',
-                                prefixIcon: Icon(Icons.key),
-                            ),
-                            obscureText: _obsureText,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24.0),
-                          child: RichText(
-                            textAlign: TextAlign.center,
-                            text: TextSpan(
-                              children: [
-                                const TextSpan(
-                                  text: 'Creando un account, accetti i nostri ',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                TextSpan(
-                                  text: 'Termini di Servizio',
-                                  style: const TextStyle(color: blue),
-                                  recognizer: TapGestureRecognizer()
-                                    ..onTap = () {},
-                                ),
-                              ],
+                            child: const Text(
+                              'Non ricordi la tua password?',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: blue,
+                                fontWeight: FontWeight.w400,
+                              ),
                             ),
                           ),
                         ),
@@ -236,14 +220,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               horizontal: 8, vertical: 16),
                           child: ElevatedButton(
                             onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  // If the form is valid, display a snackbar. In the real world,
-                                  // you'd often call a server or save the information in a database.
-                                  signUpNewUser();
-                                }
-                              },
+                              if (_formKey.currentState!.validate()) {
+                                  signIn();
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),
+                              minimumSize: const Size.fromHeight(40),
                               foregroundColor: white,
                               backgroundColor: blue,
                               shape: RoundedRectangleBorder(
@@ -254,14 +236,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               padding: EdgeInsets.symmetric(
                                   horizontal: 24.0, vertical: 12.0),
                               child: Text(
-                                'Registrati',
+                                'Accedi',
                                 style: TextStyle(fontSize: 18),
                               ),
                             ),
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 16.0),
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
@@ -271,17 +253,18 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               children: [
                                 const TextSpan(
-                                  text: 'Hai già un account? ',
+                                  text: 'Non hai un account? ',
                                   style: TextStyle(color: Colors.black),
                                 ),
                                 TextSpan(
-                                  text: 'Accedi ',
+                                  text: 'Registrati ',
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => const LoginPage()),
+                                            builder: (context) =>
+                                                RegisterPage()),
                                       );
                                     },
                                   style: const TextStyle(color: blue),

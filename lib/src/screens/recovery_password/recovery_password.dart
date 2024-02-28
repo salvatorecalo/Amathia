@@ -1,7 +1,7 @@
- import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/loginPage/login_page.dart';
-import 'package:amathia/src/screens/register_page/register_page.dart';
-import 'package:flutter/gestures.dart';
+import 'package:amathia/main.dart';
+import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/login_page/login_page.dart';
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 class RecoveryPasswordPage extends StatefulWidget {
@@ -10,7 +10,35 @@ class RecoveryPasswordPage extends StatefulWidget {
 }
 
 class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
-  bool _obsureText = true;
+  late final TextEditingController _emailController = TextEditingController();
+
+  Future<void> _showMyDialog() async {
+    late final String email = _emailController.text;
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Istruzioni inviate'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text('Abbiamo inviato una mail con le istruzioni per il recupero password a $email'),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,48 +72,60 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 24.0),
                         child: RichText(
-                        textAlign: TextAlign.center,
-                            text: const TextSpan(
-                              style: TextStyle(
-                                height: 1.5,
-                               fontSize: 16,
-                               ),
-                              children: [
-                                TextSpan(
-                                  text: 'Hai dimenticato la password? ',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                                TextSpan(
-                                  text: 'Nessun problema!\n',
-                                  style: TextStyle(color: blue),
-                                ),
-                                TextSpan(
-                                  text: 'Inserisci l’email associata al tuo account e ti invieremo le istruzioni per recuperare il tuo account.\n',
-                                  style: TextStyle(color: Colors.black),
-                                ),
-                              ],
+                          textAlign: TextAlign.center,
+                          text: const TextSpan(
+                            style: TextStyle(
+                              height: 1.5,
+                              fontSize: 16,
                             ),
+                            children: [
+                              TextSpan(
+                                text: 'Hai dimenticato la password? ',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                              TextSpan(
+                                text: 'Nessun problema!\n',
+                                style: TextStyle(color: blue),
+                              ),
+                              TextSpan(
+                                text:
+                                    'Inserisci l’email associata al tuo account e ti invieremo le istruzioni per recuperare il tuo account.\n',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ],
                           ),
-                      ),
-                      const Padding(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 8, vertical: 16),
-                        child: TextField(
-                          decoration: InputDecoration(
-                              border: OutlineInputBorder(),
-                              hintText: 'Inserisci la tua email',
-                              prefixIcon: Icon(Icons.email)),
                         ),
                       ),
                       Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
+                        child: TextFormField(
+                          controller: _emailController,
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'La mail non può essere vuota';
+                            } else if (!EmailValidator.validate(value)) {
+                              return 'La mail non è valida reinseriscila.';
+                            }
+                            return null;
+                          },
+                          decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: 'Inserisci la tua email',
+                              errorText: _emailController.text != ""
+                                  ? "La mail non è valida, reinseriscila"
+                                  : null,
+                              prefixIcon: const Icon(Icons.email)),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 8, vertical: 16),
                         child: ElevatedButton(
                           onPressed: () async {
-                            Navigator.pushReplacement(
-                                // ignore: use_build_context_synchronously
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => RegisterPage()));
+                            await supabase.auth
+                                .resetPasswordForEmail(_emailController.text);
+                            _showMyDialog();
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: Size.fromHeight(40),
@@ -106,15 +146,14 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                         ),
                       ),
                       TextButton(
-                       onPressed: () async {
+                          onPressed: () async {
                             Navigator.pushReplacement(
                                 // ignore: use_build_context_synchronously
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => LoginPage()));
                           },
-                       child: Text("Torna alla pagina di login")
-                       )
+                          child: Text("Torna alla pagina di login"))
                     ],
                   ),
                 ),

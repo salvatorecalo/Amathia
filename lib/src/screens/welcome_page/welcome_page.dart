@@ -1,12 +1,35 @@
+import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/register_page/register_page.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:google_fonts/google_fonts.dart';
 
-class WelcomePage extends StatelessWidget {
+class WelcomePage extends StatefulWidget {
   const WelcomePage({super.key});
+
+  @override
+  State<WelcomePage> createState() => _WelcomePageState();
+}
+
+class _WelcomePageState extends State<WelcomePage> {
+  @override
+  void initState() {
+    super.initState();
+    _redirect();
+  }
+
+  Future<void> _redirect() async {
+    await Future.delayed(Duration.zero);
+    if (!mounted) {
+      return;
+    }
+
+    final session = supabase.auth.currentSession;
+    if (session != null) {
+      Navigator.of(context).pushReplacementNamed('/account');
+    } else {
+      Navigator.of(context).pushReplacementNamed('/login');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

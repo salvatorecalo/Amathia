@@ -190,7 +190,7 @@ class _OnBoardState extends State<OnBoard> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              "Next",
+                                              "Avanti",
                                               style: TextStyle(
                                                   fontSize: 16.0, color: white),
                                             ),
