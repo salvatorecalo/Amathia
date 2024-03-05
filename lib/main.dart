@@ -60,7 +60,6 @@ void getCurrentAppTheme() async {
         builder: ((context, value, child) {
           return MaterialApp(
           title: 'Amathia',
-          themeMode: ThemeMode.system,
           darkTheme: ThemeData.dark(),
           theme: Styles.themeData(themeChangeProvider.darkTheme, context),
           debugShowCheckedModeBanner: false,
