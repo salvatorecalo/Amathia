@@ -1,7 +1,10 @@
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/account_page/account_page.dart';
+import 'package:amathia/src/screens/home_page/home_page.dart';
+import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:amathia/src/screens/onboard/onboard.dart';
+import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
+import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:amathia/src/screens/welcome_page/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -38,12 +41,14 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       debugShowCheckedModeBanner: false,
-      // home: isviewed != 0 ? const OnBoard() : const WelcomePage(),
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
         '/': (_) => isviewed != 0 ? const OnBoard() : const WelcomePage(),
         '/login': (_) => const LoginPage(),
+        '/register': (_) => const RegisterPage(),
+        '/recovery-password': (_) => RecoveryPasswordPage(),
         '/account': (_) => const AccountPage(),
+        '/homepage': (_) => const HomePage(),
       },
     );
   }

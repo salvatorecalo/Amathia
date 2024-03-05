@@ -41,7 +41,7 @@ class _LoginPageState extends State<LoginPage> {
       setError(e);
     }
     if (erroreLogin == "") {
-      Navigator.of(context).pushReplacementNamed('/account');
+      Navigator.of(context).pushReplacementNamed('/homepage');
     } else {
       return showDialog<void>(
       context: context,

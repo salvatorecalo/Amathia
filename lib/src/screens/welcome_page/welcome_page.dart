@@ -25,7 +25,7 @@ class _WelcomePageState extends State<WelcomePage> {
 
     final session = supabase.auth.currentSession;
     if (session != null) {
-      Navigator.of(context).pushReplacementNamed('/account');
+      Navigator.of(context).pushReplacementNamed('/homepage');
     } else {
       Navigator.of(context).pushReplacementNamed('/login');
     }
