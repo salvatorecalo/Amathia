@@ -6,8 +6,11 @@ import 'package:amathia/src/screens/onboard/onboard.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
 import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:amathia/src/screens/welcome_page/welcome_page.dart';
+import 'package:amathia/src/theme/dark_theme_styles.dart';
+import 'package:amathia/src/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,32 +27,55 @@ void main() async {
   runApp(const MyApp());
 }
 int? isviewed;
+bool isSwitched = false;
 final supabase = Supabase.instance.client;
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+
+@override
+void initState() {
+  super.initState();
+  getCurrentAppTheme();
+}
+
+void getCurrentAppTheme() async {
+  themeChangeProvider.darkTheme =
+      await themeChangeProvider.darkThemePreference.getTheme();
+}
+  @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Amathia',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: blue),
-        textTheme: GoogleFonts.interTextTheme(
-           Theme.of(context).textTheme,
+    return ChangeNotifierProvider(
+      create: (_) {
+          return themeChangeProvider;
+        },
+      child: Consumer<DarkThemeProvider>(
+        builder: ((context, value, child) {
+          return MaterialApp(
+          title: 'Amathia',
+          themeMode: ThemeMode.system,
+          darkTheme: ThemeData.dark(),
+          theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+          debugShowCheckedModeBanner: false,
+          initialRoute: '/',
+          routes: <String, WidgetBuilder>{
+            '/': (_) => isviewed != 0 ? const OnBoard() : const WelcomePage(),
+            '/login': (_) => const LoginPage(),
+            '/register': (_) => const RegisterPage(),
+            '/recovery-password': (_) => RecoveryPasswordPage(),
+            '/account': (_) => const AccountPage(),
+            '/homepage': (_) => const HomePage(),
+          },
+        );
+        }),
       ),
-        useMaterial3: true,
-      ),
-      debugShowCheckedModeBanner: false,
-      initialRoute: '/',
-      routes: <String, WidgetBuilder>{
-        '/': (_) => isviewed != 0 ? const OnBoard() : const WelcomePage(),
-        '/login': (_) => const LoginPage(),
-        '/register': (_) => const RegisterPage(),
-        '/recovery-password': (_) => RecoveryPasswordPage(),
-        '/account': (_) => const AccountPage(),
-        '/homepage': (_) => const HomePage(),
-      },
     );
   }
 }
