@@ -40,6 +40,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget buildPageView() {
     return PageView(
+      physics: const NeverScrollableScrollPhysics(),
       controller: pageController,
       onPageChanged: (index) {
         pageChanged(index);
