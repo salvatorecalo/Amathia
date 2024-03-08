@@ -1,4 +1,3 @@
-import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/home_page.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
@@ -9,7 +8,6 @@ import 'package:amathia/src/screens/welcome_page/welcome_page.dart';
 import 'package:amathia/src/theme/dark_theme_styles.dart';
 import 'package:amathia/src/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -60,7 +58,6 @@ void getCurrentAppTheme() async {
         builder: ((context, value, child) {
           return MaterialApp(
           title: 'Amathia',
-          darkTheme: ThemeData.dark(),
           theme: Styles.themeData(themeChangeProvider.darkTheme, context),
           debugShowCheckedModeBanner: false,
           initialRoute: '/',

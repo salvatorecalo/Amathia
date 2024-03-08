@@ -1,6 +1,7 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 // ignore: must_be_immutable
 class EventiOpenCard extends StatelessWidget {
@@ -27,6 +28,25 @@ class EventiOpenCard extends StatelessWidget {
             height: 350,
             alignment: Alignment.center,
           ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  size: 28,
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: double.infinity,
             child: FractionallySizedBox(
@@ -47,19 +67,21 @@ class EventiOpenCard extends StatelessWidget {
                       Row(
                         children: [
                           SizedBox(
-                            width: 420,
+                            width: 300,
                             child: Text(
                               "Notte della taranta",
                               style: TextStyle(
-                                fontSize: 20,
-                               fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                           LikeButton()
                         ],
                       ),
-                      SizedBox(height: 20,),
+                      SizedBox(
+                        height: 20,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -77,27 +99,31 @@ class EventiOpenCard extends StatelessWidget {
                           ),
                         ],
                       ),
-                      SizedBox(height: 40,),
+                      SizedBox(
+                        height: 40,
+                      ),
                       Text(
                         "Ingredienti: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
-                         ),
                         ),
-                        SizedBox(height: 20,),
-                        Text(
-                          "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
-                          style: TextStyle(
-                            height: 2,
-                          ),
-                        )
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
+                        style: TextStyle(
+                          height: 2,
+                        ),
+                      )
                     ],
                   ),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

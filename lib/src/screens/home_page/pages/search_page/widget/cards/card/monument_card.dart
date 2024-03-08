@@ -39,12 +39,14 @@ class MonumentsCard extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.symmetric(vertical: 12.0),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SizedBox(
-                    width: 420,
+                    width: 300,
                     child: Text(
                       "Basilica di Lecce",
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
                     ),
                   ),
                   LikeButton()

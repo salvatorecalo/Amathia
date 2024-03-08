@@ -28,6 +28,26 @@ class SeaOpenCard extends StatelessWidget {
             height: 350,
             alignment: Alignment.center,
           ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                hoverColor: Colors.white,
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  size: 28,
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: double.infinity,
             child: FractionallySizedBox(
@@ -52,7 +72,7 @@ class SeaOpenCard extends StatelessWidget {
                             child: Text(
                               "$title",
                               style: const TextStyle(
-                                fontSize: 20,
+                                fontSize: 16,
                                fontWeight: FontWeight.w600,
                               ),
                             ),

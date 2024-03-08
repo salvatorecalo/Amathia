@@ -47,6 +47,10 @@ class CategoryScreen extends StatelessWidget {
                 expandedTitleScale: 1.5,
                 title: Text(
                   category,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 1,
+                  ),
                 ),
                 background: Container(
                   color: bgcolor,

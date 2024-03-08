@@ -28,6 +28,25 @@ class MonumentOpenCard extends StatelessWidget {
             height: 350,
             alignment: Alignment.center,
           ),
+          Positioned(
+            top: 10,
+            left: 10,
+            child: Container(
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+              ),
+              child: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: const Icon(
+                  Icons.arrow_back,
+                  size: 28,
+                ),
+              ),
+            ),
+          ),
           SizedBox(
             height: double.infinity,
             child: FractionallySizedBox(
@@ -52,36 +71,39 @@ class MonumentOpenCard extends StatelessWidget {
                             child: Text(
                               "$title",
                               style: const TextStyle(
-                                fontSize: 20,
-                               fontWeight: FontWeight.w600,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                           const LikeButton()
                         ],
                       ),
-                      const SizedBox(height: 20,),
-                      const Row(
-                        children: [
-                          Icon(Icons.location_pin),
-                          Text("Lecce")
-                        ],
+                      const SizedBox(
+                        height: 20,
                       ),
-                      const SizedBox(height: 40,),
+                      const Row(
+                        children: [Icon(Icons.location_pin), Text("Lecce")],
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       const Text(
                         "Storia: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
-                         ),
                         ),
-                        const SizedBox(height: 20,),
-                        const Text(
-                          "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
-                          style: TextStyle(
-                            height: 2,
-                          ),
-                        )
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
+                        style: TextStyle(
+                          height: 2,
+                        ),
+                      )
                     ],
                   ),
                 ),
