@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 // ignore: must_be_immutable
-class SeaOpenCard extends StatelessWidget {
+class CityOpenCard extends StatelessWidget {
   String? title;
   String? location;
   String? description;
 
-  SeaOpenCard({
+  CityOpenCard({
     super.key,
     this.title,
     this.location,

@@ -1,9 +1,8 @@
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/eventi_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/monument_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/nature_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/recipe_card.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/sea_card.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -11,11 +10,11 @@ class CategoryScreen extends StatelessWidget {
   final Color bgcolor;
   final String category;
   final String type;
-  bool _pinned = true;
-  bool _snap = true;
-  bool _floating = true;
+  final bool _pinned = true;
+  final bool _snap = true;
+  final bool _floating = true;
 
-  CategoryScreen({
+  const CategoryScreen({
     super.key,
     required this.bgcolor,
     required this.category,
@@ -61,17 +60,22 @@ class CategoryScreen extends StatelessWidget {
               delegate: SliverChildBuilderDelegate(
                 (BuildContext context, int index) {
                   if (type == "ricette"){
-                     return const RecipeCard();
+                     return const RecipeCard(
+                      title: '',
+                      image: '',
+                      location: '',
+                      description: '',
+                      time: 0,
+                      peopleFor: 0,
+                      ingredients: [],
+                     );
                   } else if (type == "monumenti"){
                     return const MonumentsCard();
                   } else if (type == "natura"){
                     return const NatureCard();
-                  } else if (type == "sea"){
-                    return const SeaCard();
-                  } else if (type == "eventi"){
-                    return const EventiCard();
+                  } else if (type == "borghi"){
+                    return const CityCard();
                   }
-                 
                 },
                 childCount: 20,
               ),

@@ -1,9 +1,7 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/category_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/searchbar.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/slider_view.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class SearchPage extends StatelessWidget {
   const SearchPage({super.key});
@@ -23,32 +21,23 @@ class SearchPage extends StatelessWidget {
                   height: 100,
                   child: SearchBarApp(),
                 ),
-                Row(
+                const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const CategoryButton(
+                    CategoryButton(
                       colore: Colors.orangeAccent,
                       text: 'Ricette',
                       icon: Icons.restaurant,
                       title: 'Ricette',
                       type: "ricette",
                     ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 50),
-                      child: const CategoryButton(
-                        colore: Colors.pinkAccent,
-                        text: 'Monumenti',
-                        icon: Icons.account_balance,
-                        title: 'Monumenti',
-                        type: 'monumenti',
-                      ),
-                    ),
-                    const CategoryButton(
-                      colore: Colors.greenAccent,
-                      text: 'Natura',
-                      icon: Icons.pedal_bike,
-                      title: 'Natura',
-                      type: 'natura',
+                    SizedBox(width: 10,),
+                    CategoryButton(
+                      colore: Colors.pinkAccent,
+                      text: 'Monumenti',
+                      icon: Icons.account_balance,
+                      title: 'Monumenti',
+                      type: 'monumenti',
                     ),
                   ],
                 ),
@@ -59,35 +48,42 @@ class SearchPage extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     CategoryButton(
-                      colore: Colors.blueAccent,
-                      text: 'Mare',
-                      icon: Icons.water,
-                      title: 'Mare',
-                      type: 'sea',
+                      colore: Colors.greenAccent,
+                      text: 'Natura',
+                      icon: Icons.pedal_bike,
+                      title: 'Natura',
+                      type: 'natura',
                     ),
-                    SizedBox(
-                      width: 50,
-                    ),
+                    SizedBox(width: 10,),
                     CategoryButton(
-                      colore: Colors.purple,
-                      text: 'Eventi',
-                      icon: Icons.celebration,
-                      title: 'Eventi',
-                      type: 'eventi',
+                      colore: Colors.blueAccent,
+                      text: 'Borghi',
+                      icon: Icons.castle,
+                      title: 'Borghi',
+                      type: 'borghi',
                     ),
                   ],
                 ),
                 const SizedBox(
                   height: 50,
                 ),
-                const SliderView(
-                  message: 'Migliori di sempre',
+                SizedBox(
+                  height: 200,
+                  child: RandomDataFetcher(),
                 ),
                 const SizedBox(
                   height: 50,
                 ),
-                const SliderView(
-                  message: 'Estate 2022',
+                SizedBox(
+                  height: 200,
+                  child: RandomDataFetcher(),
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+               SizedBox(
+                height: 200,
+                child: RandomDataFetcher(),
                 ),
               ],
             ),

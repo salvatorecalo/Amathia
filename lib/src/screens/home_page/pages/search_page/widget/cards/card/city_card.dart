@@ -1,11 +1,10 @@
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/sea_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/opencard.dart';
 import 'package:flutter/material.dart';
 
-class SeaCard extends StatelessWidget {
-  const SeaCard({super.key});
+class CityCard extends StatelessWidget {
+  const CityCard({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +13,7 @@ class SeaCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => SeaOpenCard(
+            builder: (context) => CityOpenCard(
               title: "Grotta della poesia",
             ),
           ),

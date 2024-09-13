@@ -23,10 +23,10 @@ class CategoryButton extends StatelessWidget {
       children: [
         Container(
           decoration: BoxDecoration(
-            shape: BoxShape.circle,
+            borderRadius: BorderRadius.circular(10),
             color: colore,
           ),
-          width: 60,
+          width: 150,
           height: 60,
           child: IconButton(
             icon: Icon(

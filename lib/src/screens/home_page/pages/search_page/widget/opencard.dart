@@ -37,10 +37,8 @@ class OpenCard extends StatelessWidget {
                 width: double.infinity,
                 child: Stack(
                   children: [
-                    Expanded(
-                      child: Image.network(
-                          'https://picsum.photos/seed/picsum/1000/600'),
-                    ),
+                    Image.network(
+                        'https://picsum.photos/seed/picsum/1000/600'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [

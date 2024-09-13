@@ -1,9 +1,5 @@
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/host_card.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
