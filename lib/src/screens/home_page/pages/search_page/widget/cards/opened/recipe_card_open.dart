@@ -62,15 +62,19 @@ class RecipeOpenCard extends StatelessWidget {
                   color: white,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 20,
+                  ),
                   child: ListView(
                     children: [
-                      SizedBox(
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
                         width: 420,
                         child: Text(
                           title,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -79,33 +83,29 @@ class RecipeOpenCard extends StatelessWidget {
                         height: 20,
                       ),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Row(
-                            children: [
-                              const Icon(Icons.schedule),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              Text("$time min.")
-                            ],
+                          const Icon(Icons.schedule),
+                          const SizedBox(
+                            width: 5,
                           ),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                '$peopleFor',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.w700,
-                                ),
-                              ),
-                              const SizedBox(
-                                width: 5,
-                              ),
-                              const Icon(Icons.person),
-                            ],
-                          )
+                          Text("$time min.")
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          const Icon(Icons.person),
+                          const SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '$peopleFor',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(
@@ -120,6 +120,16 @@ class RecipeOpenCard extends StatelessWidget {
                       ),
                       const SizedBox(
                         height: 20,
+                      ),
+                      const Text(
+                        "Procedimento",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 18,
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 5,
                       ),
                       Text(
                         description,

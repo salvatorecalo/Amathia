@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 // ignore: must_be_immutable
 class NatureOpenCard extends StatelessWidget {
@@ -60,15 +61,19 @@ class NatureOpenCard extends StatelessWidget {
                   color: white,
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(16.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20.0,
+                    vertical: 20,
+                  ),
                   child: ListView(
                     children: [
-                      SizedBox(
+                      Container(
+                        margin: const EdgeInsets.only(top: 20),
                         width: 420,
                         child: Text(
                           title,
                           style: const TextStyle(
-                            fontSize: 16,
+                            fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
@@ -103,7 +108,33 @@ class NatureOpenCard extends StatelessWidget {
                 ),
               ),
             ),
-          )
+          ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  minimumSize: const Size.fromHeight(40),
+                  foregroundColor: white,
+                  backgroundColor: blue,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                ),
+                onPressed: () async {
+                  final Uri url =
+                      Uri.parse('geo:0,0?q=${Uri.encodeComponent(title)}');
+                  if (!await launchUrl(url)) {
+                    throw Exception('Could not launch $url');
+                  }
+                },
+                child: const Text('Raggiungi questo luogo'),
+              ),
+            ),
+          ),
         ],
       ),
     );
