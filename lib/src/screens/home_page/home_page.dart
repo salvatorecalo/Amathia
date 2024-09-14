@@ -1,4 +1,3 @@
-
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
@@ -13,23 +12,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   int bottomSelectedIndex = 0;
 
   List<BottomNavigationBarItem> buildBottomNavBarItems() {
     return const [
+      BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Esplora'),
       BottomNavigationBarItem(
-          icon:  Icon(Icons.search),
-          label: 'Esplora'
-      ),
-      BottomNavigationBarItem(
-        icon:  Icon(Icons.favorite),
+        icon: Icon(Icons.favorite),
         label: 'Salvati',
       ),
-      BottomNavigationBarItem(
-          icon: Icon(Icons.person),
-          label: 'Account'
-      )
+      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
     ];
   }
 
@@ -67,7 +59,8 @@ class _HomePageState extends State<HomePage> {
   void bottomTapped(int index) {
     setState(() {
       bottomSelectedIndex = index;
-      pageController.animateToPage(index, duration: const Duration(milliseconds: 500), curve: Curves.ease);
+      pageController.animateToPage(index,
+          duration: const Duration(milliseconds: 500), curve: Curves.ease);
     });
   }
 
@@ -85,4 +78,4 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  }
+}

@@ -150,7 +150,7 @@ class _AccountPageState extends State<AccountPage> {
                   children: [
                     const Text("Modalità scura"),
                     Switch(
-                      activeColor: blue,
+                        activeColor: blue,
                         value: themeChange.darkTheme,
                         onChanged: (value) {
                           themeChange.darkTheme = value;
@@ -163,7 +163,8 @@ class _AccountPageState extends State<AccountPage> {
                     Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => RecoveryPasswordPage()));
+                            builder: (context) =>
+                                const RecoveryPasswordPage()));
                   },
                   child: const Text("Cambia la password"),
                 ),

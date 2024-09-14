@@ -37,8 +37,7 @@ class OpenCard extends StatelessWidget {
                 width: double.infinity,
                 child: Stack(
                   children: [
-                    Image.network(
-                        'https://picsum.photos/seed/picsum/1000/600'),
+                    Image.network('https://picsum.photos/seed/picsum/1000/600'),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -72,7 +71,7 @@ class OpenCard extends StatelessWidget {
                       children: [
                         Text(
                           "$title",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.w600,
                             fontSize: 36,
                           ),
@@ -80,8 +79,8 @@ class OpenCard extends StatelessWidget {
                         Row(
                           children: [
                             Text(
-                              "${rating![0]}",
-                              style: TextStyle(
+                              rating![0],
+                              style: const TextStyle(
                                 fontWeight: FontWeight.w600,
                                 fontSize: 30,
                               ),
@@ -94,30 +93,30 @@ class OpenCard extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5,
                     ),
                     Text(
                       "$location",
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontWeight: FontWeight.w100,
                         fontSize: 15,
                         letterSpacing: 1,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Text(
                       "$description",
                       textAlign: TextAlign.justify,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w100,
                         height: 1.5,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 50,
                     ),
                     Column(
@@ -190,7 +189,7 @@ class OpenCard extends StatelessWidget {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                             Row(
+                            Row(
                               children: [
                                 Text(
                                   "Vedi di più",
@@ -200,10 +199,10 @@ class OpenCard extends StatelessWidget {
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                const SizedBox(
+                                SizedBox(
                                   width: 3,
                                 ),
-                                const Icon(
+                                Icon(
                                   Icons.arrow_right_alt,
                                   color: blue,
                                 )
@@ -225,19 +224,19 @@ class OpenCard extends StatelessWidget {
                             fontWeight: FontWeight.w600,
                           ),
                         ),
-                        const SizedBox(
+                        SizedBox(
                           height: 30,
                         ),
                         Column(
                           children: [
-                            const ExpansionTile(
+                            ExpansionTile(
                               title: Text('ExpansionTile 1'),
                               subtitle: Text('Trailing expansion arrow icon'),
                               children: <Widget>[
                                 ListTile(title: Text('This is tile number 1')),
                               ],
                             ),
-                            const ExpansionTile(
+                            ExpansionTile(
                               title: Text('ExpansionTile 2'),
                               subtitle: Text('Trailing expansion arrow icon'),
                               children: <Widget>[

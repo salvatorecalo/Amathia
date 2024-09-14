@@ -4,17 +4,18 @@ import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class RecipeOpenCard extends StatelessWidget {
-  String? title;
-  String? rating;
-  String? location;
-  String? description;
-
+  String title;
+  String description;
+  String image;
+  int time;
+  int peopleFor;
   RecipeOpenCard({
     super.key,
-    this.title,
-    this.rating,
-    this.location,
-    this.description,
+    required this.title,
+    required this.description,
+    required this.image,
+    required this.peopleFor,
+    required this.time,
   });
 
   @override
@@ -23,7 +24,7 @@ class RecipeOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            'https://picsum.photos/330/180',
+            '$image.jpg',
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -65,61 +66,73 @@ class RecipeOpenCard extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: ListView(
                     children: [
-                      const Row(
+                      Row(
                         children: [
                           SizedBox(
                             width: 420,
                             child: Text(
-                              "Orecchiette melanzane e pomodorini “scattarisciati”",
-                              style: TextStyle(
+                              title,
+                              style: const TextStyle(
                                 fontSize: 16,
-                               fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                           LikeButton()
                         ],
                       ),
-                      const SizedBox(height: 20,),
+                      const SizedBox(
+                        height: 20,
+                      ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          const Row(
+                          Row(
                             children: [
-                              Icon(Icons.schedule),
-                              Text("50 min.")
+                              const Icon(Icons.schedule),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              Text("$time min.")
                             ],
                           ),
-                          RichText(
-                            text: const TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: 'Porzione per ' 
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                '$peopleFor',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
                                 ),
-                                TextSpan(
-                                  text: '8 persone',
-                                  style: TextStyle(fontWeight: FontWeight.w700)
-                                )
-                              ]
-                            ),
-                          ),
+                              ),
+                              const SizedBox(
+                                width: 5,
+                              ),
+                              const Icon(Icons.person),
+                            ],
+                          )
                         ],
                       ),
-                      const SizedBox(height: 40,),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       const Text(
                         "Ingredienti: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
-                         ),
                         ),
-                        const SizedBox(height: 20,),
-                        const Text(
-                          "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
-                          style: TextStyle(
-                            height: 2,
-                          ),
-                        )
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          height: 2,
+                        ),
+                      )
                     ],
                   ),
                 ),

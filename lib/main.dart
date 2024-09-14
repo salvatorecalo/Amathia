@@ -20,10 +20,12 @@ void main() async {
   // Supabase initialized
   await Supabase.initialize(
     url: 'https://yyiqjaekqhmdyxfcmgts.supabase.co',
-    anonKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aXFqYWVrcWhtZHl4ZmNtZ3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg4OTY2ODksImV4cCI6MjAyNDQ3MjY4OX0.bg_SU8zQE9GeUAlqO4N68mKelzn-F27934gjeUAcs54',
+    anonKey:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aXFqYWVrcWhtZHl4ZmNtZ3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg4OTY2ODksImV4cCI6MjAyNDQ3MjY4OX0.bg_SU8zQE9GeUAlqO4N68mKelzn-F27934gjeUAcs54',
   );
   runApp(const MyApp());
 }
+
 int? isviewed;
 bool isSwitched = false;
 final supabase = Supabase.instance.client;
@@ -36,40 +38,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  DarkThemeProvider themeChangeProvider = new DarkThemeProvider();
+  DarkThemeProvider themeChangeProvider = DarkThemeProvider();
 
-@override
-void initState() {
-  super.initState();
-  getCurrentAppTheme();
-}
+  @override
+  void initState() {
+    super.initState();
+    getCurrentAppTheme();
+  }
 
-void getCurrentAppTheme() async {
-  themeChangeProvider.darkTheme =
-      await themeChangeProvider.darkThemePreference.getTheme();
-}
+  void getCurrentAppTheme() async {
+    themeChangeProvider.darkTheme =
+        await themeChangeProvider.darkThemePreference.getTheme();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-          return themeChangeProvider;
-        },
+        return themeChangeProvider;
+      },
       child: Consumer<DarkThemeProvider>(
         builder: ((context, value, child) {
           return MaterialApp(
-          title: 'Amathia',
-          theme: Styles.themeData(themeChangeProvider.darkTheme, context),
-          debugShowCheckedModeBanner: false,
-          initialRoute: '/',
-          routes: <String, WidgetBuilder>{
-            '/': (_) => isviewed != 0 ? const OnBoard() : const WelcomePage(),
-            '/login': (_) => const LoginPage(),
-            '/register': (_) => const RegisterPage(),
-            '/recovery-password': (_) => RecoveryPasswordPage(),
-            '/account': (_) => const AccountPage(),
-            '/homepage': (_) => const HomePage(),
-          },
-        );
+            title: 'Amathia',
+            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            debugShowCheckedModeBanner: false,
+            initialRoute: '/',
+            routes: <String, WidgetBuilder>{
+              '/': (_) => isviewed != 0 ? const OnBoard() : const WelcomePage(),
+              '/login': (_) => const LoginPage(),
+              '/register': (_) => const RegisterPage(),
+              '/recovery-password': (_) => const RecoveryPasswordPage(),
+              '/account': (_) => const AccountPage(),
+              '/homepage': (_) => const HomePage(),
+            },
+          );
         }),
       ),
     );

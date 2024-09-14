@@ -44,12 +44,12 @@ class _SearchBarAppState extends State<SearchBarApp> {
 
   @override
   Widget build(BuildContext context) {
-    return  SearchAnchor(
+    return SearchAnchor(
       builder: (BuildContext context, SearchController controller) {
         return SearchBar(
           hintText: 'Cosa vuoi cercare?',
           controller: _searchController,
-          padding: const MaterialStatePropertyAll<EdgeInsets>(
+          padding: const WidgetStatePropertyAll<EdgeInsets>(
               EdgeInsets.symmetric(horizontal: 16.0)),
           onTap: () {
             controller.openView();
@@ -60,16 +60,15 @@ class _SearchBarAppState extends State<SearchBarApp> {
           leading: const Icon(Icons.search),
         );
       },
-      suggestionsBuilder:
-          (BuildContext context, SearchController controller) {
+      suggestionsBuilder: (BuildContext context, SearchController controller) {
         if (isLoading) {
           return [const Center(child: CircularProgressIndicator())];
         }
-    
+
         return List<ListTile>.generate(searchResults.length, (int index) {
           final result = searchResults[index];
           final String item = result['data']['title'] ?? 'Senza nome';
-    
+
           return ListTile(
             title: Text(item),
             onTap: () {

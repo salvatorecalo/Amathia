@@ -5,6 +5,8 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 
 class RecoveryPasswordPage extends StatefulWidget {
+  const RecoveryPasswordPage({super.key});
+
   @override
   State<RecoveryPasswordPage> createState() => _RecoveryPasswordPageState();
 }
@@ -23,7 +25,8 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
-                Text('Abbiamo inviato una mail con le istruzioni per il recupero password a $email'),
+                Text(
+                    'Abbiamo inviato una mail con le istruzioni per il recupero password a $email'),
               ],
             ),
           ),
@@ -128,7 +131,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                             _showMyDialog();
                           },
                           style: ElevatedButton.styleFrom(
-                            minimumSize: Size.fromHeight(40),
+                            minimumSize: const Size.fromHeight(40),
                             foregroundColor: white,
                             backgroundColor: blue,
                             shape: RoundedRectangleBorder(
@@ -151,9 +154,9 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                                 // ignore: use_build_context_synchronously
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => LoginPage()));
+                                    builder: (context) => const LoginPage()));
                           },
-                          child: Text("Torna alla pagina di login"))
+                          child: const Text("Torna alla pagina di login"))
                     ],
                   ),
                 ),

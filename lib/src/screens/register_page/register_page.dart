@@ -16,23 +16,27 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   bool _obsureText = true;
   late final TextEditingController _emailController = TextEditingController();
-  late final TextEditingController _passwordController = TextEditingController();
-  late final TextEditingController _retypePasswordController = TextEditingController();
+  late final TextEditingController _passwordController =
+      TextEditingController();
+  late final TextEditingController _retypePasswordController =
+      TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String erroreLogin = "";
 
   Future<String> setError(e) async {
     erroreLogin = e.statusCode;
     if (e.statusCode == "400") {
-      erroreLogin = "Account già esistente, effettua l'accesso con questo account";
+      erroreLogin =
+          "Account già esistente, effettua l'accesso con questo account";
     }
     return erroreLogin;
   }
 
   Future<void> signUpNewUser() async {
     try {
-      await supabase.auth
-        .signUp(email: _emailController.text.trim(), password: _passwordController.text.trim());
+      await supabase.auth.signUp(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim());
     } on AuthException catch (e) {
       setError(e);
     }
@@ -40,32 +44,42 @@ class _RegisterPageState extends State<RegisterPage> {
       Navigator.of(context).pushReplacementNamed('/homepage');
     } else {
       return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.red,
-          title: const Text('Errore', style: TextStyle(color: Colors.white),),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(erroreLogin, style: const TextStyle(color: Colors.white),),
-              ],
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.red,
+            title: const Text(
+              'Errore',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('ok', style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    erroreLogin,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'ok',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -132,23 +146,25 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 12),
                           child: TextFormField(
                             controller: _emailController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'La mail non può essere vuota';
-                              } else if (!EmailValidator.validate(value.trim())) {
+                              } else if (!EmailValidator.validate(
+                                  value.trim())) {
                                 return 'la mail non è valida';
                               }
                               return null;
                             },
                             decoration: const InputDecoration(
-                                border:  OutlineInputBorder(),
+                                border: OutlineInputBorder(),
                                 hintText: 'Inserisci la tua email',
-                                prefixIcon:  Icon(Icons.email)),
+                                prefixIcon: Icon(Icons.email)),
                           ),
                         ),
                         Padding(
@@ -156,7 +172,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               horizontal: 8, vertical: 12),
                           child: TextFormField(
                             controller: _passwordController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'La password non può essere vuota';
@@ -168,7 +185,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
                                 // contiene una lettera maiuscola
                                 return 'la password deve contenere un numero';
-                              } else if (!value.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+                              } else if (!value
+                                  .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
                                 return 'la password deve contenere un carattere speciale';
                               }
                               return null;
@@ -194,7 +212,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               horizontal: 8, vertical: 12),
                           child: TextFormField(
                             controller: _retypePasswordController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'La password non può essere vuota';
@@ -204,9 +223,9 @@ class _RegisterPageState extends State<RegisterPage> {
                               return null;
                             },
                             decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Ripeti la tua password',
-                                prefixIcon: Icon(Icons.key),
+                              border: OutlineInputBorder(),
+                              hintText: 'Ripeti la tua password',
+                              prefixIcon: Icon(Icons.key),
                             ),
                             obscureText: _obsureText,
                           ),
@@ -236,14 +255,14 @@ class _RegisterPageState extends State<RegisterPage> {
                               horizontal: 8, vertical: 16),
                           child: ElevatedButton(
                             onPressed: () async {
-                                if (_formKey.currentState!.validate()) {
-                                  // If the form is valid, display a snackbar. In the real world,
-                                  // you'd often call a server or save the information in a database.
-                                  signUpNewUser();
-                                }
-                              },
+                              if (_formKey.currentState!.validate()) {
+                                // If the form is valid, display a snackbar. In the real world,
+                                // you'd often call a server or save the information in a database.
+                                signUpNewUser();
+                              }
+                            },
                             style: ElevatedButton.styleFrom(
-                              minimumSize: Size.fromHeight(40),
+                              minimumSize: const Size.fromHeight(40),
                               foregroundColor: white,
                               backgroundColor: blue,
                               shape: RoundedRectangleBorder(
@@ -281,7 +300,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => const LoginPage()),
+                                            builder: (context) =>
+                                                const LoginPage()),
                                       );
                                     },
                                   style: const TextStyle(color: blue),

@@ -4,10 +4,10 @@ class LabelField extends StatelessWidget {
   final IconData icon;
   final String status;
   const LabelField({
-    Key? key,
+    super.key,
     required this.icon,
     required this.status,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +17,7 @@ class LabelField extends StatelessWidget {
           icon,
           size: 16,
         ),
-        SizedBox(
+        const SizedBox(
           width: 5,
         ),
         Text(status),

@@ -1,11 +1,17 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class NatureCard extends StatelessWidget {
-  const NatureCard({super.key});
+  String title;
+  String image;
+  String location;
+  NatureCard({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.location,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,14 +21,18 @@ class NatureCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => NatureOpenCard(
-              title: "Mandra di Calimera",
+              title: title,
+              location: location,
+              image: image,
+              description: '',
             ),
           ),
         );
       },
       child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.all(20),
+        width: 250,
+        height: 200,
+        margin: const EdgeInsets.fromLTRB(20, 20, 10, 20),
         decoration: BoxDecoration(
           color: white,
           borderRadius: BorderRadius.circular(10),
@@ -30,33 +40,50 @@ class NatureCard extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              'https://picsum.photos/330/180',
+              '$image.jpg',
               width: double.infinity,
+              height: 100,
               fit: BoxFit.cover,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Container(
+              margin: const EdgeInsets.symmetric(
+                vertical: 10,
+                horizontal: 15,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      "Mandra di Calimera",
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  LikeButton()
-                ]
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_pin,
+                        size: 18,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        location,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
-            const Row(
-              children: [
-                Icon(Icons.location_pin),
-                SizedBox(width: 5,),
-                Text("Lecce",style: TextStyle(fontSize: 18))
-              ],
             )
           ],
         ),

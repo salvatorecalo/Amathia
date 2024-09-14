@@ -1,10 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
-import 'package:flutter/material.dart';
 
 class CityCard extends StatelessWidget {
-  const CityCard({super.key});
+  String title;
+  String image;
+  String description;
+  CityCard({
+    super.key,
+    required this.title,
+    required this.image,
+    required this.description,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,49 +21,44 @@ class CityCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CityOpenCard(
-              title: "Grotta della poesia",
+              title: title,
+              description: description,
+              image: image,
             ),
           ),
         );
       },
       child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.all(20),
+        width: 250,
+        height: 200,
+        margin: const EdgeInsets.fromLTRB(20, 20, 10, 20),
         decoration: BoxDecoration(
           color: white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              'https://picsum.photos/330/180',
+              '$image.jpg',
               width: double.infinity,
+              height: 100,
               fit: BoxFit.cover,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      "Grotta della poesia",
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                  LikeButton()
-                ]
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15),
+              child: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             ),
-            const Row(
-              children: [
-                Icon(Icons.location_pin),
-                SizedBox(width: 5,),
-                Text("Lecce",style: TextStyle(fontSize: 18))
-              ],
-            )
           ],
         ),
       ),

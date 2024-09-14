@@ -1,19 +1,19 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 // ignore: must_be_immutable
 class NatureOpenCard extends StatelessWidget {
-  String? title;
-  String? location;
-  String? description;
-
+  String title;
+  String location;
+  String description;
+  String image;
   NatureOpenCard({
     super.key,
-    this.title,
-    this.location,
-    this.description,
+    required this.title,
+    required this.location,
+    required this.description,
+    required this.image,
   });
 
   @override
@@ -22,7 +22,7 @@ class NatureOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            'https://picsum.photos/330/180',
+            '$image.jpg',
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -72,35 +72,38 @@ class NatureOpenCard extends StatelessWidget {
                               "$title",
                               style: const TextStyle(
                                 fontSize: 16,
-                               fontWeight: FontWeight.w600,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ),
                           const LikeButton()
                         ],
                       ),
-                      const SizedBox(height: 20,),
-                      const Row(
-                        children: [
-                          Icon(Icons.location_pin),
-                          Text("Lecce")
-                        ],
+                      const SizedBox(
+                        height: 20,
                       ),
-                      const SizedBox(height: 40,),
+                      const Row(
+                        children: [Icon(Icons.location_pin), Text("Lecce")],
+                      ),
+                      const SizedBox(
+                        height: 40,
+                      ),
                       const Text(
-                        "Storia: ",
+                        "Descrizione: ",
                         style: TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
-                         ),
                         ),
-                        const SizedBox(height: 20,),
-                        const Text(
-                          "Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela. Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met de compostela Descrizione del processo di creazione del piatto. Lorem impsum dolor at sit met d",
-                          style: TextStyle(
-                            height: 2,
-                          ),
-                        )
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      Text(
+                        description,
+                        style: const TextStyle(
+                          height: 2,
+                        ),
+                      )
                     ],
                   ),
                 ),

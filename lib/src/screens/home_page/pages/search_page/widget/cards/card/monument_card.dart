@@ -1,10 +1,20 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class MonumentsCard extends StatelessWidget {
-  const MonumentsCard({super.key});
+  String title;
+  String location;
+  String description;
+  String image;
+  MonumentsCard({
+    super.key,
+    required this.title,
+    required this.location,
+    required this.description,
+    required this.image,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,16 +24,18 @@ class MonumentsCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => MonumentOpenCard(
-              title: "Altare della pace",
-              location: "Martano",
-              description: "Martano ha questo altare",
+              title: title,
+              location: location,
+              image: image,
+              description: description,
             ),
           ),
         );
       },
       child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.all(20),
+        width: 250,
+        height: 200,
+        margin: const EdgeInsets.fromLTRB(20, 20, 10, 20),
         decoration: BoxDecoration(
           color: white,
           borderRadius: BorderRadius.circular(10),
@@ -31,34 +43,51 @@ class MonumentsCard extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              'https://picsum.photos/330/180',
+              '$image.jpg',
               width: double.infinity,
+              height: 100,
               fit: BoxFit.cover,
             ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Container(
+              margin: const EdgeInsets.symmetric(
+                horizontal: 15,
+                vertical: 10,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      "Basilica di Lecce",
-                      style: TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  LikeButton()
-                ]
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(
+                        Icons.location_pin,
+                        size: 18,
+                      ),
+                      const SizedBox(
+                        width: 5,
+                      ),
+                      Text(
+                        location,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const Row(
-              children: [
-                Icon(Icons.location_pin),
-                SizedBox(width: 5,),
-                Text("Lecce",style: TextStyle(fontSize: 18))
-              ],
-            )
           ],
         ),
       ),

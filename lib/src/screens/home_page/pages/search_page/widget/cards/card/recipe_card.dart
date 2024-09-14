@@ -5,21 +5,17 @@ import 'package:flutter/material.dart';
 class RecipeCard extends StatelessWidget {
   final String title;
   final String description;
-  final String location;
   final String image;
   final int time;
   final int peopleFor;
-  final List<String> ingredients;
 
   const RecipeCard({
     super.key,
     required this.title,
     required this.description,
-    required this.location,
     required this.image,
     required this.time,
     required this.peopleFor,
-    required this.ingredients,
   });
 
   @override
@@ -32,94 +28,78 @@ class RecipeCard extends StatelessWidget {
             builder: (context) => RecipeOpenCard(
               title: title,
               description: description,
-              location: location,
+              peopleFor: peopleFor,
+              time: time,
+              image: image,
             ),
           ),
         );
       },
       child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.all(20),
+        width: 250,
+        height: 200,
+        margin: const EdgeInsets.fromLTRB(20, 20, 10, 20),
         decoration: BoxDecoration(
           color: white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              image,
+              '$image.jpg',
               width: double.infinity,
+              height: 100,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return const Center(child: Text('Immagine non disponibile'));
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return const Center(
-                    child:
-                        CircularProgressIndicator()); // Mostra un indicatore di caricamento
-              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    width: 300,
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w600,
-                      ),
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ),
-                ],
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    const Icon(Icons.schedule, size: 32),
-                    const SizedBox(width: 5),
-                    Text(
-                      "$time min",
-                      style: const TextStyle(fontSize: 18),
-                    ),
-                  ],
-                ),
-                RichText(
-                  text: TextSpan(
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
                     children: [
-                      const TextSpan(
-                          text: "Porzione per ",
-                          style: TextStyle(fontSize: 18)),
-                      TextSpan(
-                        text: "$peopleFor persone",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w700, fontSize: 18),
+                      const Icon(Icons.schedule, size: 18),
+                      const SizedBox(width: 5),
+                      Text(
+                        "$time min",
+                        style: const TextStyle(fontSize: 18),
                       ),
                     ],
                   ),
-                ),
-              ],
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: ingredients
-                    .length, // Assicurati che `ingredients` non sia null
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title:
-                        Text(ingredients[index]), // Gestisci ingredienti nulli
-                  );
-                },
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  Row(
+                    children: [
+                      const Icon(Icons.people),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      Text(
+                        "$peopleFor",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),

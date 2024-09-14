@@ -32,11 +32,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> signIn() async {
     try {
-      await supabase.auth
-        .signInWithPassword(
+      await supabase.auth.signInWithPassword(
           email: _emailController.text.trim(),
-          password: _passwordController.text.trim()
-      );
+          password: _passwordController.text.trim());
     } on AuthException catch (e) {
       setError(e);
     }
@@ -44,30 +42,39 @@ class _LoginPageState extends State<LoginPage> {
       Navigator.of(context).pushReplacementNamed('/homepage');
     } else {
       return showDialog<void>(
-      context: context,
-      barrierDismissible: false, // user must tap button!
-      builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: Colors.red,
-          title: const Text('Errore', style: TextStyle(color: Colors.white),),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(erroreLogin, style: const TextStyle(color: Colors.white),),
-              ],
+        context: context,
+        barrierDismissible: false, // user must tap button!
+        builder: (BuildContext context) {
+          return AlertDialog(
+            backgroundColor: Colors.red,
+            title: const Text(
+              'Errore',
+              style: TextStyle(color: Colors.white),
             ),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('ok',style: TextStyle(color: Colors.white),),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
+            content: SingleChildScrollView(
+              child: ListBody(
+                children: <Widget>[
+                  Text(
+                    erroreLogin,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ],
+              ),
             ),
-          ],
-        );
-      },
-    );
+            actions: <Widget>[
+              TextButton(
+                child: const Text(
+                  'ok',
+                  style: TextStyle(color: Colors.white),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
     }
   }
 
@@ -137,21 +144,23 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         Padding(
-                          padding:
-                              const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 10),
                           child: TextFormField(
                             controller: _emailController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
                                 return 'La mail non può essere vuota';
-                              } else if (!EmailValidator.validate(value.trim())) {
+                              } else if (!EmailValidator.validate(
+                                  value.trim())) {
                                 return 'la mail non è valida';
                               }
                               return null;
                             },
                             decoration: const InputDecoration(
-                                border:  OutlineInputBorder(),
+                                border: OutlineInputBorder(),
                                 hintText: 'Inserisci la tua email',
                                 prefixIcon: Icon(Icons.email)),
                           ),
@@ -161,7 +170,8 @@ class _LoginPageState extends State<LoginPage> {
                               horizontal: 8, vertical: 10),
                           child: TextFormField(
                             controller: _passwordController,
-                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            autovalidateMode:
+                                AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'La password non può essere vuota';
@@ -173,7 +183,8 @@ class _LoginPageState extends State<LoginPage> {
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
                                 // contiene una lettera maiuscola
                                 return 'la password deve contenere un numero';
-                              } else if (!value.contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
+                              } else if (!value
+                                  .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
                                 return 'la password deve contenere un carattere speciale';
                               }
                               return null;
@@ -202,7 +213,7 @@ class _LoginPageState extends State<LoginPage> {
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) =>
-                                        RecoveryPasswordPage()),
+                                        const RecoveryPasswordPage()),
                               );
                             },
                             child: const Text(
@@ -221,7 +232,7 @@ class _LoginPageState extends State<LoginPage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                  signIn();
+                                signIn();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -264,7 +275,7 @@ class _LoginPageState extends State<LoginPage> {
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                RegisterPage()),
+                                                const RegisterPage()),
                                       );
                                     },
                                   style: const TextStyle(color: blue),

@@ -57,51 +57,50 @@ class _WelcomePageState extends State<WelcomePage> {
               ),
               child: Column(
                 children: [
-                   Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 40, horizontal: 40),
-                    child: 
-                    RichText(
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 40, horizontal: 40),
+                    child: RichText(
                       textAlign: TextAlign.center,
-                          text: const TextSpan(
-                            style: TextStyle(
-                              height: 1.5,
-                             fontSize: 16,
-                             ),
-                            children: [
-                              TextSpan(
-                                text: 'Un ultimo step per ',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: 'goderti ',
-                                style: TextStyle(color: blue),
-                              ),
-                              TextSpan(
-                                text: 'la tua \n',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                              TextSpan(
-                                text: 'vacanza ',
-                                style: TextStyle(color: blue),
-                              ),
-                              TextSpan(
-                                text: 'in Salento ',
-                                style: TextStyle(color: black),
-                              ),
-                            ],
-                          ),
+                      text: const TextSpan(
+                        style: TextStyle(
+                          height: 1.5,
+                          fontSize: 16,
                         ),
+                        children: [
+                          TextSpan(
+                            text: 'Un ultimo step per ',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          TextSpan(
+                            text: 'goderti ',
+                            style: TextStyle(color: blue),
+                          ),
+                          TextSpan(
+                            text: 'la tua \n',
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          TextSpan(
+                            text: 'vacanza ',
+                            style: TextStyle(color: blue),
+                          ),
+                          TextSpan(
+                            text: 'in Salento ',
+                            style: TextStyle(color: black),
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   SizedBox(
                     width: 300,
                     child: ElevatedButton(
                       onPressed: () async {
                         Navigator.pushReplacement(
-                        // ignore: use_build_context_synchronously
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                               RegisterPage()));
+                            // ignore: use_build_context_synchronously
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const RegisterPage()));
                       },
                       style: ElevatedButton.styleFrom(
                         foregroundColor: white,
@@ -113,7 +112,10 @@ class _WelcomePageState extends State<WelcomePage> {
                       child: const Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: 24.0, vertical: 12.0),
-                        child: Text('Registrati', style: TextStyle(fontSize: 18),),
+                        child: Text(
+                          'Registrati',
+                          style: TextStyle(fontSize: 18),
+                        ),
                       ),
                     ),
                   ),
@@ -125,7 +127,10 @@ class _WelcomePageState extends State<WelcomePage> {
                         textStyle: const TextStyle(fontSize: 20),
                       ),
                       onPressed: null,
-                      child: const Text('Continua senza registrarti', style: TextStyle(color: black),),
+                      child: const Text(
+                        'Continua senza registrarti',
+                        style: TextStyle(color: black),
+                      ),
                     ),
                   ),
                 ],
