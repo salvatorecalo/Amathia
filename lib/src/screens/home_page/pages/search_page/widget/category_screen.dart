@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
@@ -35,35 +37,52 @@ class _CategoryScreenState extends State<CategoryScreen> {
       final response = await supabase.from(widget.type).select("*");
       final widgetGenerated = response.map<Widget>((e) {
         if (widget.type == "Ricette") {
-          return RecipeCard(
-            title: e['title'] ?? 'Titolo non disponibile',
-            image: supabase.storage.from(widget.type).getPublicUrl(e['image']),
-            description: e['description'] ?? 'Descrizione non disponibile',
-            time: e['time'] ?? 2,
-            peopleFor: e['peopleFor'] ?? 1,
+          return Container(
+            margin: const EdgeInsets.all(20),
+            child: RecipeCard(
+              title: e['title'] ?? 'Titolo non disponibile',
+              image:
+                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
+              description: e['description'] ?? 'Descrizione non disponibile',
+              time: e['time'] ?? 2,
+              peopleFor: e['peopleFor'] ?? 1,
+            ),
           );
         } else if (widget.type == "Monumenti") {
-          return MonumentsCard(
-            location: e['location'] ?? 'Località non disponibile',
-            image: supabase.storage.from(widget.type).getPublicUrl(e['image']),
-            title: e['title'] ?? 'Titolo non disponibile',
-            description: e['description'] ?? 'Descrizione non disponibile',
+          return Container(
+            margin: const EdgeInsets.all(20),
+            child: MonumentsCard(
+              location: e['location'] ?? 'Località non disponibile',
+              image:
+                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
+              title: e['title'] ?? 'Titolo non disponibile',
+              description: e['description'] ?? 'Descrizione non disponibile',
+            ),
           );
         } else if (widget.type == "Natura") {
-          return NatureCard(
-            location: e['location'] ?? 'Località non disponibile',
-            image: supabase.storage.from(widget.type).getPublicUrl(e['image']),
-            title: e['title'] ?? 'Titolo non disponibile',
+          return Container(
+            margin: const EdgeInsets.all(20),
+            child: NatureCard(
+              location: e['location'] ?? 'Località non disponibile',
+              image:
+                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
+              title: e['title'] ?? 'Titolo non disponibile',
+            ),
           );
         } else if (widget.type == "Borghi") {
-          return CityCard(
-            description: e['description'] ?? 'Descrizione non disponibile',
-            image: supabase.storage.from(widget.type).getPublicUrl(e['image']),
-            title: e['title'] ?? 'Titolo non disponibile',
+          return Container(
+            margin: const EdgeInsets.all(20),
+            child: CityCard(
+              description: e['description'] ?? 'Descrizione non disponibile',
+              image:
+                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
+              title: e['title'] ?? 'Titolo non disponibile',
+            ),
           );
         }
         return const SizedBox.shrink();
       }).toList();
+      widgetGenerated.shuffle(Random());
 
       setState(() {
         fetchedData = widgetGenerated;

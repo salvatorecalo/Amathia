@@ -13,13 +13,33 @@ class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _SearchPageState createState() => _SearchPageState();
 }
 
 class _SearchPageState extends State<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
+
+  // Predefinisci titoli casuali per ogni tabella
+  final Map<String, List<String>> sectionTitles = {
+    'Ricette': [
+      'Le tue Ricette Preferite',
+      'Cucina con Gusto',
+      'I Piatti del Giorno'
+    ],
+    'Borghi': [
+      'Scopri i Borghi',
+      'I Luoghi più Incantevoli',
+      'Esplora i Borghi'
+    ],
+    'Monumenti': [
+      'Monumenti da Visitare',
+      'Storia e Cultura',
+      'Meraviglie Storiche'
+    ],
+    'Natura': ['Ammira la Natura', 'Paesaggi da Sogno', 'Esplorazione Verde'],
+  };
+
   Map<String, List<Widget>> fetchedData = {};
 
   Future<void> fetchAllTables() async {
@@ -28,31 +48,47 @@ class _SearchPageState extends State<SearchPage> {
         final response = await supabase.from(tableName).select("*");
         final widgetGenerated = response.map<Widget>((e) {
           if (tableName == "Ricette") {
-            return RecipeCard(
-              title: e['title'] ?? 'Titolo non disponibile',
-              image: supabase.storage.from(tableName).getPublicUrl(e['image']),
-              description: e['description'] ?? 'Descrizione non disponibile',
-              time: e['time'] ?? 2,
-              peopleFor: e['peopleFor'] ?? 1,
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: RecipeCard(
+                title: e['title'] ?? 'Titolo non disponibile',
+                image:
+                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                description: e['description'] ?? 'Descrizione non disponibile',
+                time: e['time'] ?? 2,
+                peopleFor: e['peopleFor'] ?? 1,
+              ),
             );
           } else if (tableName == "Monumenti") {
-            return MonumentsCard(
-              location: e['location'] ?? 'Località non disponibile',
-              image: supabase.storage.from(tableName).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
-              description: e['description'] ?? 'Descrizione non disponibile',
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: MonumentsCard(
+                location: e['location'] ?? 'Località non disponibile',
+                image:
+                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                title: e['title'] ?? 'Titolo non disponibile',
+                description: e['description'] ?? 'Descrizione non disponibile',
+              ),
             );
           } else if (tableName == "Natura") {
-            return NatureCard(
-              location: e['location'] ?? 'Località non disponibile',
-              image: supabase.storage.from(tableName).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: NatureCard(
+                location: e['location'] ?? 'Località non disponibile',
+                image:
+                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                title: e['title'] ?? 'Titolo non disponibile',
+              ),
             );
           } else if (tableName == "Borghi") {
-            return CityCard(
-              description: e['description'] ?? 'Località non disponibile',
-              image: supabase.storage.from(tableName).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: CityCard(
+                description: e['description'] ?? 'Località non disponibile',
+                image:
+                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                title: e['title'] ?? 'Titolo non disponibile',
+              ),
             );
           }
           return const SizedBox.shrink();
@@ -71,7 +107,14 @@ class _SearchPageState extends State<SearchPage> {
   @override
   void initState() {
     super.initState();
-    fetchAllTables(); // Chiamo la funzione che recupera i dati per tutte le tabelle
+    tables.shuffle(Random()); // Mescola l'ordine delle tabelle
+    fetchAllTables(); // Chiama la funzione che recupera i dati per tutte le tabelle
+  }
+
+  // Funzione per selezionare un titolo casuale per una sezione
+  String getRandomTitle(String tableName) {
+    final titles = sectionTitles[tableName] ?? ['Titolo Predefinito'];
+    return titles[Random().nextInt(titles.length)]; // Sceglie un titolo casuale
   }
 
   @override
@@ -87,8 +130,11 @@ class _SearchPageState extends State<SearchPage> {
             foregroundColor: Colors.transparent,
           ),
         ),
-        const SliverToBoxAdapter(
-          child: CategoryButtons(),
+        SliverToBoxAdapter(
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 30),
+            child: const CategoryButtons(),
+          ),
         ),
         ...tables.map((table) {
           // Se non ci sono dati per la tabella, mostra un indicatore di caricamento
@@ -108,15 +154,16 @@ class _SearchPageState extends State<SearchPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(
-                    table,
+                    getRandomTitle(table), // Mostra un titolo casuale
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,
                     ),
                   ),
                 ),
-                SizedBox(
+                Container(
                   height: 300,
+                  margin: const EdgeInsets.only(left: 18, top: 20, bottom: 20),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: fetchedData[table]!.length,
@@ -129,7 +176,7 @@ class _SearchPageState extends State<SearchPage> {
               ],
             ),
           );
-        }).toList(),
+        }),
       ],
     );
   }

@@ -1,6 +1,6 @@
+import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 import '../../costants/costants.dart';
-import '../welcome_page/welcome_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './Model/onboard_model.dart';
@@ -155,7 +155,7 @@ class _OnBoardState extends State<OnBoard> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const WelcomePage()));
+                                                  const LoginPage()));
                                     },
                                     child: const Text(
                                       "Salta",
@@ -171,7 +171,7 @@ class _OnBoardState extends State<OnBoard> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    const WelcomePage()));
+                                                    const LoginPage()));
                                       }
                                       _pageController.nextPage(
                                         duration:

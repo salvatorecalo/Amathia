@@ -1,5 +1,4 @@
 import 'package:amathia/src/costants/costants.dart';
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -66,20 +65,15 @@ class RecipeOpenCard extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: ListView(
                     children: [
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 420,
-                            child: Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                      SizedBox(
+                        width: 420,
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
                           ),
-                          LikeButton()
-                        ],
+                        ),
                       ),
                       const SizedBox(
                         height: 20,
