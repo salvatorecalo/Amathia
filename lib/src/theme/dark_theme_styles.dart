@@ -14,7 +14,7 @@ class Styles {
           isDarkTheme ? Colors.blue : const Color.fromARGB(255, 7, 24, 99),
       disabledColor: Colors.grey,
       cardColor:
-          isDarkTheme ? const Color.fromARGB(213, 41, 84, 227) : Colors.white,
+          isDarkTheme ? const Color.fromARGB(213, 41, 84, 227) : Colors.red,
       canvasColor: isDarkTheme ? const Color(0xff272727) : Colors.white,
       brightness: isDarkTheme ? Brightness.dark : Brightness.light,
       buttonTheme: Theme.of(context).buttonTheme.copyWith(

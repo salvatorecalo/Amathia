@@ -31,9 +31,7 @@ class CityCard extends StatelessWidget {
       },
       child: Container(
         width: 250,
-        height: 200,
         decoration: BoxDecoration(
-          color: white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -51,23 +49,28 @@ class CityCard extends StatelessWidget {
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w700,
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  LikeButton(
+                    cardType: 'city',
+                    itemId: title, // Unique identifier for the item
+                    itemData: {
+                      'title': title,
+                      'description': description,
+                      'image': image,
+                    },
+                    initialState: false, // Check if it's already liked
+                  ),
+                ],
               ),
-            ),
-            LikeButton(
-              cardType: 'city',
-              itemId: title, // Unique identifier for the item
-              itemData: {
-                'title': title,
-                'description': description,
-                'image': image,
-              },
-              initialState: false, // Check if it's already liked
             ),
           ],
         ),

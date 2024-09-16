@@ -13,7 +13,11 @@ class FavoritePage extends StatelessWidget {
         final favorites = favoriteProvider.favorites;
 
         if (favorites.isEmpty) {
-          return const Center(child: Text('No favorites found.'));
+          return const Center(
+            child: Text(
+                textAlign: TextAlign.center,
+                "Non c'è ancora niente qua. \n Premi il cuoricino per visualizzuare i post in questa sezione!"),
+          );
         }
 
         return Column(

@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:math';
-import 'package:amathia/main.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/monument_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/nature_card.dart';
@@ -11,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  const SearchPage({Key? key}) : super(key: key);
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -20,45 +18,24 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
-
-  // Predefinisci titoli casuali per ogni tabella
-  final Map<String, List<String>> sectionTitles = {
-    'Ricette': [
-      'Da leccarsi i baffi',
-      'Cucina con Gusto',
-      'I Piatti del Giorno'
-    ],
-    'Borghi': [
-      'Scopri i Borghi',
-      'I Luoghi più Incantevoli',
-      'Esplora i Borghi'
-    ],
-    'Monumenti': [
-      'Monumenti da Visitare',
-      'Storia e Cultura',
-      'Meraviglie Storiche'
-    ],
-    'Natura': [
-      'Ammira la Natura',
-      'Paesaggi da Sogno',
-      'Esplorazione Verde',
-    ],
-  };
-
-  Map<String, List<Widget>> fetchedData = {};
-
+  final Map<String, List<Widget>> fetchedData = {};
+  bool isDataFetched =
+      false; // Flag per tenere traccia se i dati sono stati caricati
   Future<void> fetchAllTables() async {
+    if (isDataFetched) return; // Evita di ricaricare i dati se già caricati
+
     for (String tableName in tables) {
       try {
-        final response = await supabase.from(tableName).select("*");
-        final widgetGenerated = response.map<Widget>((e) {
+        final response = await client.from(tableName).select("*");
+        final data = response as List<dynamic>;
+
+        final widgetGenerated = data.map<Widget>((e) {
           if (tableName == "Ricette") {
             return Container(
               margin: const EdgeInsets.only(right: 10),
               child: RecipeCard(
                 title: e['title'] ?? 'Titolo non disponibile',
-                image:
-                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                image: client.storage.from(tableName).getPublicUrl(e['image']),
                 description: e['description'] ?? 'Descrizione non disponibile',
                 time: e['time'] ?? 2,
                 peopleFor: e['peopleFor'] ?? 1,
@@ -70,8 +47,7 @@ class _SearchPageState extends State<SearchPage> {
               margin: const EdgeInsets.only(right: 10),
               child: MonumentsCard(
                 location: e['location'] ?? 'Località non disponibile',
-                image:
-                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                image: client.storage.from(tableName).getPublicUrl(e['image']),
                 title: e['title'] ?? 'Titolo non disponibile',
                 description: e['description'] ?? 'Descrizione non disponibile',
               ),
@@ -81,8 +57,7 @@ class _SearchPageState extends State<SearchPage> {
               margin: const EdgeInsets.only(right: 10),
               child: NatureCard(
                 location: e['location'] ?? 'Località non disponibile',
-                image:
-                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                image: client.storage.from(tableName).getPublicUrl(e['image']),
                 title: e['title'] ?? 'Titolo non disponibile',
               ),
             );
@@ -91,8 +66,7 @@ class _SearchPageState extends State<SearchPage> {
               margin: const EdgeInsets.only(right: 10),
               child: CityCard(
                 description: e['description'] ?? 'Località non disponibile',
-                image:
-                    supabase.storage.from(tableName).getPublicUrl(e['image']),
+                image: client.storage.from(tableName).getPublicUrl(e['image']),
                 title: e['title'] ?? 'Titolo non disponibile',
               ),
             );
@@ -100,8 +74,7 @@ class _SearchPageState extends State<SearchPage> {
           return const SizedBox.shrink();
         }).toList();
 
-        widgetGenerated.shuffle(Random());
-        // Aggiungi i widget generati alla mappa
+        widgetGenerated.shuffle();
         setState(() {
           fetchedData[tableName] = widgetGenerated;
         });
@@ -109,19 +82,42 @@ class _SearchPageState extends State<SearchPage> {
         print("Errore nella fetch della tabella $tableName: $e");
       }
     }
+    setState(() {
+      isDataFetched = true; // Imposta il flag quando i dati sono stati caricati
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    tables.shuffle(Random()); // Mescola l'ordine delle tabelle
-    fetchAllTables(); // Chiama la funzione che recupera i dati per tutte le tabelle
+    fetchAllTables(); // Carica i dati quando la pagina viene inizializzata
   }
 
-  // Funzione per selezionare un titolo casuale per una sezione
   String getRandomTitle(String tableName) {
-    final titles = sectionTitles[tableName] ?? ['Titolo Predefinito'];
-    return titles[Random().nextInt(titles.length)]; // Sceglie un titolo casuale
+    final titles = {
+          'Ricette': [
+            'Da leccarsi i baffi',
+            'Cucina con Gusto',
+            'I Piatti del Giorno'
+          ],
+          'Borghi': [
+            'Scopri i Borghi',
+            'I Luoghi più Incantevoli',
+            'Esplora i Borghi'
+          ],
+          'Monumenti': [
+            'Monumenti da Visitare',
+            'Storia e Cultura',
+            'Meraviglie Storiche'
+          ],
+          'Natura': [
+            'Ammira la Natura',
+            'Paesaggi da Sogno',
+            'Esplorazione Verde'
+          ],
+        }[tableName] ??
+        ['Titolo Predefinito'];
+    return titles[Random().nextInt(titles.length)];
   }
 
   @override

@@ -31,7 +31,7 @@ class _LikeButtonState extends State<LikeButton> {
 
   Future<void> _toggleLike() async {
     setState(() {
-      isLiked = !isLiked; // Optimistically update the UI
+      isLiked = !isLiked;
     });
 
     try {

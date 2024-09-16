@@ -148,15 +148,16 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                           ),
                         ),
                       ),
-                      TextButton(
-                          onPressed: () async {
-                            Navigator.pushReplacement(
-                                // ignore: use_build_context_synchronously
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => const LoginPage()));
-                          },
-                          child: const Text("Torna alla pagina di login"))
+                      GestureDetector(
+                        onTap: () async {
+                          Navigator.pushReplacement(
+                              // ignore: use_build_context_synchronously
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()));
+                        },
+                        child: Text("Torna alla pagina di login"),
+                      ),
                     ],
                   ),
                 ),

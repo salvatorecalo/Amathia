@@ -41,7 +41,6 @@ class RecipeCard extends StatelessWidget {
       child: Container(
         width: 250,
         decoration: BoxDecoration(
-          color: white,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -59,13 +58,27 @@ class RecipeCard extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      LikeButton(
+                        cardType: 'city',
+                        itemId: title, // Unique identifier for the item
+                        itemData: {
+                          'title': title,
+                          'description': description,
+                          'image': image,
+                        },
+                        initialState: false, // Check if it's already liked
+                      ),
+                    ],
                   ),
                   const SizedBox(
                     height: 10,
@@ -97,19 +110,6 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  LikeButton(
-                    cardType: 'recipe',
-                    itemId: title, // Unique identifier for the item
-                    itemData: {
-                      'title': title,
-                      'description': description,
-                      'image': image,
-                    },
-                    initialState: false, // Check if it's already liked
                   ),
                 ],
               ),
