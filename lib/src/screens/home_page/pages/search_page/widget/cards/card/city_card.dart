@@ -1,3 +1,4 @@
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
@@ -40,7 +41,7 @@ class CityCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              '$image.jpg',
+              '$image',
               width: double.infinity,
               height: 100,
               fit: BoxFit.cover,
@@ -57,6 +58,16 @@ class CityCard extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
+            ),
+            LikeButton(
+              cardType: 'city',
+              itemId: title, // Unique identifier for the item
+              itemData: {
+                'title': title,
+                'description': description,
+                'image': image,
+              },
+              initialState: false, // Check if it's already liked
             ),
           ],
         ),

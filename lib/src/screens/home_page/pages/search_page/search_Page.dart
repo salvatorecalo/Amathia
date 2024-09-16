@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 import 'package:amathia/main.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
@@ -23,7 +24,7 @@ class _SearchPageState extends State<SearchPage> {
   // Predefinisci titoli casuali per ogni tabella
   final Map<String, List<String>> sectionTitles = {
     'Ricette': [
-      'Le tue Ricette Preferite',
+      'Da leccarsi i baffi',
       'Cucina con Gusto',
       'I Piatti del Giorno'
     ],
@@ -37,7 +38,11 @@ class _SearchPageState extends State<SearchPage> {
       'Storia e Cultura',
       'Meraviglie Storiche'
     ],
-    'Natura': ['Ammira la Natura', 'Paesaggi da Sogno', 'Esplorazione Verde'],
+    'Natura': [
+      'Ammira la Natura',
+      'Paesaggi da Sogno',
+      'Esplorazione Verde',
+    ],
   };
 
   Map<String, List<Widget>> fetchedData = {};
@@ -57,6 +62,7 @@ class _SearchPageState extends State<SearchPage> {
                 description: e['description'] ?? 'Descrizione non disponibile',
                 time: e['time'] ?? 2,
                 peopleFor: e['peopleFor'] ?? 1,
+                ingredients: List<String>.from(e['ingredients']),
               ),
             );
           } else if (tableName == "Monumenti") {
@@ -94,6 +100,7 @@ class _SearchPageState extends State<SearchPage> {
           return const SizedBox.shrink();
         }).toList();
 
+        widgetGenerated.shuffle(Random());
         // Aggiungi i widget generati alla mappa
         setState(() {
           fetchedData[tableName] = widgetGenerated;

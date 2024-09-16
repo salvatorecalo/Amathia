@@ -1,4 +1,5 @@
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
+import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
 import 'package:flutter/material.dart';
 
@@ -16,6 +17,7 @@ class _HomePageState extends State<HomePage> {
   List<BottomNavigationBarItem> buildBottomNavBarItems() {
     return const [
       BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Esplora'),
+      BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Preferiti'),
       BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
     ];
   }
@@ -34,6 +36,7 @@ class _HomePageState extends State<HomePage> {
       },
       children: const <Widget>[
         SearchPage(),
+        FavoritePage(),
         AccountPage(),
       ],
     );

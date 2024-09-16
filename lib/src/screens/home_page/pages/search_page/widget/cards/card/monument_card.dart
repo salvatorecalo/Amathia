@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -42,7 +43,7 @@ class MonumentsCard extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              '$image.jpg',
+              image,
               width: double.infinity,
               height: 100,
               fit: BoxFit.cover,
@@ -83,6 +84,19 @@ class MonumentsCard extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  LikeButton(
+                    cardType: 'monuments',
+                    itemId: title, // Unique identifier for the item
+                    itemData: {
+                      'title': title,
+                      'description': description,
+                      'image': image,
+                    },
+                    initialState: false, // Check if it's already liked
                   ),
                 ],
               ),

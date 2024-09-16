@@ -18,21 +18,21 @@ class _OnBoardState extends State<OnBoard> {
   late PageController _pageController;
   List<OnboardModel> screens = <OnboardModel>[
     OnboardModel(
-      img: "images/santAndrea_onboard.png",
+      img: "assets/santAndrea_onboard.png",
       text: "Esplora",
       desc: "magnifici paesaggi in tutta comodità",
       bg: Colors.white,
       button: Colors.white,
     ),
     OnboardModel(
-      img: 'images/chiesa_lecce_onboard.png',
+      img: 'assets/chiesa_lecce_onboard.png',
       text: "Visita",
       desc: "i monumenti che hanno caratterizzato la storia di questa terra",
       bg: const Color(0xFF4756DF),
       button: Colors.white,
     ),
     OnboardModel(
-      img: 'images/pomodoro_onboard.png',
+      img: 'assets/pomodoro_onboard.png',
       text: "Scopri",
       desc: "le tradizioni della terra tra i due mari",
       bg: Colors.white,

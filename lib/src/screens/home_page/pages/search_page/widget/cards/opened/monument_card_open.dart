@@ -22,7 +22,7 @@ class MonumentOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            '$image.jpg',
+            '$image',
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -81,8 +81,11 @@ class MonumentOpenCard extends StatelessWidget {
                       const SizedBox(
                         height: 20,
                       ),
-                      const Row(
-                        children: [Icon(Icons.location_pin), Text("Lecce")],
+                      Row(
+                        children: [
+                          const Icon(Icons.location_pin),
+                          Text(location),
+                        ],
                       ),
                       const SizedBox(
                         height: 40,

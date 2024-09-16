@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
 class RecipeCard extends StatelessWidget {
@@ -8,14 +9,15 @@ class RecipeCard extends StatelessWidget {
   final String image;
   final int time;
   final int peopleFor;
-
-  const RecipeCard({
+  List ingredients;
+  RecipeCard({
     super.key,
     required this.title,
     required this.description,
     required this.image,
     required this.time,
     required this.peopleFor,
+    required this.ingredients,
   });
 
   @override
@@ -31,6 +33,7 @@ class RecipeCard extends StatelessWidget {
               peopleFor: peopleFor,
               time: time,
               image: image,
+              ingredients: ingredients,
             ),
           ),
         );
@@ -45,7 +48,7 @@ class RecipeCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              '$image.jpg',
+              image,
               width: double.infinity,
               height: 100,
               fit: BoxFit.cover,
@@ -94,6 +97,19 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  LikeButton(
+                    cardType: 'recipe',
+                    itemId: title, // Unique identifier for the item
+                    itemData: {
+                      'title': title,
+                      'description': description,
+                      'image': image,
+                    },
+                    initialState: false, // Check if it's already liked
                   ),
                 ],
               ),

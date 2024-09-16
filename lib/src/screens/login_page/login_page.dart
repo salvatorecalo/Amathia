@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
         child: Stack(
           children: [
             Image.asset(
-              'images/smiling-young-friends-taking-selfie-cellphone.jpg',
+              'assets/smiling-young-friends-taking-selfie-cellphone.jpg',
               fit: BoxFit.fitHeight,
               width: double.infinity,
               height: 350,

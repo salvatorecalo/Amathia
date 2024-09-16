@@ -8,6 +8,8 @@ class RecipeOpenCard extends StatelessWidget {
   String image;
   int time;
   int peopleFor;
+  List ingredients;
+
   RecipeOpenCard({
     super.key,
     required this.title,
@@ -15,6 +17,7 @@ class RecipeOpenCard extends StatelessWidget {
     required this.image,
     required this.peopleFor,
     required this.time,
+    required this.ingredients,
   });
 
   @override
@@ -23,7 +26,7 @@ class RecipeOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            '$image.jpg',
+            image,
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -118,6 +121,21 @@ class RecipeOpenCard extends StatelessWidget {
                           fontSize: 18,
                         ),
                       ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      ...ingredients
+                          .map(
+                            (ingredient) => Container(
+                              margin: const EdgeInsets.only(
+                                bottom: 5,
+                              ),
+                              child: Text(
+                                '- $ingredient',
+                              ),
+                            ),
+                          )
+                          .toList(),
                       const SizedBox(
                         height: 20,
                       ),

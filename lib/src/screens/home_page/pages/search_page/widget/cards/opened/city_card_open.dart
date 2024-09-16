@@ -20,7 +20,7 @@ class CityOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            '$image.jpg',
+            '$image',
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -90,10 +90,13 @@ class CityOpenCard extends StatelessWidget {
                       const SizedBox(
                         height: 5,
                       ),
-                      Text(
-                        description,
-                        style: const TextStyle(
-                          height: 2,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 30.0),
+                        child: Text(
+                          description,
+                          style: const TextStyle(
+                            height: 2,
+                          ),
                         ),
                       ),
                     ],

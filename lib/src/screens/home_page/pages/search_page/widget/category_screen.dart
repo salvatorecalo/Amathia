@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -46,6 +47,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               description: e['description'] ?? 'Descrizione non disponibile',
               time: e['time'] ?? 2,
               peopleFor: e['peopleFor'] ?? 1,
+              ingredients: List<String>.from(e['ingredients']),
             ),
           );
         } else if (widget.type == "Monumenti") {

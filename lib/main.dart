@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/home_page.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
+import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:amathia/src/screens/onboard/onboard.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
@@ -7,21 +8,25 @@ import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:amathia/src/theme/dark_theme_styles.dart';
 import 'package:amathia/src/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:amathia/src/theme/favorite_provider.dart'; // Importa il FavoriteProvider
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  // Shared Preferiences
+  await dotenv.load();
+  // Shared Preferences
   isviewed = prefs.getInt('onBoard');
+
   // Supabase initialized
   await Supabase.initialize(
-    url: 'https://yyiqjaekqhmdyxfcmgts.supabase.co',
-    anonKey:
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl5aXFqYWVrcWhtZHl4ZmNtZ3RzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MDg4OTY2ODksImV4cCI6MjAyNDQ3MjY4OX0.bg_SU8zQE9GeUAlqO4N68mKelzn-F27934gjeUAcs54',
+    url: dotenv.env['URL']!,
+    anonKey: dotenv.env['ANON_KEY']!,
   );
+
   runApp(const MyApp());
 }
 
@@ -52,15 +57,18 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        return themeChangeProvider;
-      },
+    return MultiProvider(
+      providers: [
+        // Provider per il tema
+        ChangeNotifierProvider(create: (_) => themeChangeProvider),
+        // Provider per la gestione dei preferiti
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+      ],
       child: Consumer<DarkThemeProvider>(
-        builder: ((context, value, child) {
+        builder: (context, themeProvider, child) {
           return MaterialApp(
             title: 'Amathia',
-            theme: Styles.themeData(themeChangeProvider.darkTheme, context),
+            theme: Styles.themeData(themeProvider.darkTheme, context),
             debugShowCheckedModeBanner: false,
             initialRoute: '/',
             routes: <String, WidgetBuilder>{
@@ -70,9 +78,10 @@ class _MyAppState extends State<MyApp> {
               '/recovery-password': (_) => const RecoveryPasswordPage(),
               '/account': (_) => const AccountPage(),
               '/homepage': (_) => const HomePage(),
+              '/favorite': (_) => FavoritePage(),
             },
           );
-        }),
+        },
       ),
     );
   }

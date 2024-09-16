@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
 class NatureCard extends StatelessWidget {
@@ -39,7 +40,7 @@ class NatureCard extends StatelessWidget {
         child: Column(
           children: [
             Image.network(
-              '$image.jpg',
+              image,
               width: double.infinity,
               height: 100,
               fit: BoxFit.cover,
@@ -80,6 +81,19 @@ class NatureCard extends StatelessWidget {
                         ),
                       ),
                     ],
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  LikeButton(
+                    cardType: 'city',
+                    itemId: title, // Unique identifier for the item
+                    itemData: {
+                      'title': title,
+                      'location': location,
+                      'image': image,
+                    },
+                    initialState: false, // Check if it's already liked
                   ),
                 ],
               ),

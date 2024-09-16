@@ -22,7 +22,7 @@ class NatureOpenCard extends StatelessWidget {
       child: Stack(
         children: [
           Image.network(
-            '$image.jpg',
+            '$image',
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -125,8 +125,8 @@ class NatureOpenCard extends StatelessWidget {
                   ),
                 ),
                 onPressed: () async {
-                  final Uri url =
-                      Uri.parse('geo:0,0?q=${Uri.encodeComponent(title)}');
+                  final Uri url = Uri.parse(
+                      'https://www.google.com/maps/search/?api=1&query=$title');
                   if (!await launchUrl(url)) {
                     throw Exception('Could not launch $url');
                   }

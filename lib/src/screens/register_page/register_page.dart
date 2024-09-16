@@ -28,6 +28,8 @@ class _RegisterPageState extends State<RegisterPage> {
     if (e.statusCode == "400") {
       erroreLogin =
           "Account già esistente, effettua l'accesso con questo account";
+    } else if (e.statusCode == "401") {
+      erroreLogin = "Questo indirizzo email nonè associato a nessun account";
     }
     return erroreLogin;
   }
@@ -88,7 +90,7 @@ class _RegisterPageState extends State<RegisterPage> {
         child: Stack(
           children: [
             Image.asset(
-              'images/esperienze_register_page.png',
+              'assets/esperienze_register_page.png',
               fit: BoxFit.fill,
               width: double.infinity,
               height: 300,
