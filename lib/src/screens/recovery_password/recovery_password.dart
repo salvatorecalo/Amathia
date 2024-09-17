@@ -20,19 +20,25 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+
         return AlertDialog(
-          title: const Text('Istruzioni inviate'),
+          title: Text('Istruzioni inviate',
+              style: TextStyle(color: colorScheme.onSurface)),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
-                    'Abbiamo inviato una mail con le istruzioni per il recupero password a $email'),
+                  'Abbiamo inviato una mail con le istruzioni per il recupero password a $email',
+                  style: TextStyle(color: colorScheme.onSurface),
+                ),
               ],
             ),
           ),
           actions: <Widget>[
             TextButton(
-              child: const Text('ok'),
+              child: Text('ok', style: TextStyle(color: colorScheme.primary)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -45,6 +51,10 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
     return Material(
       child: Stack(
         children: [
@@ -62,11 +72,13 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
               heightFactor: 0.8,
               widthFactor: 1,
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30)),
-                  color: white,
+                  color: isDarkTheme
+                      ? colorScheme.surface
+                      : colorScheme.background,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -76,24 +88,33 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                         padding: const EdgeInsets.symmetric(vertical: 24.0),
                         child: RichText(
                           textAlign: TextAlign.center,
-                          text: const TextSpan(
+                          text: TextSpan(
                             style: TextStyle(
                               height: 1.5,
                               fontSize: 16,
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onBackground,
                             ),
                             children: [
                               TextSpan(
                                 text: 'Hai dimenticato la password? ',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                    color: isDarkTheme
+                                        ? colorScheme.onSurface
+                                        : Colors.black),
                               ),
-                              TextSpan(
+                              const TextSpan(
                                 text: 'Nessun problema!\n',
                                 style: TextStyle(color: blue),
                               ),
                               TextSpan(
                                 text:
                                     'Inserisci l’email associata al tuo account e ti invieremo le istruzioni per recuperare il tuo account.\n',
-                                style: TextStyle(color: Colors.black),
+                                style: TextStyle(
+                                    color: isDarkTheme
+                                        ? colorScheme.onSurface
+                                        : Colors.black),
                               ),
                             ],
                           ),
@@ -113,12 +134,16 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                             return null;
                           },
                           decoration: InputDecoration(
-                              border: const OutlineInputBorder(),
-                              hintText: 'Inserisci la tua email',
-                              errorText: _emailController.text != ""
-                                  ? "La mail non è valida, reinseriscila"
-                                  : null,
-                              prefixIcon: const Icon(Icons.email)),
+                            border: const OutlineInputBorder(),
+                            hintText: 'Inserisci la tua email',
+                            errorText: _emailController.text != ""
+                                ? "La mail non è valida, reinseriscila"
+                                : null,
+                            prefixIcon: Icon(Icons.email,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onBackground),
+                          ),
                         ),
                       ),
                       Padding(
@@ -132,7 +157,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                           },
                           style: ElevatedButton.styleFrom(
                             minimumSize: const Size.fromHeight(40),
-                            foregroundColor: white,
+                            foregroundColor: Colors.white,
                             backgroundColor: blue,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5.0),
@@ -151,12 +176,17 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                       GestureDetector(
                         onTap: () async {
                           Navigator.pushReplacement(
-                              // ignore: use_build_context_synchronously
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => const LoginPage()));
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()),
+                          );
                         },
-                        child: Text("Torna alla pagina di login"),
+                        child: const Text(
+                          "Torna alla pagina di login",
+                          style: TextStyle(
+                            color: blue,
+                          ),
+                        ),
                       ),
                     ],
                   ),

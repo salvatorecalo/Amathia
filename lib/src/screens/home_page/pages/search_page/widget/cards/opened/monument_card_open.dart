@@ -2,12 +2,12 @@ import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// ignore: must_be_immutable
 class MonumentOpenCard extends StatelessWidget {
-  String title;
-  String location;
-  String description;
-  String image;
+  final String title;
+  final String location;
+  final String description;
+  final String image;
+
   MonumentOpenCard({
     super.key,
     required this.title,
@@ -18,11 +18,15 @@ class MonumentOpenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
     return Material(
       child: Stack(
         children: [
           Image.network(
-            '$image',
+            image,
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -32,17 +36,18 @@ class MonumentOpenCard extends StatelessWidget {
             top: 10,
             left: 10,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: isDarkTheme ? Colors.black54 : Colors.white,
               ),
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back,
                   size: 28,
+                  color: isDarkTheme ? Colors.white : Colors.black,
                 ),
               ),
             ),
@@ -54,11 +59,13 @@ class MonumentOpenCard extends StatelessWidget {
               heightFactor: 0.7,
               widthFactor: 1,
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: white,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: colorScheme
+                      .surface, // Usa il colore "surface" per il background
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -72,9 +79,9 @@ class MonumentOpenCard extends StatelessWidget {
                         width: 420,
                         child: Text(
                           title,
-                          style: const TextStyle(
-                            fontSize: 24,
+                          style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w600,
+                            fontSize: 24,
                           ),
                         ),
                       ),
@@ -83,16 +90,23 @@ class MonumentOpenCard extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          const Icon(Icons.location_pin),
-                          Text(location),
+                          Icon(
+                            Icons.location_pin,
+                            color: theme.iconTheme.color,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            location,
+                            style: theme.textTheme.bodyLarge,
+                          ),
                         ],
                       ),
                       const SizedBox(
                         height: 40,
                       ),
-                      const Text(
+                      Text(
                         "Storia: ",
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
@@ -102,10 +116,10 @@ class MonumentOpenCard extends StatelessWidget {
                       ),
                       Text(
                         description,
-                        style: const TextStyle(
+                        style: theme.textTheme.bodyLarge?.copyWith(
                           height: 2,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -121,8 +135,8 @@ class MonumentOpenCard extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),
-                  foregroundColor: white,
-                  backgroundColor: blue,
+                  foregroundColor: white, // Colore del testo del bottone
+                  backgroundColor: blue, // Colore del bottone
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),

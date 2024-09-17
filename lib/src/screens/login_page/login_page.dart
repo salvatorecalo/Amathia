@@ -45,27 +45,30 @@ class _LoginPageState extends State<LoginPage> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
+          final theme = Theme.of(context);
+          final colorScheme = theme.colorScheme;
+
           return AlertDialog(
-            backgroundColor: Colors.red,
-            title: const Text(
+            backgroundColor: colorScheme.error,
+            title: Text(
               'Errore',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: colorScheme.onError),
             ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   Text(
                     erroreLogin,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: colorScheme.onError),
                   ),
                 ],
               ),
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text(
+                child: Text(
                   'ok',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: colorScheme.onError),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -80,6 +83,10 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
     return Material(
       child: Form(
         key: _formKey,
@@ -99,11 +106,13 @@ class _LoginPageState extends State<LoginPage> {
                 heightFactor: 0.8,
                 widthFactor: 1,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30)),
-                    color: white,
+                    color: isDarkTheme
+                        ? colorScheme.surface
+                        : colorScheme.background,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -113,31 +122,40 @@ class _LoginPageState extends State<LoginPage> {
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
                           child: RichText(
                             textAlign: TextAlign.center,
-                            text: const TextSpan(
-                              style: TextStyle(
+                            text: TextSpan(
+                              style: const TextStyle(
                                 height: 1.5,
                                 fontSize: 16,
                               ),
                               children: [
                                 TextSpan(
                                   text: 'Accedi per ',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : colorScheme.onBackground),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'goderti ',
                                   style: TextStyle(color: blue),
                                 ),
                                 TextSpan(
                                   text: 'la tua \n',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : colorScheme.onBackground),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'vacanza ',
                                   style: TextStyle(color: blue),
                                 ),
                                 TextSpan(
                                   text: 'in Salento ',
-                                  style: TextStyle(color: black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : colorScheme.onBackground),
                                 ),
                               ],
                             ),
@@ -159,10 +177,14 @@ class _LoginPageState extends State<LoginPage> {
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Inserisci la tua email',
-                                prefixIcon: Icon(Icons.email)),
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: 'Inserisci la tua email',
+                              prefixIcon: Icon(Icons.email,
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onBackground),
+                            ),
                           ),
                         ),
                         Padding(
@@ -178,10 +200,8 @@ class _LoginPageState extends State<LoginPage> {
                               } else if (value.length < 8) {
                                 return 'la password deve essere lunga almeno 8 caratteri';
                               } else if (!value.contains(RegExp(r'[A-Z]'))) {
-                                // contiene una lettera maiuscola
                                 return 'la password deve contenere una lettera maiuscola';
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
-                                // contiene una lettera maiuscola
                                 return 'la password deve contenere un numero';
                               } else if (!value
                                   .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
@@ -192,14 +212,22 @@ class _LoginPageState extends State<LoginPage> {
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               hintText: 'Inserisci la tua password',
-                              prefixIcon: const Icon(Icons.key),
+                              prefixIcon: Icon(Icons.key,
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onBackground),
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() => _obsureText = !_obsureText);
                                 },
-                                child: Icon(_obsureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
+                                child: Icon(
+                                  _obsureText
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onBackground,
+                                ),
                               ),
                             ),
                             obscureText: _obsureText,
@@ -258,14 +286,20 @@ class _LoginPageState extends State<LoginPage> {
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                              style: const TextStyle(
+                              style: TextStyle(
                                 height: 1.5,
                                 fontSize: 16,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onBackground,
                               ),
                               children: [
-                                const TextSpan(
+                                TextSpan(
                                   text: 'Non hai un account? ',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : colorScheme.onBackground),
                                 ),
                                 TextSpan(
                                   text: 'Registrati ',
@@ -274,8 +308,9 @@ class _LoginPageState extends State<LoginPage> {
                                       Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) =>
-                                                const RegisterPage()),
+                                          builder: (context) =>
+                                              const RegisterPage(),
+                                        ),
                                       );
                                     },
                                   style: const TextStyle(color: blue),

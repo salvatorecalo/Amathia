@@ -8,7 +8,6 @@ import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:amathia/src/theme/dark_theme_styles.dart';
 import 'package:amathia/src/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -17,14 +16,13 @@ import 'package:amathia/src/theme/favorite_provider.dart'; // Importa il Favorit
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  await dotenv.load();
   // Shared Preferences
   isviewed = prefs.getInt('onBoard');
 
   // Supabase initialized
   await Supabase.initialize(
-    url: dotenv.env['URL']!,
-    anonKey: dotenv.env['ANON_KEY']!,
+    url: const String.fromEnvironment('API_URL'),
+    anonKey: const String.fromEnvironment('API_KEY'),
   );
 
   runApp(const MyApp());
@@ -78,7 +76,7 @@ class _MyAppState extends State<MyApp> {
               '/recovery-password': (_) => const RecoveryPasswordPage(),
               '/account': (_) => const AccountPage(),
               '/homepage': (_) => const HomePage(),
-              '/favorite': (_) => FavoritePage(),
+              '/favorite': (_) => const FavoritePage(),
             },
           );
         },

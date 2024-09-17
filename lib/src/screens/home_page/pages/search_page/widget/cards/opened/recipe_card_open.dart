@@ -1,14 +1,13 @@
-import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
 class RecipeOpenCard extends StatelessWidget {
-  String title;
-  String description;
-  String image;
-  int time;
-  int peopleFor;
-  List ingredients;
+  final String title;
+  final String description;
+  final String image;
+  final int time;
+  final int peopleFor;
+  final List<dynamic> ingredients;
 
   RecipeOpenCard({
     super.key,
@@ -22,6 +21,10 @@ class RecipeOpenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
     return Material(
       child: Stack(
         children: [
@@ -36,17 +39,20 @@ class RecipeOpenCard extends StatelessWidget {
             top: 10,
             left: 10,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: isDarkTheme
+                    ? colorScheme.onBackground.withOpacity(0.7)
+                    : colorScheme.background,
               ),
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back,
                   size: 28,
+                  color: colorScheme.onBackground,
                 ),
               ),
             ),
@@ -58,11 +64,14 @@ class RecipeOpenCard extends StatelessWidget {
               heightFactor: 0.7,
               widthFactor: 1,
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: white,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: isDarkTheme
+                      ? colorScheme.surface
+                      : colorScheme.background,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -76,91 +85,109 @@ class RecipeOpenCard extends StatelessWidget {
                         width: 420,
                         child: Text(
                           title,
-                          style: const TextStyle(
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: isDarkTheme
+                                ? colorScheme.onSurface
+                                : colorScheme.onBackground,
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       Row(
                         children: [
-                          const Icon(Icons.schedule),
-                          const SizedBox(
-                            width: 5,
+                          Icon(
+                            Icons.schedule,
+                            color: isDarkTheme
+                                ? colorScheme.onSurface
+                                : colorScheme.onBackground,
                           ),
-                          Text("$time min.")
+                          const SizedBox(width: 5),
+                          Text(
+                            "$time min.",
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onBackground,
+                            ),
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          const Icon(Icons.person),
-                          const SizedBox(
-                            width: 5,
+                          Icon(
+                            Icons.person,
+                            color: isDarkTheme
+                                ? colorScheme.onSurface
+                                : colorScheme.onBackground,
                           ),
+                          const SizedBox(width: 5),
                           Text(
                             '$peopleFor',
-                            style: const TextStyle(
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onBackground,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      const Text(
-                        "Ingredienti: ",
-                        style: TextStyle(
+                      const SizedBox(height: 40),
+                      Text(
+                        "Ingredienti:",
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: isDarkTheme
+                              ? colorScheme.onSurface
+                              : colorScheme.onBackground,
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      ...ingredients
-                          .map(
-                            (ingredient) => Container(
-                              margin: const EdgeInsets.only(
-                                bottom: 5,
-                              ),
-                              child: Text(
-                                '- $ingredient',
-                              ),
+                      const SizedBox(height: 20),
+                      ...ingredients.map(
+                        (ingredient) => Container(
+                          margin: const EdgeInsets.only(bottom: 5),
+                          child: Text(
+                            '- $ingredient',
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onBackground,
                             ),
-                          )
-                          .toList(),
-                      const SizedBox(
-                        height: 20,
+                          ),
+                        ),
                       ),
-                      const Text(
+                      const SizedBox(height: 20),
+                      Text(
                         "Procedimento",
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: isDarkTheme
+                              ? colorScheme.onSurface
+                              : colorScheme.onBackground,
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(
-                        height: 5,
-                      ),
+                      const SizedBox(height: 5),
                       Text(
                         description,
-                        style: const TextStyle(
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: isDarkTheme
+                              ? colorScheme.onSurface
+                              : colorScheme.onBackground,
                           height: 2,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );

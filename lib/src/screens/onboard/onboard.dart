@@ -41,12 +41,6 @@ class _OnBoardState extends State<OnBoard> {
   ];
 
   @override
-  void initState() {
-    _pageController = PageController(initialPage: 0);
-    super.initState();
-  }
-
-  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();

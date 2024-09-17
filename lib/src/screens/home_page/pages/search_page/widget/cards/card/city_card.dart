@@ -1,6 +1,5 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
-import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 
 class CityCard extends StatelessWidget {
@@ -39,7 +38,7 @@ class CityCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.network(
-              '$image',
+              image,
               width: double.infinity,
               height: 100,
               fit: BoxFit.cover,

@@ -2,12 +2,12 @@ import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// ignore: must_be_immutable
 class NatureOpenCard extends StatelessWidget {
-  String title;
-  String location;
-  String description;
-  String image;
+  final String title;
+  final String location;
+  final String description;
+  final String image;
+
   NatureOpenCard({
     super.key,
     required this.title,
@@ -18,11 +18,14 @@ class NatureOpenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+
     return Material(
       child: Stack(
         children: [
           Image.network(
-            '$image',
+            image,
             fit: BoxFit.fitHeight,
             width: double.infinity,
             height: 350,
@@ -32,17 +35,18 @@ class NatureOpenCard extends StatelessWidget {
             top: 10,
             left: 10,
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: Colors.white,
+                color: colorScheme.background,
               ),
               child: IconButton(
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                icon: const Icon(
+                icon: Icon(
                   Icons.arrow_back,
                   size: 28,
+                  color: colorScheme.onBackground,
                 ),
               ),
             ),
@@ -54,11 +58,12 @@ class NatureOpenCard extends StatelessWidget {
               heightFactor: 0.7,
               widthFactor: 1,
               child: Container(
-                decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(30),
-                      topRight: Radius.circular(30)),
-                  color: white,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
+                  color: colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -72,37 +77,46 @@ class NatureOpenCard extends StatelessWidget {
                         width: 420,
                         child: Text(
                           title,
-                          style: const TextStyle(
+                          style: theme.textTheme.titleLarge?.copyWith(
+                            color: colorScheme.onSurface,
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
+                      const SizedBox(height: 20),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.location_pin,
+                            color: colorScheme.onSurface,
+                          ),
+                          const SizedBox(width: 8),
+                          Text(
+                            location,
+                            style: theme.textTheme.bodyLarge?.copyWith(
+                              color: colorScheme.onSurface,
+                            ),
+                          ),
+                        ],
                       ),
-                      const Row(
-                        children: [Icon(Icons.location_pin), Text("Lecce")],
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      const Text(
+                      const SizedBox(height: 40),
+                      Text(
                         "Descrizione: ",
-                        style: TextStyle(
+                        style: theme.textTheme.titleMedium?.copyWith(
+                          color: colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
                       Text(
                         description,
-                        style: const TextStyle(
+                        style: theme.textTheme.bodyLarge?.copyWith(
+                          color: colorScheme.onSurface,
                           height: 2,
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
@@ -118,15 +132,15 @@ class NatureOpenCard extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),
-                  foregroundColor: white,
-                  backgroundColor: blue,
+                  foregroundColor: white, // Colore del testo del bottone
+                  backgroundColor: blue, // Colore del bottone
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                 ),
                 onPressed: () async {
-                  final Uri url = Uri.parse(
-                      'https://www.google.com/maps/search/?api=1&query=$title');
+                  final Uri url =
+                      Uri.parse('geo:0,0?q=${Uri.encodeComponent(title)}');
                   if (!await launchUrl(url)) {
                     throw Exception('Could not launch $url');
                   }

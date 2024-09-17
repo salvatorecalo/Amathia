@@ -29,7 +29,11 @@ class _RegisterPageState extends State<RegisterPage> {
       erroreLogin =
           "Account già esistente, effettua l'accesso con questo account";
     } else if (e.statusCode == "401") {
-      erroreLogin = "Questo indirizzo email nonè associato a nessun account";
+      erroreLogin = "Questo indirizzo email non è associato a nessun account";
+    } else if (e.statusCode == '429') {
+      erroreLogin = "Troppe richieste inviate.\n Riprova più tardi";
+    } else if (e.statusCode == '500') {
+      erroreLogin = "Ci sono dei problemi al server.\n Riprovare più tardi";
     }
     return erroreLogin;
   }
@@ -49,27 +53,30 @@ class _RegisterPageState extends State<RegisterPage> {
         context: context,
         barrierDismissible: false, // user must tap button!
         builder: (BuildContext context) {
+          final theme = Theme.of(context);
+          final colorScheme = theme.colorScheme;
+
           return AlertDialog(
-            backgroundColor: Colors.red,
-            title: const Text(
+            backgroundColor: colorScheme.error,
+            title: Text(
               'Errore',
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(color: colorScheme.onError),
             ),
             content: SingleChildScrollView(
               child: ListBody(
                 children: <Widget>[
                   Text(
                     erroreLogin,
-                    style: const TextStyle(color: Colors.white),
+                    style: TextStyle(color: colorScheme.onError),
                   ),
                 ],
               ),
             ),
             actions: <Widget>[
               TextButton(
-                child: const Text(
+                child: Text(
                   'ok',
-                  style: TextStyle(color: Colors.white),
+                  style: TextStyle(color: colorScheme.onError),
                 ),
                 onPressed: () {
                   Navigator.of(context).pop();
@@ -84,6 +91,10 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+
     return Material(
       child: Form(
         key: _formKey,
@@ -103,11 +114,11 @@ class _RegisterPageState extends State<RegisterPage> {
                 heightFactor: 0.8,
                 widthFactor: 1,
                 child: Container(
-                  decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.only(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30)),
-                    color: white,
+                    color: isDarkTheme ? colorScheme.surface : white,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -117,15 +128,21 @@ class _RegisterPageState extends State<RegisterPage> {
                           padding: const EdgeInsets.symmetric(vertical: 12.0),
                           child: RichText(
                             textAlign: TextAlign.center,
-                            text: const TextSpan(
+                            text: TextSpan(
                               style: TextStyle(
                                 height: 1.5,
                                 fontSize: 16,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : Colors.black,
                               ),
                               children: [
                                 TextSpan(
                                   text: 'Registrati per ',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : Colors.black),
                                 ),
                                 TextSpan(
                                   text: 'goderti ',
@@ -133,7 +150,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 TextSpan(
                                   text: 'la tua \n',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : Colors.black),
                                 ),
                                 TextSpan(
                                   text: 'vacanza ',
@@ -141,7 +161,10 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 TextSpan(
                                   text: 'in Salento ',
-                                  style: TextStyle(color: black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : black),
                                 ),
                               ],
                             ),
@@ -149,7 +172,9 @@ class _RegisterPageState extends State<RegisterPage> {
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 12),
+                            horizontal: 8,
+                            vertical: 12,
+                          ),
                           child: TextFormField(
                             controller: _emailController,
                             autovalidateMode:
@@ -163,10 +188,16 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                                border: OutlineInputBorder(),
-                                hintText: 'Inserisci la tua email',
-                                prefixIcon: Icon(Icons.email)),
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: 'Inserisci la tua email',
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : Colors.black,
+                              ),
+                            ),
                           ),
                         ),
                         Padding(
@@ -185,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 // contiene una lettera maiuscola
                                 return 'la password deve contenere una lettera maiuscola';
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
-                                // contiene una lettera maiuscola
+                                // contiene un numero
                                 return 'la password deve contenere un numero';
                               } else if (!value
                                   .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
@@ -196,14 +227,21 @@ class _RegisterPageState extends State<RegisterPage> {
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
                               hintText: 'Inserisci la tua password',
-                              prefixIcon: const Icon(Icons.key),
+                              prefixIcon: Icon(Icons.key,
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : Colors.black),
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() => _obsureText = !_obsureText);
                                 },
-                                child: Icon(_obsureText
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
+                                child: Icon(
+                                    _obsureText
+                                        ? Icons.visibility
+                                        : Icons.visibility_off,
+                                    color: isDarkTheme
+                                        ? colorScheme.onSurface
+                                        : Colors.black),
                               ),
                             ),
                             obscureText: _obsureText,
@@ -224,10 +262,13 @@ class _RegisterPageState extends State<RegisterPage> {
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                              border: OutlineInputBorder(),
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
                               hintText: 'Ripeti la tua password',
-                              prefixIcon: Icon(Icons.key),
+                              prefixIcon: Icon(Icons.key,
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : Colors.black),
                             ),
                             obscureText: _obsureText,
                           ),
@@ -238,13 +279,16 @@ class _RegisterPageState extends State<RegisterPage> {
                             textAlign: TextAlign.center,
                             text: TextSpan(
                               children: [
-                                const TextSpan(
+                                TextSpan(
                                   text: 'Creando un account, accetti i nostri ',
-                                  style: TextStyle(color: Colors.black),
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : Colors.black),
                                 ),
                                 TextSpan(
                                   text: 'Termini di Servizio',
-                                  style: const TextStyle(color: blue),
+                                  style: TextStyle(color: blue),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {},
                                 ),
@@ -258,8 +302,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: ElevatedButton(
                             onPressed: () async {
                               if (_formKey.currentState!.validate()) {
-                                // If the form is valid, display a snackbar. In the real world,
-                                // you'd often call a server or save the information in a database.
                                 signUpNewUser();
                               }
                             },
@@ -286,14 +328,16 @@ class _RegisterPageState extends State<RegisterPage> {
                           child: RichText(
                             textAlign: TextAlign.center,
                             text: TextSpan(
-                              style: const TextStyle(
+                              style: TextStyle(
                                 height: 1.5,
                                 fontSize: 16,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : Colors.black,
                               ),
                               children: [
                                 const TextSpan(
                                   text: 'Hai già un account? ',
-                                  style: TextStyle(color: Colors.black),
                                 ),
                                 TextSpan(
                                   text: 'Accedi ',
@@ -306,7 +350,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 const LoginPage()),
                                       );
                                     },
-                                  style: const TextStyle(color: blue),
+                                  style: TextStyle(color: blue),
                                 ),
                               ],
                             ),
@@ -317,7 +361,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),
