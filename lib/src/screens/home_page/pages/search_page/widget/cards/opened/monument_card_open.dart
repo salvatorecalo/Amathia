@@ -1,6 +1,7 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MonumentOpenCard extends StatelessWidget {
   final String title;
@@ -21,7 +22,7 @@ class MonumentOpenCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
-
+    final localizations = AppLocalizations.of(context);
     return Material(
       child: Stack(
         children: [
@@ -105,7 +106,7 @@ class MonumentOpenCard extends StatelessWidget {
                         height: 40,
                       ),
                       Text(
-                        "Storia: ",
+                        localizations!.story,
                         style: theme.textTheme.titleMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
@@ -148,7 +149,7 @@ class MonumentOpenCard extends StatelessWidget {
                     throw Exception('Could not launch $url');
                   }
                 },
-                child: const Text('Raggiungi questo luogo'),
+                child: Text(localizations.getLocation),
               ),
             ),
           ),

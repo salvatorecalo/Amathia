@@ -1,6 +1,7 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CityOpenCard extends StatelessWidget {
   final String title;
@@ -16,7 +17,7 @@ class CityOpenCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Ottieni i colori dal tema corrente
+    final localizations = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
@@ -89,7 +90,7 @@ class CityOpenCard extends StatelessWidget {
                         height: 40,
                       ),
                       Text(
-                        "Storia: ",
+                        localizations!.story,
                         style: theme.textTheme.titleSmall?.copyWith(
                           fontWeight: FontWeight.w600,
                         ),
@@ -134,7 +135,7 @@ class CityOpenCard extends StatelessWidget {
                     throw Exception('Could not launch $url');
                   }
                 },
-                child: const Text('Raggiungi questo luogo'),
+                child: Text(localizations!.getLocation),
               ),
             ),
           ),

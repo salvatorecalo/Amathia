@@ -1,6 +1,7 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class NatureOpenCard extends StatelessWidget {
   final String title;
@@ -20,6 +21,7 @@ class NatureOpenCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
+    final localizations = AppLocalizations.of(context);
 
     return Material(
       child: Stack(
@@ -102,7 +104,7 @@ class NatureOpenCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Descrizione: ",
+                        localizations!.description,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
@@ -145,7 +147,7 @@ class NatureOpenCard extends StatelessWidget {
                     throw Exception('Could not launch $url');
                   }
                 },
-                child: const Text('Raggiungi questo luogo'),
+                child: Text(localizations!.getLocation),
               ),
             ),
           ),

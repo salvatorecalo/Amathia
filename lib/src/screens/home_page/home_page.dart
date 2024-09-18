@@ -2,6 +2,7 @@ import 'package:amathia/src/screens/home_page/pages/account_page/account_page.da
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -13,14 +14,6 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int bottomSelectedIndex = 0;
-
-  List<BottomNavigationBarItem> buildBottomNavBarItems() {
-    return const [
-      BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Esplora'),
-      BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Preferiti'),
-      BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account')
-    ];
-  }
 
   PageController pageController = PageController(
     initialPage: 0,
@@ -63,6 +56,24 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    List<BottomNavigationBarItem> buildBottomNavBarItems() {
+      return [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.search),
+          label: localizations!.explore,
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.favorite),
+          label: localizations.favorite,
+        ),
+        const BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Account',
+        )
+      ];
+    }
+
     return Scaffold(
       body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(

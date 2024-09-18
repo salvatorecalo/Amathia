@@ -7,6 +7,7 @@
   "selectLanguage": "Seleziona lingua",
   "favoriteEmpty": "Non c'è ancora niente qua. \n Premi il cuoricino per visualizzuare i post in questa sezione!",
   "favoriteText": "I tuoi preferiti",
+  "favorite": "Preferiti",
   "loginText1": "Accedi per ",
   "loginText2": "goderti ",
   "loginText3": "la tua \n",
@@ -57,5 +58,17 @@
   "naturaTitle3": "Esplorazione Verde",
 
   "titleNotAvailable": "Titolo non disponibile",
-  "descriptionNotAvailable": "Descrizione non disponibile"
+  "descriptionNotAvailable": "Descrizione non disponibile",
+
+  "story": "Storia: ",
+  "getLocation": "Raggiungi questo luogo",
+  "description": "Descrizione: ",
+  "process": "Process: ",
+  "ingredients": "Ingredienti: ",
+  "recipes": "Ricette",
+  "monuments": "Monumenti",
+  "nature": "Natura",
+  "cities": "Borghi",
+  "searchText": "Cerca qualcosa..."
+
 }

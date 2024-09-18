@@ -7,6 +7,7 @@
   "selectLanguage": "Change Laungage",
   "favoriteEmpty": "There's nothing here. Add something to see it displayed here",
   "favoriteText": "Your Favorites",
+  "favorite": "Favorite",
   "loginText1": "Login to ",
   "loginText2": "enjoy ",
   "loginText3": "your \n",
@@ -54,6 +55,16 @@
   "naturaTitle3": "Green Exploration",
   
   "titleNotAvailable": "Title not available",
-  "descriptionNotAvailable": "Description not avaible"
+  "descriptionNotAvailable": "Description not avaible",
+  "story": "Story: ",
+  "getLocation": "Go to this place",
+  "description": "Description: ",
+  "process": "Process: ",
+  "ingredients": "Ingredients: ",
+  "recipes": "Recipes",
+  "monuments": "Monuments",
+  "nature": "Nature",
+  "cities": "Villages",
+  "searchText": "Search something..."
 
 }

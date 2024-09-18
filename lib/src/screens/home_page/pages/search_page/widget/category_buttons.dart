@@ -1,36 +1,39 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/category_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoryButtons extends StatelessWidget {
   const CategoryButtons({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
+    final localizations = AppLocalizations.of(context);
+
+    return Column(
       children: [
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CategoryButton(
               colore: Colors.orangeAccent,
-              text: 'Ricette',
+              text: localizations!.recipes,
               icon: Icons.restaurant,
-              title: 'Ricette',
+              title: localizations.recipes,
               type: "Ricette",
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             CategoryButton(
               colore: Colors.pinkAccent,
-              text: 'Monumenti',
+              text: localizations.monuments,
               icon: Icons.account_balance,
-              title: 'Monumenti',
+              title: localizations.monuments,
               type: 'Monumenti',
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         Row(
@@ -38,19 +41,19 @@ class CategoryButtons extends StatelessWidget {
           children: [
             CategoryButton(
               colore: Colors.greenAccent,
-              text: 'Natura',
+              text: localizations.nature,
               icon: Icons.energy_savings_leaf,
-              title: 'Natura',
+              title: localizations.nature,
               type: 'Natura',
             ),
-            SizedBox(
+            const SizedBox(
               width: 10,
             ),
             CategoryButton(
               colore: Colors.blueAccent,
-              text: 'Borghi',
+              text: localizations.cities,
               icon: Icons.castle,
-              title: 'Borghi',
+              title: localizations.cities,
               type: 'Borghi',
             ),
           ],

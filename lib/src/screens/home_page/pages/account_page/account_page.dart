@@ -16,7 +16,26 @@ class AccountPage extends StatefulWidget {
 
 class _AccountPageState extends State<AccountPage> {
   String? email = supabase.auth.currentUser?.email;
-  String _selectedLanguage = 'it';
+  late String _selectedLanguage;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeLanguage();
+  }
+
+  void _initializeLanguage() {
+    // Recupera la lingua predefinita del sistema operativo
+    final deviceLocale = WidgetsBinding.instance.window.locale.languageCode;
+
+    // Imposta la lingua predefinita
+    _selectedLanguage = deviceLocale;
+
+    // Se il deviceLocale non è nella lista di lingue supportate, usa 'it' come fallback
+    if (!['en', 'it'].contains(_selectedLanguage)) {
+      _selectedLanguage = 'it';
+    }
+  }
 
   Future<void> _signOut() async {
     try {
@@ -36,11 +55,6 @@ class _AccountPageState extends State<AccountPage> {
         Navigator.of(context).pushReplacementNamed('/login');
       }
     }
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
   }
 
   void _changeLanguage(String? langCode) {

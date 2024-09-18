@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // ignore: must_be_immutable
 class RecipeOpenCard extends StatelessWidget {
@@ -24,6 +25,7 @@ class RecipeOpenCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
+    final localizations = AppLocalizations.of(context);
 
     return Material(
       child: Stack(
@@ -137,7 +139,7 @@ class RecipeOpenCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 40),
                       Text(
-                        "Ingredienti:",
+                        localizations!.ingredients,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface
@@ -162,7 +164,7 @@ class RecipeOpenCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        "Procedimento",
+                        localizations!.process,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface
