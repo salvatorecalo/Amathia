@@ -40,21 +40,21 @@
   "next": "Avanti",
   "istruzioniInviate": "Istruzioni inviate",
     "passwordRecoveryInstructions": "Abbiamo inviato una mail con le istruzioni per il recupero password a {email}",
-   "recipesTitle1": "Ricette Deliziose",
-  "recipesTitle2": "Cucina con Gusto",
-  "recipesTitle3": "Piatti del Giorno",
+  "ricetteTitle1": "Ricette Deliziose",
+  "ricetteTitle2": "Cucina con Gusto",
+  "ricetteTitle3": "Piatti del Giorno",
 
-  "boroughsTitle1": "Scopri i Borghi",
-  "boroughsTitle2": "Luoghi Incantevoli",
-  "boroughsTitle3": "Esplora i Borghi",
+  "borghiTitle1": "Scopri i Borghi",
+  "borghiTitle2": "Luoghi Incantevoli",
+  "borghiTitle3": "Esplora i Borghi",
 
-  "monumentsTitle1": "Monumenti da Visitare",
-  "monumentsTitle2": "Storia e Cultura",
-  "monumentsTitle3": "Meraviglie Storiche",
+  "monumentiTitle1": "Monumenti da Visitare",
+  "monumentiTitle2": "Storia e Cultura",
+  "monumentiTitle3": "Meraviglie Storiche",
 
-  "natureTitle1": "Ammira la Natura",
-  "natureTitle2": "Paesaggi da Sogno",
-  "natureTitle3": "Esplorazione Verde",
+  "naturaTitle1": "Ammira la Natura",
+  "naturaTitle2": "Paesaggi da Sogno",
+  "naturaTitle3": "Esplorazione Verde",
 
   "titleNotAvailable": "Titolo non disponibile",
   "descriptionNotAvailable": "Descrizione non disponibile"

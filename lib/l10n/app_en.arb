@@ -40,21 +40,18 @@
   "next": "Next",
   "istruzioniInviate": "Instruction sent",
   "passwordRecoveryInstructions": "We have sent an email with password recovery instructions to {email}",
-  "recipesTitle1": "Delicious Recipes",
-  "recipesTitle2": "Cooking with Flavor",
-  "recipesTitle3": "Today's Dishes",
-  
-  "boroughsTitle1": "Discover the Boroughs",
-  "boroughsTitle2": "Enchanting Places",
-  "boroughsTitle3": "Explore the Boroughs",
-  
-  "monumentsTitle1": "Monuments to Visit",
-  "monumentsTitle2": "History and Culture",
-  "monumentsTitle3": "Historical Marvels",
-  
-  "natureTitle1": "Admire Nature",
-  "natureTitle2": "Dream Landscapes",
-  "natureTitle3": "Green Exploration",
+  "ricetteTitle1": "Delicious Recipes",
+  "ricetteTitle2": "Cooking with Flavor",
+  "ricetteTitle3": "Today's Dishes",
+  "borghiTitle1": "Discover the Boroughs",
+  "borghiTitle2": "Enchanting Places",
+  "borghiTitle3": "Explore the Boroughs",
+  "monumentiTitle1": "Monuments to Visit",
+  "monumentiTitle2": "History and Culture",
+  "monumentiTitle3": "Historical Marvels",
+  "naturaTitle1": "Admire Nature",
+  "naturaTitle2": "Dream Landscapes",
+  "naturaTitle3": "Green Exploration",
   
   "titleNotAvailable": "Title not available",
   "descriptionNotAvailable": "Description not avaible"
