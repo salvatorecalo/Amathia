@@ -3,6 +3,7 @@ import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecoveryPasswordPage extends StatefulWidget {
   const RecoveryPasswordPage({super.key});
@@ -13,25 +14,29 @@ class RecoveryPasswordPage extends StatefulWidget {
 
 class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
   late final TextEditingController _emailController = TextEditingController();
-
   Future<void> _showMyDialog() async {
     late final String email = _emailController.text;
+
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         final theme = Theme.of(context);
         final colorScheme = theme.colorScheme;
-
+        final localizations = AppLocalizations.of(context);
         return AlertDialog(
-          title: Text('Istruzioni inviate',
-              style: TextStyle(color: colorScheme.onSurface)),
+          title: Text(
+            localizations!.instructionSent,
+            style: TextStyle(
+              color: colorScheme.onSurface,
+            ),
+          ),
           content: SingleChildScrollView(
             child: ListBody(
               children: <Widget>[
                 Text(
-                  'Abbiamo inviato una mail con le istruzioni per il recupero password a $email',
-                  style: TextStyle(color: colorScheme.onSurface),
+                  localizations.passwordRecoveryInstructions(
+                      email), // Traduzione per il messaggio con l'email                  style: TextStyle(color: colorScheme.onSurface),
                 ),
               ],
             ),
@@ -54,6 +59,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
+    final localizations = AppLocalizations.of(context);
 
     return Material(
       child: Stack(
@@ -76,9 +82,8 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30)),
-                  color: isDarkTheme
-                      ? colorScheme.surface
-                      : colorScheme.background,
+                  color:
+                      isDarkTheme ? colorScheme.surface : colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
@@ -94,23 +99,22 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                               fontSize: 16,
                               color: isDarkTheme
                                   ? colorScheme.onSurface
-                                  : colorScheme.onBackground,
+                                  : colorScheme.onSurface,
                             ),
                             children: [
                               TextSpan(
-                                text: 'Hai dimenticato la password? ',
+                                text: localizations!.passwordLost,
                                 style: TextStyle(
                                     color: isDarkTheme
                                         ? colorScheme.onSurface
                                         : Colors.black),
                               ),
-                              const TextSpan(
-                                text: 'Nessun problema!\n',
+                              TextSpan(
+                                text: localizations.noProblem,
                                 style: TextStyle(color: blue),
                               ),
                               TextSpan(
-                                text:
-                                    'Inserisci l’email associata al tuo account e ti invieremo le istruzioni per recuperare il tuo account.\n',
+                                text: localizations.associatedMail,
                                 style: TextStyle(
                                     color: isDarkTheme
                                         ? colorScheme.onSurface
@@ -127,22 +131,24 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                           controller: _emailController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'La mail non può essere vuota';
+                              return localizations.mailEmpty;
                             } else if (!EmailValidator.validate(value)) {
-                              return 'La mail non è valida reinseriscila.';
+                              return localizations.mailInvalid;
                             }
                             return null;
                           },
                           decoration: InputDecoration(
                             border: const OutlineInputBorder(),
-                            hintText: 'Inserisci la tua email',
+                            hintText: localizations.enterMail,
                             errorText: _emailController.text != ""
-                                ? "La mail non è valida, reinseriscila"
-                                : null,
-                            prefixIcon: Icon(Icons.email,
-                                color: isDarkTheme
-                                    ? colorScheme.onSurface
-                                    : colorScheme.onBackground),
+                                ? null
+                                : localizations.mailEmpty,
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onSurface,
+                            ),
                           ),
                         ),
                       ),
@@ -163,12 +169,12 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                               borderRadius: BorderRadius.circular(5.0),
                             ),
                           ),
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
                                 horizontal: 24.0, vertical: 12.0),
                             child: Text(
-                              'Invia',
-                              style: TextStyle(fontSize: 18),
+                              localizations.send,
+                              style: const TextStyle(fontSize: 18),
                             ),
                           ),
                         ),
@@ -181,9 +187,9 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                                 builder: (context) => const LoginPage()),
                           );
                         },
-                        child: const Text(
-                          "Torna alla pagina di login",
-                          style: TextStyle(
+                        child: Text(
+                          localizations.backToLogin,
+                          style: const TextStyle(
                             color: blue,
                           ),
                         ),

@@ -6,6 +6,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -86,7 +87,7 @@ class _LoginPageState extends State<LoginPage> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
-
+    final localizations = AppLocalizations.of(context);
     return Material(
       child: Form(
         key: _formKey,
@@ -110,9 +111,8 @@ class _LoginPageState extends State<LoginPage> {
                     borderRadius: const BorderRadius.only(
                         topLeft: Radius.circular(30),
                         topRight: Radius.circular(30)),
-                    color: isDarkTheme
-                        ? colorScheme.surface
-                        : colorScheme.background,
+                    color:
+                        isDarkTheme ? colorScheme.surface : colorScheme.surface,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
@@ -129,33 +129,31 @@ class _LoginPageState extends State<LoginPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Accedi per ',
+                                  text: localizations!.loginText1,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
-                                          : colorScheme.onBackground),
-                                ),
-                                const TextSpan(
-                                  text: 'goderti ',
-                                  style: TextStyle(color: blue),
+                                          : colorScheme.onSurface),
                                 ),
                                 TextSpan(
-                                  text: 'la tua \n',
-                                  style: TextStyle(
-                                      color: isDarkTheme
-                                          ? colorScheme.onSurface
-                                          : colorScheme.onBackground),
-                                ),
-                                const TextSpan(
-                                  text: 'vacanza ',
-                                  style: TextStyle(color: blue),
+                                  text: localizations.loginText2,
+                                  style: const TextStyle(color: blue),
                                 ),
                                 TextSpan(
-                                  text: 'in Salento ',
+                                  text: localizations.loginText3,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
-                                          : colorScheme.onBackground),
+                                          : colorScheme.onSurface),
+                                ),
+                                TextSpan(
+                                  text: localizations.loginText4,
+                                  style: const TextStyle(color: blue),
+                                ),
+                                TextSpan(
+                                  text: localizations.loginText5,
+                                  style:
+                                      TextStyle(color: colorScheme.onSurface),
                                 ),
                               ],
                             ),
@@ -170,20 +168,20 @@ class _LoginPageState extends State<LoginPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.trim().isEmpty) {
-                                return 'La mail non può essere vuota';
+                                return localizations.mailEmpty;
                               } else if (!EmailValidator.validate(
                                   value.trim())) {
-                                return 'la mail non è valida';
+                                return localizations.mailInvalid;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              hintText: 'Inserisci la tua email',
+                              hintText: localizations.enterMail,
                               prefixIcon: Icon(Icons.email,
                                   color: isDarkTheme
                                       ? colorScheme.onSurface
-                                      : colorScheme.onBackground),
+                                      : colorScheme.onSurface),
                             ),
                           ),
                         ),
@@ -196,26 +194,26 @@ class _LoginPageState extends State<LoginPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'La password non può essere vuota';
+                                return localizations.passwordEmpty;
                               } else if (value.length < 8) {
-                                return 'la password deve essere lunga almeno 8 caratteri';
+                                return localizations.passwordShort;
                               } else if (!value.contains(RegExp(r'[A-Z]'))) {
-                                return 'la password deve contenere una lettera maiuscola';
+                                return localizations.passwordUpperCharacter;
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
-                                return 'la password deve contenere un numero';
+                                return localizations.passwordNumberCharacter;
                               } else if (!value
                                   .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
-                                return 'la password deve contenere un carattere speciale';
+                                return localizations.passwordSpecialCharacter;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              hintText: 'Inserisci la tua password',
+                              hintText: localizations.enterPassword,
                               prefixIcon: Icon(Icons.key,
                                   color: isDarkTheme
                                       ? colorScheme.onSurface
-                                      : colorScheme.onBackground),
+                                      : colorScheme.onSurface),
                               suffixIcon: GestureDetector(
                                 onTap: () {
                                   setState(() => _obsureText = !_obsureText);
@@ -226,7 +224,7 @@ class _LoginPageState extends State<LoginPage> {
                                       : Icons.visibility_off,
                                   color: isDarkTheme
                                       ? colorScheme.onSurface
-                                      : colorScheme.onBackground,
+                                      : colorScheme.onSurface,
                                 ),
                               ),
                             ),
@@ -244,10 +242,10 @@ class _LoginPageState extends State<LoginPage> {
                                         const RecoveryPasswordPage()),
                               );
                             },
-                            child: const Text(
-                              'Non ricordi la tua password?',
+                            child: Text(
+                              localizations.passwordLost,
                               textAlign: TextAlign.right,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: blue,
                                 fontWeight: FontWeight.w400,
                               ),
@@ -271,12 +269,12 @@ class _LoginPageState extends State<LoginPage> {
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 24.0, vertical: 12.0),
                               child: Text(
-                                'Accedi',
-                                style: TextStyle(fontSize: 18),
+                                localizations.loginText,
+                                style: const TextStyle(fontSize: 18),
                               ),
                             ),
                           ),
@@ -291,18 +289,18 @@ class _LoginPageState extends State<LoginPage> {
                                 fontSize: 16,
                                 color: isDarkTheme
                                     ? colorScheme.onSurface
-                                    : colorScheme.onBackground,
+                                    : colorScheme.onSurface,
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Non hai un account? ',
+                                  text: localizations.dontHaveAnAccount,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
-                                          : colorScheme.onBackground),
+                                          : colorScheme.onSurface),
                                 ),
                                 TextSpan(
-                                  text: 'Registrati ',
+                                  text: localizations.registerText,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.pushReplacement(

@@ -144,7 +144,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           ? colorScheme.onSurface
                                           : Colors.black),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'goderti ',
                                   style: TextStyle(color: blue),
                                 ),
@@ -155,7 +155,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                           ? colorScheme.onSurface
                                           : Colors.black),
                                 ),
-                                TextSpan(
+                                const TextSpan(
                                   text: 'vacanza ',
                                   style: TextStyle(color: blue),
                                 ),
@@ -288,7 +288,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                 ),
                                 TextSpan(
                                   text: 'Termini di Servizio',
-                                  style: TextStyle(color: blue),
+                                  style: const TextStyle(color: blue),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {},
                                 ),
@@ -350,7 +350,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                                 const LoginPage()),
                                       );
                                     },
-                                  style: TextStyle(color: blue),
+                                  style: const TextStyle(color: blue),
                                 ),
                               ],
                             ),

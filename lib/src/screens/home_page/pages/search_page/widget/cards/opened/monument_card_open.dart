@@ -8,7 +8,7 @@ class MonumentOpenCard extends StatelessWidget {
   final String description;
   final String image;
 
-  MonumentOpenCard({
+  const MonumentOpenCard({
     super.key,
     required this.title,
     required this.location,

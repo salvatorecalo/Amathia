@@ -8,7 +8,7 @@ class NatureOpenCard extends StatelessWidget {
   final String description;
   final String image;
 
-  NatureOpenCard({
+  const NatureOpenCard({
     super.key,
     required this.title,
     required this.location,
@@ -37,7 +37,7 @@ class NatureOpenCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: colorScheme.background,
+                color: colorScheme.surface,
               ),
               child: IconButton(
                 onPressed: () {
@@ -46,7 +46,7 @@ class NatureOpenCard extends StatelessWidget {
                 icon: Icon(
                   Icons.arrow_back,
                   size: 28,
-                  color: colorScheme.onBackground,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),

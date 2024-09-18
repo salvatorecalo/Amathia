@@ -2,6 +2,7 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/ope
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class NatureCard extends StatelessWidget {
   String title;
   String image;

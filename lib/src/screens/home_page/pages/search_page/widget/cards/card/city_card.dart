@@ -2,6 +2,7 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_butt
 import 'package:flutter/material.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 
+// ignore: must_be_immutable
 class CityCard extends StatelessWidget {
   String title;
   String image;

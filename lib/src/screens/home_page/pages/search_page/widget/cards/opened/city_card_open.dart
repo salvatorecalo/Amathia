@@ -7,7 +7,7 @@ class CityOpenCard extends StatelessWidget {
   final String description;
   final String image;
 
-  CityOpenCard({
+  const CityOpenCard({
     super.key,
     required this.title,
     required this.description,

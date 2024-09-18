@@ -12,6 +12,8 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:amathia/src/theme/favorite_provider.dart'; // Importa il FavoriteProvider
+import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,15 +39,30 @@ class MyApp extends StatefulWidget {
 
   @override
   State<MyApp> createState() => _MyAppState();
+
+  // Metodo statico per cambiare la lingua
+  static void setLocale(BuildContext context, Locale newLocale) {
+    _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
+    state?.setLocale(newLocale);
+  }
 }
 
 class _MyAppState extends State<MyApp> {
   DarkThemeProvider themeChangeProvider = DarkThemeProvider();
+  Locale? _locale;
 
   @override
   void initState() {
     super.initState();
     getCurrentAppTheme();
+    // Imposta la locale in base alle preferenze o alle impostazioni del dispositivo
+    _locale = WidgetsBinding.instance.window.locale;
+  }
+
+  void setLocale(Locale locale) {
+    setState(() {
+      _locale = locale;
+    });
   }
 
   void getCurrentAppTheme() async {
@@ -68,6 +85,17 @@ class _MyAppState extends State<MyApp> {
             title: 'Amathia',
             theme: Styles.themeData(themeProvider.darkTheme, context),
             debugShowCheckedModeBanner: false,
+            locale: _locale, // Imposta la locale corrente
+            supportedLocales: const [
+              Locale('en'),
+              Locale('it'),
+            ],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
             initialRoute: '/',
             routes: <String, WidgetBuilder>{
               '/': (_) => isviewed != 0 ? const OnBoard() : const LoginPage(),

@@ -7,6 +7,28 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/category_
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/searchbar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+extension LocalizationExtension on AppLocalizations {
+  String? getString(String key) {
+    final Map<String, String> localizedStrings = {
+      'recipesTitle1': recipesTitle1,
+      'recipesTitle2': recipesTitle2,
+      'recipesTitle3': recipesTitle3,
+      'boroughsTitle1': boroughsTitle1,
+      'boroughsTitle2': boroughsTitle2,
+      'boroughsTitle3': boroughsTitle3,
+      'monumentsTitle1': monumentsTitle1,
+      'monumentsTitle2': monumentsTitle2,
+      'monumentsTitle3': monumentsTitle3,
+      'natureTitle1': natureTitle1,
+      'natureTitle2': natureTitle2,
+      'natureTitle3': natureTitle3,
+    };
+
+    return localizedStrings[key];
+  }
+}
 
 class SearchPage extends StatefulWidget {
   const SearchPage({super.key});
@@ -19,10 +41,10 @@ class _SearchPageState extends State<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
-  bool isDataFetched =
-      false; // Flag per tenere traccia se i dati sono stati caricati
-  Future<void> fetchAllTables() async {
-    if (isDataFetched) return; // Evita di ricaricare i dati se già caricati
+  bool isDataFetched = false;
+
+  Future<void> fetchAllTables(AppLocalizations localizations) async {
+    if (isDataFetched) return;
 
     for (String tableName in tables) {
       try {
@@ -34,9 +56,10 @@ class _SearchPageState extends State<SearchPage> {
             return Container(
               margin: const EdgeInsets.only(right: 10),
               child: RecipeCard(
-                title: e['title'] ?? 'Titolo non disponibile',
+                title: e['title'] ?? localizations.titleNotAvailable,
                 image: client.storage.from(tableName).getPublicUrl(e['image']),
-                description: e['description'] ?? 'Descrizione non disponibile',
+                description:
+                    e['description'] ?? localizations.descriptionNotAvailable,
                 time: e['time'] ?? 2,
                 peopleFor: e['peopleFor'] ?? 1,
                 ingredients: List<String>.from(e['ingredients']),
@@ -46,28 +69,30 @@ class _SearchPageState extends State<SearchPage> {
             return Container(
               margin: const EdgeInsets.only(right: 10),
               child: MonumentsCard(
-                location: e['location'] ?? 'Località non disponibile',
+                location: e['location'] ?? localizations.titleNotAvailable,
                 image: client.storage.from(tableName).getPublicUrl(e['image']),
-                title: e['title'] ?? 'Titolo non disponibile',
-                description: e['description'] ?? 'Descrizione non disponibile',
+                title: e['title'] ?? localizations.titleNotAvailable,
+                description:
+                    e['description'] ?? localizations.descriptionNotAvailable,
               ),
             );
           } else if (tableName == "Natura") {
             return Container(
               margin: const EdgeInsets.only(right: 10),
               child: NatureCard(
-                location: e['location'] ?? 'Località non disponibile',
+                location: e['location'] ?? localizations.titleNotAvailable,
                 image: client.storage.from(tableName).getPublicUrl(e['image']),
-                title: e['title'] ?? 'Titolo non disponibile',
+                title: e['title'] ?? localizations.titleNotAvailable,
               ),
             );
           } else if (tableName == "Borghi") {
             return Container(
               margin: const EdgeInsets.only(right: 10),
               child: CityCard(
-                description: e['description'] ?? 'Località non disponibile',
+                description:
+                    e['description'] ?? localizations.descriptionNotAvailable,
                 image: client.storage.from(tableName).getPublicUrl(e['image']),
-                title: e['title'] ?? 'Titolo non disponibile',
+                title: e['title'] ?? localizations.titleNotAvailable,
               ),
             );
           }
@@ -82,46 +107,37 @@ class _SearchPageState extends State<SearchPage> {
         print("Errore nella fetch della tabella $tableName: $e");
       }
     }
+
     setState(() {
-      isDataFetched = true; // Imposta il flag quando i dati sono stati caricati
+      isDataFetched = true;
     });
   }
 
   @override
   void initState() {
     super.initState();
-    fetchAllTables(); // Carica i dati quando la pagina viene inizializzata
+    // No fetchAllTables() call here
   }
 
-  String getRandomTitle(String tableName) {
-    final titles = {
-          'Ricette': [
-            'Da leccarsi i baffi',
-            'Cucina con Gusto',
-            'I Piatti del Giorno'
-          ],
-          'Borghi': [
-            'Scopri i Borghi',
-            'I Luoghi più Incantevoli',
-            'Esplora i Borghi'
-          ],
-          'Monumenti': [
-            'Monumenti da Visitare',
-            'Storia e Cultura',
-            'Meraviglie Storiche'
-          ],
-          'Natura': [
-            'Ammira la Natura',
-            'Paesaggi da Sogno',
-            'Esplorazione Verde'
-          ],
-        }[tableName] ??
-        ['Titolo Predefinito'];
-    return titles[Random().nextInt(titles.length)];
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final localizations = AppLocalizations.of(context);
+    if (localizations != null) {
+      fetchAllTables(localizations);
+    }
+  }
+
+  String getRandomTitle(AppLocalizations localizations, String tableName) {
+    final randomIndex = Random().nextInt(3) + 1;
+    final titleKey = '${tableName.toLowerCase()}Title$randomIndex';
+    return localizations.getString(titleKey) ?? localizations.titleNotAvailable;
   }
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
     return CustomScrollView(
       slivers: [
         const SliverPadding(
@@ -140,7 +156,6 @@ class _SearchPageState extends State<SearchPage> {
           ),
         ),
         ...tables.map((table) {
-          // Se non ci sono dati per la tabella, mostra un indicatore di caricamento
           if (!fetchedData.containsKey(table) || fetchedData[table]!.isEmpty) {
             return const SliverToBoxAdapter(
               child: Center(
@@ -149,7 +164,6 @@ class _SearchPageState extends State<SearchPage> {
             );
           }
 
-          // Se ci sono dati, crea uno slider per la tabella
           return SliverToBoxAdapter(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,7 +171,7 @@ class _SearchPageState extends State<SearchPage> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 18.0),
                   child: Text(
-                    getRandomTitle(table), // Mostra un titolo casuale
+                    getRandomTitle(localizations!, table),
                     style: const TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 20,

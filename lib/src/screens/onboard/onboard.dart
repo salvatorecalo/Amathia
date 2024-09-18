@@ -2,8 +2,8 @@ import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:flutter/material.dart';
 import '../../costants/costants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import './Model/onboard_model.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class OnBoard extends StatefulWidget {
   const OnBoard({super.key});
@@ -16,29 +16,7 @@ class OnBoard extends StatefulWidget {
 class _OnBoardState extends State<OnBoard> {
   int currentIndex = 0;
   late PageController _pageController;
-  List<OnboardModel> screens = <OnboardModel>[
-    OnboardModel(
-      img: "assets/santAndrea_onboard.png",
-      text: "Esplora",
-      desc: "magnifici paesaggi in tutta comodità",
-      bg: Colors.white,
-      button: Colors.white,
-    ),
-    OnboardModel(
-      img: 'assets/chiesa_lecce_onboard.png',
-      text: "Visita",
-      desc: "i monumenti che hanno caratterizzato la storia di questa terra",
-      bg: const Color(0xFF4756DF),
-      button: Colors.white,
-    ),
-    OnboardModel(
-      img: 'assets/pomodoro_onboard.png',
-      text: "Scopri",
-      desc: "le tradizioni della terra tra i due mari",
-      bg: Colors.white,
-      button: const Color(0xFF4756DF),
-    ),
-  ];
+  late List<OnboardModel> screens;
 
   @override
   void dispose() {
@@ -54,6 +32,32 @@ class _OnBoardState extends State<OnBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+
+    screens = <OnboardModel>[
+      OnboardModel(
+        img: "assets/santAndrea_onboard.png",
+        text: localizations!.explore,
+        desc: localizations.exploredesc,
+        bg: Colors.white,
+        button: Colors.white,
+      ),
+      OnboardModel(
+        img: 'assets/chiesa_lecce_onboard.png',
+        text: localizations.visit,
+        desc: localizations.visitdesc,
+        bg: const Color(0xFF4756DF),
+        button: Colors.white,
+      ),
+      OnboardModel(
+        img: 'assets/pomodoro_onboard.png',
+        text: localizations.discover,
+        desc: localizations.discovertext,
+        bg: Colors.white,
+        button: const Color(0xFF4756DF),
+      ),
+    ];
+
     return SafeArea(
       child: Scaffold(
         body: PageView.builder(
@@ -151,8 +155,8 @@ class _OnBoardState extends State<OnBoard> {
                                               builder: (context) =>
                                                   const LoginPage()));
                                     },
-                                    child: const Text(
-                                      "Salta",
+                                    child: Text(
+                                      localizations!.skip,
                                       style: TextStyle(color: black),
                                     ),
                                   ),
@@ -180,18 +184,18 @@ class _OnBoardState extends State<OnBoard> {
                                           color: blue,
                                           borderRadius:
                                               BorderRadius.circular(15.0)),
-                                      child: const Row(
+                                      child: Row(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              "Avanti",
-                                              style: TextStyle(
+                                              localizations!.next,
+                                              style: const TextStyle(
                                                   fontSize: 16.0, color: white),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 15.0,
                                             ),
-                                            Icon(
+                                            const Icon(
                                               Icons.arrow_forward_sharp,
                                               color: white,
                                             )

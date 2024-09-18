@@ -2,21 +2,24 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/car
 import 'package:amathia/src/theme/favorite_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FavoritePage extends StatelessWidget {
   const FavoritePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
     return Consumer<FavoriteProvider>(
       builder: (context, favoriteProvider, child) {
         final favorites = favoriteProvider.favorites;
 
         if (favorites.isEmpty) {
-          return const Center(
+          return Center(
             child: Text(
-                textAlign: TextAlign.center,
-                "Non c'è ancora niente qua. \n Premi il cuoricino per visualizzuare i post in questa sezione!"),
+              textAlign: TextAlign.center,
+              localizations!.favoriteEmpty,
+            ),
           );
         }
 
@@ -26,10 +29,10 @@ class FavoritePage extends StatelessWidget {
               margin: const EdgeInsets.only(
                 top: 25,
               ),
-              child: const Text(
-                "I tuoi preferiti",
+              child: Text(
+                localizations!.favoriteText,
                 textAlign: TextAlign.center,
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 24,
                 ),

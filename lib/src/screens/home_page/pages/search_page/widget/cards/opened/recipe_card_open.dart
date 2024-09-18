@@ -9,7 +9,7 @@ class RecipeOpenCard extends StatelessWidget {
   final int peopleFor;
   final List<dynamic> ingredients;
 
-  RecipeOpenCard({
+  const RecipeOpenCard({
     super.key,
     required this.title,
     required this.description,
@@ -42,8 +42,8 @@ class RecipeOpenCard extends StatelessWidget {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: isDarkTheme
-                    ? colorScheme.onBackground.withOpacity(0.7)
-                    : colorScheme.background,
+                    ? colorScheme.onSurface.withOpacity(0.7)
+                    : colorScheme.surface,
               ),
               child: IconButton(
                 onPressed: () {
@@ -52,7 +52,7 @@ class RecipeOpenCard extends StatelessWidget {
                 icon: Icon(
                   Icons.arrow_back,
                   size: 28,
-                  color: colorScheme.onBackground,
+                  color: colorScheme.onSurface,
                 ),
               ),
             ),
@@ -69,9 +69,8 @@ class RecipeOpenCard extends StatelessWidget {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  color: isDarkTheme
-                      ? colorScheme.surface
-                      : colorScheme.background,
+                  color:
+                      isDarkTheme ? colorScheme.surface : colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
@@ -88,7 +87,7 @@ class RecipeOpenCard extends StatelessWidget {
                           style: theme.textTheme.titleLarge?.copyWith(
                             color: isDarkTheme
                                 ? colorScheme.onSurface
-                                : colorScheme.onBackground,
+                                : colorScheme.onSurface,
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
                           ),
@@ -101,7 +100,7 @@ class RecipeOpenCard extends StatelessWidget {
                             Icons.schedule,
                             color: isDarkTheme
                                 ? colorScheme.onSurface
-                                : colorScheme.onBackground,
+                                : colorScheme.onSurface,
                           ),
                           const SizedBox(width: 5),
                           Text(
@@ -109,7 +108,7 @@ class RecipeOpenCard extends StatelessWidget {
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: isDarkTheme
                                   ? colorScheme.onSurface
-                                  : colorScheme.onBackground,
+                                  : colorScheme.onSurface,
                             ),
                           ),
                         ],
@@ -122,7 +121,7 @@ class RecipeOpenCard extends StatelessWidget {
                             Icons.person,
                             color: isDarkTheme
                                 ? colorScheme.onSurface
-                                : colorScheme.onBackground,
+                                : colorScheme.onSurface,
                           ),
                           const SizedBox(width: 5),
                           Text(
@@ -130,7 +129,7 @@ class RecipeOpenCard extends StatelessWidget {
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: isDarkTheme
                                   ? colorScheme.onSurface
-                                  : colorScheme.onBackground,
+                                  : colorScheme.onSurface,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -142,7 +141,7 @@ class RecipeOpenCard extends StatelessWidget {
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface
-                              : colorScheme.onBackground,
+                              : colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
@@ -156,7 +155,7 @@ class RecipeOpenCard extends StatelessWidget {
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: isDarkTheme
                                   ? colorScheme.onSurface
-                                  : colorScheme.onBackground,
+                                  : colorScheme.onSurface,
                             ),
                           ),
                         ),
@@ -167,7 +166,7 @@ class RecipeOpenCard extends StatelessWidget {
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface
-                              : colorScheme.onBackground,
+                              : colorScheme.onSurface,
                           fontWeight: FontWeight.w600,
                           fontSize: 18,
                         ),
@@ -178,7 +177,7 @@ class RecipeOpenCard extends StatelessWidget {
                         style: theme.textTheme.bodyMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface
-                              : colorScheme.onBackground,
+                              : colorScheme.onSurface,
                           height: 2,
                         ),
                       ),
