@@ -105,7 +105,7 @@ class _AccountPageState extends State<AccountPage> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(localizations.selectLanguage), // Localized text
+                Text(localizations.selectLanguage),
                 DropdownButton<String>(
                   value: _selectedLanguage,
                   items: const [
@@ -129,16 +129,28 @@ class _AccountPageState extends State<AccountPage> {
           TextButton(
             onPressed: () {
               Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RecoveryPasswordPage()));
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const RecoveryPasswordPage(),
+                ),
+              );
             },
-            child: Text(localizations.changePassword),
+            child: Text(
+              localizations.changePassword,
+              style: const TextStyle(
+                color: blue,
+              ),
+            ),
           ),
           const SizedBox(height: 18),
           TextButton(
             onPressed: _signOut,
-            child: Text(localizations.signOut),
+            child: Text(
+              localizations.signOut,
+              style: const TextStyle(
+                color: blue,
+              ),
+            ),
           ),
           const SizedBox(height: 18),
         ],

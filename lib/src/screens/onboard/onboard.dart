@@ -19,6 +19,11 @@ class _OnBoardState extends State<OnBoard> {
   late List<OnboardModel> screens;
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(); // Inizializzazione del PageController
+  }
+  @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
@@ -188,7 +193,7 @@ class _OnBoardState extends State<OnBoard> {
                                           mainAxisSize: MainAxisSize.min,
                                           children: [
                                             Text(
-                                              localizations!.next,
+                                              localizations.next,
                                               style: const TextStyle(
                                                   fontSize: 16.0, color: white),
                                             ),

@@ -69,6 +69,15 @@
   "monuments": "Monumenti",
   "nature": "Natura",
   "cities": "Borghi",
-  "searchText": "Cerca qualcosa..."
-
+  "searchText": "Cerca qualcosa...",
+  "alreadyHaveAnAccountError": "Account già esistente, effettua l'accesso con questo account",
+  "tooManyRequests": "Troppe richieste inviate.\n Riprova più tardi",
+  "serverError": "Il server non risponde. \n Riprovare più tardi",
+  "registerText2": "Registrati per ",
+  "passwordDoesNotMatch": "Le password non coincidono",
+  "retypePassword": "Ripeti la tua password",
+  "termsText1": "Crendo un account, accetti i nostri ",
+  "termsText2": "Termini di Servizio",
+  "noInternetTitle": "Nessuna connessione",
+  "noInternetMessage": "Devi essere connesso alla rete per usare l'app"
 }

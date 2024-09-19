@@ -1,5 +1,8 @@
+import 'dart:async';
 import 'dart:math';
+import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
+import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
@@ -41,87 +44,118 @@ class _SearchPageState extends State<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
+  final Map<String, String> fetchedTitles = {}; // Mappa per memorizzare i titoli
   bool isDataFetched = false;
 
-  Future<void> fetchAllTables(AppLocalizations localizations) async {
-    if (isDataFetched) return;
-
-    for (String tableName in tables) {
-      try {
-        final response = await client.from(tableName).select("*");
-        final data = response as List<dynamic>;
-
-        final widgetGenerated = data.map<Widget>((e) {
-          final title = e['title'] ?? localizations.titleNotAvailable;
-          final image = client.storage.from(tableName).getPublicUrl(e['image']);
-          final description =
-              e['description'] ?? localizations.descriptionNotAvailable;
-          final location = e['location'] ?? localizations.titleNotAvailable;
-
-          if (tableName == "Ricette") {
-            return Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: RecipeCard(
-                title: title,
-                image: image,
-                description: description,
-                time: e['time'] ?? 2,
-                peopleFor: e['peopleFor'] ?? 1,
-                ingredients: List<String>.from(e['ingredients'] ?? []),
-              ),
-            );
-          } else if (tableName == "Monumenti") {
-            return Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: MonumentsCard(
-                location: location,
-                image: image,
-                title: title,
-                description: description,
-              ),
-            );
-          } else if (tableName == "Natura") {
-            return Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: NatureCard(
-                location: location,
-                image: image,
-                title: title,
-              ),
-            );
-          } else if (tableName == "Borghi") {
-            return Container(
-              margin: const EdgeInsets.only(right: 10),
-              child: CityCard(
-                description: description,
-                image: image,
-                title: title,
-              ),
-            );
+  bool isConnectedToInternet = false;
+  StreamSubscription? _internetConnectionStreamSubscription;
+  @override
+    void initState() {
+      super.initState();
+      _internetConnectionStreamSubscription = InternetConnection().onStatusChange.listen((event) {
+          print(event);
+          switch (event){
+            case InternetStatus.connected:
+            setState(() {
+              isConnectedToInternet = true;
+            });
+            break;
+            case InternetStatus.disconnected:
+            setState(() {
+              isConnectedToInternet = false;
+            });
+            break;
+            default:
+            setState(() {
+              isConnectedToInternet = false;
+            });
+            break;
           }
-          return const SizedBox.shrink();
-        }).toList();
+      });
+    }
+    
+  Future<void> fetchAllTables(AppLocalizations localizations) async {
+  if (isDataFetched) return;
 
-        widgetGenerated.shuffle();
+  for (String tableName in tables) {
+    try {
+      final response = await client.from(tableName).select("*");
+      final data = response as List<dynamic>;
+
+      final widgetGenerated = data.map<Widget>((e) {
+        final title = e['title'] ?? localizations.titleNotAvailable;
+        final image = client.storage.from(tableName).getPublicUrl(e['image']);
+        final description = e['description'] ?? localizations.descriptionNotAvailable;
+        final location = e['location'] ?? localizations.titleNotAvailable;
+
+        if (tableName == "Ricette") {
+          return Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: RecipeCard(
+              title: title,
+              image: image,
+              description: description,
+              time: e['time'] ?? 2,
+              peopleFor: e['peopleFor'] ?? 1,
+              ingredients: List<String>.from(e['ingredients'] ?? []),
+            ),
+          );
+        } else if (tableName == "Monumenti") {
+          return Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: MonumentsCard(
+              location: location,
+              image: image,
+              title: title,
+              description: description,
+            ),
+          );
+        } else if (tableName == "Natura") {
+          return Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: NatureCard(
+              location: location,
+              image: image,
+              title: title,
+            ),
+          );
+        } else if (tableName == "Borghi") {
+          return Container(
+            margin: const EdgeInsets.only(right: 10),
+            child: CityCard(
+              description: description,
+              image: image,
+              title: title,
+            ),
+          );
+        }
+        return const SizedBox.shrink();
+      }).toList();
+
+      widgetGenerated.shuffle();
+      if (mounted) {
         setState(() {
           fetchedData[tableName] = widgetGenerated;
         });
-      } catch (e, stacktrace) {
-        print("Errore nella fetch della tabella $tableName: $e");
-        print(stacktrace);
       }
+    } catch (e, stacktrace) {
+      print("Errore nella fetch della tabella $tableName: $e");
+      print(stacktrace);
     }
+  }
 
+  if (mounted) {
     setState(() {
       isDataFetched = true;
     });
   }
+}
 
   @override
-  void initState() {
-    super.initState();
+  void dispose(){
+    _internetConnectionStreamSubscription!.cancel();
+    super.dispose();
   }
-
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -132,15 +166,19 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   String getRandomTitle(AppLocalizations localizations, String tableName) {
+    // Se il titolo è già stato fetchato, restituiscilo
+    if (fetchedTitles.containsKey(tableName)) {
+      return fetchedTitles[tableName]!;
+    }
+
+    // Altrimenti genera un nuovo titolo casuale
     final randomIndex = Random().nextInt(3) + 1; // Genera numeri da 1 a 3
     final titleKey = '${tableName.toLowerCase()}Title$randomIndex';
-    final title = localizations.getString(titleKey);
+    final title = localizations.getString(titleKey) ?? localizations.titleNotAvailable;
 
-    // Debug prints per controllare la chiave e il valore del titolo
-    print('Fetching title with key: $titleKey');
-    print('Fetched title: $title');
+    fetchedTitles[tableName] = title;
 
-    return title ?? localizations.titleNotAvailable;
+    return title;
   }
 
   @override
@@ -168,7 +206,7 @@ class _SearchPageState extends State<SearchPage> {
           if (!fetchedData.containsKey(table) || fetchedData[table]!.isEmpty) {
             return const SliverToBoxAdapter(
               child: Center(
-                child: CircularProgressIndicator(),
+                child: CircularProgressIndicator(color: blue,),
               ),
             );
           }

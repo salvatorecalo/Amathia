@@ -1,3 +1,4 @@
+import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
       body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomSelectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: blue,
         onTap: (index) {
           bottomTapped(index);
         },

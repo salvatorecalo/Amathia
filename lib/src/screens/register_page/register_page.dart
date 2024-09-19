@@ -5,6 +5,7 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -23,22 +24,27 @@ class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   String erroreLogin = "";
 
-  Future<String> setError(e) async {
-    erroreLogin = e.statusCode;
-    if (e.statusCode == "400") {
-      erroreLogin =
-          "Account già esistente, effettua l'accesso con questo account";
-    } else if (e.statusCode == "401") {
-      erroreLogin = "Questo indirizzo email non è associato a nessun account";
-    } else if (e.statusCode == '429') {
-      erroreLogin = "Troppe richieste inviate.\n Riprova più tardi";
-    } else if (e.statusCode == '500') {
-      erroreLogin = "Ci sono dei problemi al server.\n Riprovare più tardi";
-    }
-    return erroreLogin;
-  }
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final isDarkTheme = theme.brightness == Brightness.dark;
+    final localizations = AppLocalizations.of(context);
 
-  Future<void> signUpNewUser() async {
+    Future<String> setError(e) async {
+      erroreLogin = e.statusCode;
+      if (e.statusCode == "400") {
+        erroreLogin =
+            localizations!.alreadyHaveAnAccountError;
+      } else if (e.statusCode == '429') {
+        erroreLogin = localizations!.tooManyRequests;
+      } else if (e.statusCode == '500') {
+        erroreLogin = localizations!.serverError;
+      }
+      return erroreLogin;
+    }
+
+    Future<void> signUpNewUser() async {
     try {
       await supabase.auth.signUp(
           email: _emailController.text.trim(),
@@ -89,11 +95,6 @@ class _RegisterPageState extends State<RegisterPage> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isDarkTheme = theme.brightness == Brightness.dark;
 
     return Material(
       child: Form(
@@ -138,29 +139,29 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: 'Registrati per ',
+                                  text: localizations!.registerText2,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
                                           : Colors.black),
                                 ),
-                                const TextSpan(
-                                  text: 'goderti ',
-                                  style: TextStyle(color: blue),
+                                TextSpan(
+                                  text: localizations.loginText2,
+                                  style: const TextStyle(color: blue),
                                 ),
                                 TextSpan(
-                                  text: 'la tua \n',
+                                  text: localizations.loginText3,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
                                           : Colors.black),
                                 ),
-                                const TextSpan(
-                                  text: 'vacanza ',
-                                  style: TextStyle(color: blue),
+                                TextSpan(
+                                  text: localizations.loginText4,
+                                  style: const TextStyle(color: blue),
                                 ),
                                 TextSpan(
-                                  text: 'in Salento ',
+                                  text: localizations.loginText5,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
@@ -181,16 +182,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'La mail non può essere vuota';
+                                return  localizations.mailEmpty;
                               } else if (!EmailValidator.validate(
                                   value.trim())) {
-                                return 'la mail non è valida';
+                                return localizations.mailInvalid;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              hintText: 'Inserisci la tua email',
+                              hintText: localizations.enterMail,
                               prefixIcon: Icon(
                                 Icons.email,
                                 color: isDarkTheme
@@ -209,24 +210,24 @@ class _RegisterPageState extends State<RegisterPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'La password non può essere vuota';
+                                return localizations.passwordEmpty;
                               } else if (value.length < 8) {
-                                return 'la password deve essere lunga almeno 8 caratteri';
+                                return localizations.passwordShort;
                               } else if (!value.contains(RegExp(r'[A-Z]'))) {
                                 // contiene una lettera maiuscola
-                                return 'la password deve contenere una lettera maiuscola';
+                                return localizations.passwordUpperCharacter;
                               } else if (!value.contains(RegExp(r'[0-9]'))) {
                                 // contiene un numero
-                                return 'la password deve contenere un numero';
+                                return localizations.passwordNumberCharacter;
                               } else if (!value
                                   .contains(RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
-                                return 'la password deve contenere un carattere speciale';
+                                return localizations.passwordSpecialCharacter;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              hintText: 'Inserisci la tua password',
+                              hintText: localizations.enterPassword,
                               prefixIcon: Icon(Icons.key,
                                   color: isDarkTheme
                                       ? colorScheme.onSurface
@@ -256,15 +257,15 @@ class _RegisterPageState extends State<RegisterPage> {
                                 AutovalidateMode.onUserInteraction,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'La password non può essere vuota';
+                                return localizations.passwordEmpty;
                               } else if (value != _passwordController.text) {
-                                return 'le password non coincidono';
+                                return localizations.passwordDoesNotMatch;
                               }
                               return null;
                             },
                             decoration: InputDecoration(
                               border: const OutlineInputBorder(),
-                              hintText: 'Ripeti la tua password',
+                              hintText: localizations.retypePassword,
                               prefixIcon: Icon(Icons.key,
                                   color: isDarkTheme
                                       ? colorScheme.onSurface
@@ -280,14 +281,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'Creando un account, accetti i nostri ',
+                                  text: localizations.termsText1,
                                   style: TextStyle(
                                       color: isDarkTheme
                                           ? colorScheme.onSurface
                                           : Colors.black),
                                 ),
                                 TextSpan(
-                                  text: 'Termini di Servizio',
+                                  text: localizations.termsText2,
                                   style: const TextStyle(color: blue),
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {},
@@ -313,12 +314,12 @@ class _RegisterPageState extends State<RegisterPage> {
                                 borderRadius: BorderRadius.circular(5.0),
                               ),
                             ),
-                            child: const Padding(
-                              padding: EdgeInsets.symmetric(
+                            child:  Padding(
+                              padding: const EdgeInsets.symmetric(
                                   horizontal: 24.0, vertical: 12.0),
                               child: Text(
-                                'Registrati',
-                                style: TextStyle(fontSize: 18),
+                                localizations.registerText,
+                                style:const TextStyle(fontSize: 18),
                               ),
                             ),
                           ),
@@ -340,7 +341,7 @@ class _RegisterPageState extends State<RegisterPage> {
                                   text: 'Hai già un account? ',
                                 ),
                                 TextSpan(
-                                  text: 'Accedi ',
+                                  text: localizations.loginText,
                                   recognizer: TapGestureRecognizer()
                                     ..onTap = () {
                                       Navigator.pushReplacement(

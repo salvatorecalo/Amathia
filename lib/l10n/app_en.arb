@@ -65,6 +65,15 @@
   "monuments": "Monuments",
   "nature": "Nature",
   "cities": "Villages",
-  "searchText": "Search something..."
-
+  "searchText": "Search something...",
+  "alreadyHaveAnAccountError": "Account already exists, login with it",
+  "tooManyRequests": "Too many requests sent. \n Try later",
+  "serverError": "The server does not respond. \n Please try later",
+  "registerText2": "Register to ",
+  "passwordDoesNotMatch": "Passwords does not match",
+  "retypePassword": "Retype your password",
+  "termsText1": "Creating an account, you accept our ",
+  "termsText2": "Terms of Services",
+  "noInternetTitle": "No connection",
+  "noInternetMessage": "You must be connected to use our app",
 }
