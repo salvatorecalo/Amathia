@@ -28,8 +28,8 @@ class _HomePageState extends State<HomePage> {
       onPageChanged: (index) {
         pageChanged(index);
       },
-      children: const <Widget>[
-        SearchPage(),
+      children: <Widget>[
+        const SearchPage(),
         FavoritePage(),
         AccountPage(),
       ],
@@ -61,11 +61,11 @@ class _HomePageState extends State<HomePage> {
     List<BottomNavigationBarItem> buildBottomNavBarItems() {
       return [
         BottomNavigationBarItem(
-          icon: Icon(Icons.search),
+          icon: const Icon(Icons.search),
           label: localizations!.explore,
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.favorite),
+          icon: const Icon(Icons.favorite),
           label: localizations.favorite,
         ),
         const BottomNavigationBarItem(

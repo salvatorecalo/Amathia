@@ -21,6 +21,7 @@ class Styles {
           colorScheme: isDarkTheme
               ? const ColorScheme.dark()
               : const ColorScheme.light()),
+      scaffoldBackgroundColor: isDarkTheme ? Colors.black : Colors.white,
       appBarTheme: const AppBarTheme(
         backgroundColor: blue,
         elevation: 0.5,

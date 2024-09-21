@@ -1,75 +1,36 @@
 import 'package:amathia/main.dart';
+import 'package:amathia/provider/dark_theme_provider.dart';
+import 'package:amathia/provider/local_provider.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
-import 'package:amathia/src/theme/theme_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AccountPage extends StatefulWidget {
-  const AccountPage({super.key});
-
+class AccountPage extends ConsumerWidget {
   @override
-  _AccountPageState createState() => _AccountPageState();
-}
-
-class _AccountPageState extends State<AccountPage> {
-  String? email = supabase.auth.currentUser?.email;
-  late String _selectedLanguage;
-
-  @override
-  void initState() {
-    super.initState();
-    _initializeLanguage();
-  }
-
-  void _initializeLanguage() {
-    // Recupera la lingua predefinita del sistema operativo
-    final deviceLocale = WidgetsBinding.instance.window.locale.languageCode;
-
-    // Imposta la lingua predefinita
-    _selectedLanguage = deviceLocale;
-
-    // Se il deviceLocale non è nella lista di lingue supportate, usa 'it' come fallback
-    if (!['en', 'it'].contains(_selectedLanguage)) {
-      _selectedLanguage = 'it';
-    }
-  }
-
-  Future<void> _signOut() async {
-    try {
-      await supabase.auth.signOut();
-    } on AuthException catch (error) {
-      SnackBar(
-        content: Text(error.message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
-    } catch (error) {
-      SnackBar(
-        content: const Text('Unexpected error occurred'),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
-    } finally {
-      if (mounted) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final email = supabase.auth.currentUser?.email;
+    final localizations = AppLocalizations.of(context);
+    Future<void> _signOut(WidgetRef ref) async {
+      try {
+        await supabase.auth.signOut();
+        ref
+            .read(localeProvider.notifier)
+            .setLocale('en'); // Reset locale if needed
         Navigator.of(context).pushReplacementNamed('/login');
+      } on AuthException catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(error.message)),
+        );
+      } catch (error) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Unexpected error occurred')),
+        );
       }
     }
-  }
 
-  void _changeLanguage(String? langCode) {
-    if (langCode != null) {
-      setState(() {
-        _selectedLanguage = langCode;
-      });
-      MyApp.setLocale(context, Locale(langCode));
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final themeChange = Provider.of<DarkThemeProvider>(context);
-    final localizations = AppLocalizations.of(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(localizations!.userProfile),
@@ -81,22 +42,20 @@ class _AccountPageState extends State<AccountPage> {
           Text(
             "$email",
             textAlign: TextAlign.center,
-            style: const TextStyle(
-              fontWeight: FontWeight.w700,
-            ),
+            style: const TextStyle(fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 18),
           Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(localizations.darkMode),
               Switch(
-                  activeColor: blue,
-                  value: themeChange.darkTheme,
-                  onChanged: (value) {
-                    themeChange.darkTheme = value;
-                  }),
+                value: ref.watch(darkThemeProvider),
+                onChanged: (value) {
+                  ref.read(darkThemeProvider.notifier).toggleTheme();
+                },
+                activeColor: blue,
+              ),
             ],
           ),
           const SizedBox(height: 18),
@@ -107,52 +66,48 @@ class _AccountPageState extends State<AccountPage> {
               children: [
                 Text(localizations.selectLanguage),
                 DropdownButton<String>(
-                  value: _selectedLanguage,
+                  value: ref.watch(localeProvider)?.languageCode,
                   items: const [
-                    DropdownMenuItem(
-                      value: 'en',
-                      child: Text('English'),
-                    ),
-                    DropdownMenuItem(
-                      value: 'it',
-                      child: Text('Italiano'),
-                    ),
+                    DropdownMenuItem(value: 'en', child: Text('English')),
+                    DropdownMenuItem(value: 'it', child: Text('Italiano')),
                   ],
-                  onChanged: _changeLanguage,
+                  onChanged: (langCode) {
+                    if (langCode != null) {
+                      ref.read(localeProvider.notifier).setLocale(langCode);
+                    }
+                  },
                 ),
               ],
             ),
           ),
-          const SizedBox(
-            height: 20,
-          ),
+          const SizedBox(height: 20),
           TextButton(
-            onPressed: () {
+            onPressed: () async {
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const RecoveryPasswordPage(),
-                ),
+                    builder: (context) => const RecoveryPasswordPage()),
               );
             },
             child: Text(
               localizations.changePassword,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: blue,
               ),
             ),
           ),
-          const SizedBox(height: 18),
+          const SizedBox(height: 20),
           TextButton(
-            onPressed: _signOut,
+            onPressed: () => _signOut(ref),
             child: Text(
               localizations.signOut,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 color: blue,
               ),
             ),
           ),
-          const SizedBox(height: 18),
         ],
       ),
     );

@@ -10,28 +10,33 @@ class SearchBarApp extends StatefulWidget {
 }
 
 class _SearchBarAppState extends State<SearchBarApp> {
-  final supabase = Supabase.instance.client; // Client di Supabase
+  final supabase = Supabase.instance.client;
   final SearchController _searchController = SearchController();
-  List<Map<String, dynamic>> searchResults = []; // Risultati della ricerca
+  List<Map<String, dynamic>> searchResults = [];
   bool isLoading = false;
 
-  // Funzione per eseguire la ricerca
   Future<void> _search(String query) async {
+    print("Searching for: $query");
     setState(() {
       isLoading = true;
     });
 
-    // Esegui la ricerca nelle tabelle
     final ricetteResponse =
         await supabase.from('Ricette').select().ilike('title', '%$query%');
+    print("Ricette response: $ricetteResponse");
+
     final monumentiResponse =
         await supabase.from('Monumenti').select().ilike('title', '%$query%');
+    print("Monumenti response: $monumentiResponse");
+
     final naturaResponse =
         await supabase.from('Natura').select().ilike('title', '%$query%');
+    print("Natura response: $naturaResponse");
+
     final borghiResponse =
         await supabase.from('Borghi').select().ilike('title', '%$query%');
+    print("Borghi response: $borghiResponse");
 
-    // Unisci i risultati in una lista
     setState(() {
       searchResults = [
         ...ricetteResponse.map((e) => {'type': 'Ricetta', 'data': e}),
@@ -41,6 +46,10 @@ class _SearchBarAppState extends State<SearchBarApp> {
       ];
       isLoading = false;
     });
+
+    if (searchResults.isEmpty) {
+      print("No results found");
+    }
   }
 
   @override
@@ -56,18 +65,22 @@ class _SearchBarAppState extends State<SearchBarApp> {
               EdgeInsets.symmetric(horizontal: 16.0)),
           onTap: () {
             controller.openView();
+            print("SearchBar tapped");
           },
           onChanged: (query) {
-            _search(query); // Esegui la ricerca quando cambia il testo
+            print("Search query changed: $query");
+            _search(query);
           },
           leading: const Icon(Icons.search),
         );
       },
       suggestionsBuilder: (BuildContext context, SearchController controller) {
         if (isLoading) {
+          print("Loading...");
           return [const Center(child: CircularProgressIndicator())];
         }
 
+        print("Search results: $searchResults");
         return List<ListTile>.generate(searchResults.length, (int index) {
           final result = searchResults[index];
           final String item = result['data']['title'] ?? 'Senza nome';

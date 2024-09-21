@@ -65,14 +65,12 @@ class MonumentsCard extends StatelessWidget {
                         ),
                       ),
                       LikeButton(
-                        cardType: 'city',
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,
                           'location': location,
                           'image': image,
                         },
-                        initialState: false, // Check if it's already liked
                       ),
                     ],
                   ),

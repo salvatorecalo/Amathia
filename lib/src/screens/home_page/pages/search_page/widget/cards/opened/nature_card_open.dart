@@ -22,7 +22,6 @@ class NatureOpenCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
-
     return Material(
       child: Stack(
         children: [
@@ -147,7 +146,7 @@ class NatureOpenCard extends StatelessWidget {
                     throw Exception('Could not launch $url');
                   }
                 },
-                child: Text(localizations!.getLocation),
+                child: Text(localizations.getLocation),
               ),
             ),
           ),

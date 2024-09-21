@@ -1,62 +1,46 @@
-import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
-import 'package:amathia/src/theme/favorite_provider.dart';
+import 'package:amathia/provider/favorite_provider.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class FavoritePage extends StatelessWidget {
-  const FavoritePage({super.key});
-
+class FavoritePage extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final favorites = ref.watch(favoriteProvider);
     final localizations = AppLocalizations.of(context);
-    return Consumer<FavoriteProvider>(
-      builder: (context, favoriteProvider, child) {
-        final favorites = favoriteProvider.favorites;
 
-        if (favorites.isEmpty) {
-          return Center(
-            child: Text(
-              textAlign: TextAlign.center,
-              localizations!.favoriteEmpty,
-            ),
-          );
-        }
-
-        return Column(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(
-                top: 25,
-              ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(localizations!.favoriteText),
+        centerTitle: true,
+      ),
+      body: favorites.isEmpty // Controllo qui
+          ? Center(
               child: Text(
-                localizations!.favoriteText,
+                localizations.favoriteEmpty,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 24,
-                ),
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: favorites.length,
-                itemBuilder: (context, index) {
-                  final favorite = favorites[index];
-                  return Container(
-                    margin: const EdgeInsets.all(20),
-                    child: CityCard(
-                      title: favorite['title'] ?? 'No title',
-                      image: favorite['image'] ?? '',
-                      description: favorite['description'] ?? 'No description',
+              ), // Mostra il messaggio se vuoto
+            )
+          : ListView.builder(
+              itemCount: favorites.length,
+              itemBuilder: (context, index) {
+                final favoriteItem = favorites[index];
+                return Card(
+                  child: ListTile(
+                    leading: Image.network(
+                      favoriteItem['image'], // Immagine dell'elemento
                     ),
-                  );
-                },
-              ),
+                    title: Text(favoriteItem['title']),
+                    subtitle: Text(favoriteItem['description']),
+                    trailing: LikeButton(
+                      itemId: favoriteItem['title'], // ID unico
+                      itemData: favoriteItem, // Dati dell'elemento
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
-        );
-      },
     );
   }
 }

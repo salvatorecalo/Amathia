@@ -69,14 +69,12 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                       LikeButton(
-                        cardType: 'city',
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,
                           'description': description,
                           'image': image,
                         },
-                        initialState: false, // Check if it's already liked
                       ),
                     ],
                   ),

@@ -135,7 +135,7 @@ class CityOpenCard extends StatelessWidget {
                     throw Exception('Could not launch $url');
                   }
                 },
-                child: Text(localizations!.getLocation),
+                child: Text(localizations.getLocation),
               ),
             ),
           ),

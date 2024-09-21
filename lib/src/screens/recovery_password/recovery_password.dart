@@ -111,7 +111,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                               ),
                               TextSpan(
                                 text: localizations.noProblem,
-                                style: TextStyle(color: blue),
+                                style: const TextStyle(color: blue),
                               ),
                               TextSpan(
                                 text: localizations.associatedMail,

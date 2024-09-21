@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:math';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
-import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
@@ -44,118 +43,132 @@ class _SearchPageState extends State<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
-  final Map<String, String> fetchedTitles = {}; // Mappa per memorizzare i titoli
+  final Map<String, String> fetchedTitles =
+      {}; // Mappa per memorizzare i titoli
   bool isDataFetched = false;
 
-  bool isConnectedToInternet = false;
-  StreamSubscription? _internetConnectionStreamSubscription;
-  @override
-    void initState() {
-      super.initState();
-      _internetConnectionStreamSubscription = InternetConnection().onStatusChange.listen((event) {
-          print(event);
-          switch (event){
-            case InternetStatus.connected:
-            setState(() {
-              isConnectedToInternet = true;
-            });
-            break;
-            case InternetStatus.disconnected:
-            setState(() {
-              isConnectedToInternet = false;
-            });
-            break;
-            default:
-            setState(() {
-              isConnectedToInternet = false;
-            });
-            break;
+  Future<void> fetchAllTables(AppLocalizations localizations) async {
+    if (isDataFetched) return;
+
+    for (String tableName in tables) {
+      try {
+        final response = await client.from(tableName).select("*");
+        final data = response as List<dynamic>;
+        String language = Localizations.localeOf(context).languageCode;
+        final widgetGenerated = data.map<Widget>((e) {
+          final title = e['title'] ?? localizations.titleNotAvailable;
+          final image = client.storage.from(tableName).getPublicUrl(e['image']);
+          final location = e['location'] ?? localizations.titleNotAvailable;
+
+          if (language == 'en') {
+            if (tableName == "Ricette") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: RecipeCard(
+                  title: title,
+                  image: image,
+                  description: e['description_en'],
+                  time: e['time'] ?? 2,
+                  peopleFor: e['peopleFor'] ?? 1,
+                  ingredients: List<String>.from(e['ingredients_en'] ?? []),
+                ),
+              );
+            } else if (tableName == "Monumenti") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: MonumentsCard(
+                  location: location,
+                  image: image,
+                  title: title,
+                  description: e['description_en'],
+                ),
+              );
+            } else if (tableName == "Natura") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: NatureCard(
+                    location: location,
+                    image: image,
+                    title: title,
+                    description: e['description_en']),
+              );
+            } else if (tableName == "Borghi") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: CityCard(
+                  description: e['description_en'],
+                  image: image,
+                  title: title,
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          } else {
+            if (tableName == "Ricette") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: RecipeCard(
+                  title: title,
+                  image: image,
+                  description: e['description_it'],
+                  time: e['time'] ?? 2,
+                  peopleFor: e['peopleFor'] ?? 1,
+                  ingredients: List<String>.from(e['ingredients_it'] ?? []),
+                ),
+              );
+            } else if (tableName == "Monumenti") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: MonumentsCard(
+                  location: location,
+                  image: image,
+                  title: title,
+                  description: e['description_it'],
+                ),
+              );
+            } else if (tableName == "Natura") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: NatureCard(
+                  location: location,
+                  image: image,
+                  title: title,
+                  description: e['description_it'],
+                ),
+              );
+            } else if (tableName == "Borghi") {
+              return Container(
+                margin: const EdgeInsets.only(right: 10),
+                child: CityCard(
+                  description: e['description_it'],
+                  image: image,
+                  title: title,
+                ),
+              );
+            }
+            return const SizedBox.shrink();
           }
+        }).toList();
+
+        widgetGenerated.shuffle();
+        if (mounted) {
+          setState(() {
+            fetchedData[tableName] = widgetGenerated;
+          });
+        }
+      } catch (e, stacktrace) {
+        print("Errore nella fetch della tabella $tableName: $e");
+        print(stacktrace);
+      }
+    }
+
+    if (mounted) {
+      setState(() {
+        isDataFetched = true;
       });
     }
-    
-  Future<void> fetchAllTables(AppLocalizations localizations) async {
-  if (isDataFetched) return;
-
-  for (String tableName in tables) {
-    try {
-      final response = await client.from(tableName).select("*");
-      final data = response as List<dynamic>;
-
-      final widgetGenerated = data.map<Widget>((e) {
-        final title = e['title'] ?? localizations.titleNotAvailable;
-        final image = client.storage.from(tableName).getPublicUrl(e['image']);
-        final description = e['description'] ?? localizations.descriptionNotAvailable;
-        final location = e['location'] ?? localizations.titleNotAvailable;
-
-        if (tableName == "Ricette") {
-          return Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: RecipeCard(
-              title: title,
-              image: image,
-              description: description,
-              time: e['time'] ?? 2,
-              peopleFor: e['peopleFor'] ?? 1,
-              ingredients: List<String>.from(e['ingredients'] ?? []),
-            ),
-          );
-        } else if (tableName == "Monumenti") {
-          return Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: MonumentsCard(
-              location: location,
-              image: image,
-              title: title,
-              description: description,
-            ),
-          );
-        } else if (tableName == "Natura") {
-          return Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: NatureCard(
-              location: location,
-              image: image,
-              title: title,
-            ),
-          );
-        } else if (tableName == "Borghi") {
-          return Container(
-            margin: const EdgeInsets.only(right: 10),
-            child: CityCard(
-              description: description,
-              image: image,
-              title: title,
-            ),
-          );
-        }
-        return const SizedBox.shrink();
-      }).toList();
-
-      widgetGenerated.shuffle();
-      if (mounted) {
-        setState(() {
-          fetchedData[tableName] = widgetGenerated;
-        });
-      }
-    } catch (e, stacktrace) {
-      print("Errore nella fetch della tabella $tableName: $e");
-      print(stacktrace);
-    }
   }
 
-  if (mounted) {
-    setState(() {
-      isDataFetched = true;
-    });
-  }
-}
-
-  @override
-  void dispose(){
-    _internetConnectionStreamSubscription!.cancel();
-    super.dispose();
-  }
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -174,7 +187,8 @@ class _SearchPageState extends State<SearchPage> {
     // Altrimenti genera un nuovo titolo casuale
     final randomIndex = Random().nextInt(3) + 1; // Genera numeri da 1 a 3
     final titleKey = '${tableName.toLowerCase()}Title$randomIndex';
-    final title = localizations.getString(titleKey) ?? localizations.titleNotAvailable;
+    final title =
+        localizations.getString(titleKey) ?? localizations.titleNotAvailable;
 
     fetchedTitles[tableName] = title;
 
@@ -185,63 +199,69 @@ class _SearchPageState extends State<SearchPage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
 
-    return CustomScrollView(
-      slivers: [
-        const SliverPadding(
-          padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
-          sliver: SliverAppBar(
-            flexibleSpace: SearchBarApp(),
-            backgroundColor: Colors.transparent,
-            shadowColor: Colors.transparent,
-            foregroundColor: Colors.transparent,
+    return Scaffold(
+      body: CustomScrollView(
+        slivers: [
+          const SliverPadding(
+            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
+            sliver: SliverAppBar(
+              flexibleSpace: SearchBarApp(),
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: Colors.transparent,
+            ),
           ),
-        ),
-        SliverToBoxAdapter(
-          child: Container(
-            margin: const EdgeInsets.symmetric(vertical: 30),
-            child: const CategoryButtons(),
+          SliverToBoxAdapter(
+            child: Container(
+              margin: const EdgeInsets.symmetric(vertical: 30),
+              child: const CategoryButtons(),
+            ),
           ),
-        ),
-        ...tables.map((table) {
-          if (!fetchedData.containsKey(table) || fetchedData[table]!.isEmpty) {
-            return const SliverToBoxAdapter(
-              child: Center(
-                child: CircularProgressIndicator(color: blue,),
+          ...tables.map((table) {
+            if (!fetchedData.containsKey(table) ||
+                fetchedData[table]!.isEmpty) {
+              return const SliverToBoxAdapter(
+                child: Center(
+                  child: CircularProgressIndicator(
+                    color: blue,
+                  ),
+                ),
+              );
+            }
+
+            return SliverToBoxAdapter(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                    child: Text(
+                      getRandomTitle(localizations!, table),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    height: 300,
+                    margin:
+                        const EdgeInsets.only(left: 18, top: 20, bottom: 20),
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: fetchedData[table]!.length,
+                      itemBuilder: (context, index) => Container(
+                        margin: const EdgeInsets.only(right: 10),
+                        child: fetchedData[table]![index],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             );
-          }
-
-          return SliverToBoxAdapter(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                  child: Text(
-                    getRandomTitle(localizations!, table),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                    ),
-                  ),
-                ),
-                Container(
-                  height: 300,
-                  margin: const EdgeInsets.only(left: 18, top: 20, bottom: 20),
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: fetchedData[table]!.length,
-                    itemBuilder: (context, index) => Container(
-                      margin: const EdgeInsets.only(right: 10),
-                      child: fetchedData[table]![index],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        }),
-      ],
+          }),
+        ],
+      ),
     );
   }
 }

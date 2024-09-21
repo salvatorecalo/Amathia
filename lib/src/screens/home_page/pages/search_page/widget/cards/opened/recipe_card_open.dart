@@ -164,7 +164,7 @@ class RecipeOpenCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 20),
                       Text(
-                        localizations!.process,
+                        localizations.process,
                         style: theme.textTheme.titleMedium?.copyWith(
                           color: isDarkTheme
                               ? colorScheme.onSurface

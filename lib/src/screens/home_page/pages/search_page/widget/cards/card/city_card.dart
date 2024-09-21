@@ -59,16 +59,6 @@ class CityCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
-                  LikeButton(
-                    cardType: 'city',
-                    itemId: title, // Unique identifier for the item
-                    itemData: {
-                      'title': title,
-                      'description': description,
-                      'image': image,
-                    },
-                    initialState: false, // Check if it's already liked
-                  ),
                 ],
               ),
             ),

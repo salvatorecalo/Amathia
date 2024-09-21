@@ -7,11 +7,13 @@ class NatureCard extends StatelessWidget {
   String title;
   String image;
   String location;
+  String description;
   NatureCard({
     super.key,
     required this.title,
     required this.image,
     required this.location,
+    required this.description,
   });
 
   @override
@@ -25,7 +27,7 @@ class NatureCard extends StatelessWidget {
               title: title,
               location: location,
               image: image,
-              description: '',
+              description: description,
             ),
           ),
         );
@@ -63,14 +65,12 @@ class NatureCard extends StatelessWidget {
                           ),
                         ),
                         LikeButton(
-                          cardType: 'city',
                           itemId: title, // Unique identifier for the item
                           itemData: {
                             'title': title,
                             'location': location,
                             'image': image,
                           },
-                          initialState: false, // Check if it's already liked
                         ),
                       ]),
                   const SizedBox(

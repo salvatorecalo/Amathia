@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
@@ -7,6 +7,7 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/car
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/nature_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/recipe_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 // ignore: must_be_immutable
 class CategoryScreen extends StatefulWidget {
@@ -32,57 +33,122 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   List<Widget> fetchedData = [];
 
-  Future<void> fetchTable() async {
+  // Spostiamo la chiamata di fetchTable qui, in modo che sia sicuro usare il contesto
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final localizations = AppLocalizations.of(context);
+    if (localizations != null) {
+      fetchTable(localizations);
+    }
+  }
+
+  Future<void> fetchTable(AppLocalizations localizations) async {
     try {
       final response = await supabase.from(widget.type).select("*");
+      final SupabaseClient client = Supabase.instance.client;
+      String language = Localizations.localeOf(context).languageCode;
+
       final widgetGenerated = response.map<Widget>((e) {
-        if (widget.type == "Ricette") {
-          return Container(
-            margin: const EdgeInsets.all(20),
-            child: RecipeCard(
-              title: e['title'] ?? 'Titolo non disponibile',
-              image:
-                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
-              description: e['description'] ?? 'Descrizione non disponibile',
-              time: e['time'] ?? 2,
-              peopleFor: e['peopleFor'] ?? 1,
-              ingredients: List<String>.from(e['ingredients']),
-            ),
-          );
-        } else if (widget.type == "Monumenti") {
-          return Container(
-            margin: const EdgeInsets.all(20),
-            child: MonumentsCard(
-              location: e['location'] ?? 'Località non disponibile',
-              image:
-                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
-              description: e['description'] ?? 'Descrizione non disponibile',
-            ),
-          );
-        } else if (widget.type == "Natura") {
-          return Container(
-            margin: const EdgeInsets.all(20),
-            child: NatureCard(
-              location: e['location'] ?? 'Località non disponibile',
-              image:
-                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
-            ),
-          );
-        } else if (widget.type == "Borghi") {
-          return Container(
-            margin: const EdgeInsets.all(20),
-            child: CityCard(
-              description: e['description'] ?? 'Descrizione non disponibile',
-              image:
-                  supabase.storage.from(widget.type).getPublicUrl(e['image']),
-              title: e['title'] ?? 'Titolo non disponibile',
-            ),
-          );
+        if (language == 'en') {
+          if (widget.type == "Ricette") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: RecipeCard(
+                title: e['title'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                description: e['description_en'],
+                time: e['time'] ?? 2,
+                peopleFor: e['peopleFor'] ?? 1,
+                ingredients: List<String>.from(e['ingredients_en'] ?? []),
+              ),
+            );
+          } else if (widget.type == "Monumenti") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: MonumentsCard(
+                location: e['location'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+                description: e['description_en'],
+              ),
+            );
+          } else if (widget.type == "Natura") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: NatureCard(
+                location: e['location'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+                description: e['description_en'],
+              ),
+            );
+          } else if (widget.type == "Borghi") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: CityCard(
+                description: e['description_en'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        } else {
+          if (widget.type == "Ricette") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: RecipeCard(
+                title: e['title'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                description: e['description_it'],
+                time: e['time'] ?? 2,
+                peopleFor: e['peopleFor'] ?? 1,
+                ingredients: List<String>.from(e['ingredients_it'] ?? []),
+              ),
+            );
+          } else if (widget.type == "Monumenti") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: MonumentsCard(
+                location: e['location'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+                description: e['description_it'],
+              ),
+            );
+          } else if (widget.type == "Natura") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: NatureCard(
+                location: e['location'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+                description: e['description_it'],
+              ),
+            );
+          } else if (widget.type == "Borghi") {
+            return Container(
+              margin: const EdgeInsets.only(right: 10),
+              child: CityCard(
+                description: e['description_it'],
+                image:
+                    client.storage.from(widget.type).getPublicUrl(e['image']),
+                title: e['title'],
+              ),
+            );
+          }
+          return const SizedBox.shrink();
         }
-        return const SizedBox.shrink();
       }).toList();
+
       widgetGenerated.shuffle(Random());
 
       setState(() {
@@ -91,12 +157,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
     } catch (e) {
       print("Errore nella fetch della tabella ${widget.type}: $e");
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    fetchTable();
   }
 
   @override
