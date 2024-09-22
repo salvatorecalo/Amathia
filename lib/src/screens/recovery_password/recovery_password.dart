@@ -128,6 +128,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                         padding: const EdgeInsets.symmetric(
                             horizontal: 8, vertical: 16),
                         child: TextFormField(
+                          autovalidateMode: AutovalidateMode.onUserInteraction,
                           controller: _emailController,
                           validator: (value) {
                             if (value == null || value.isEmpty) {

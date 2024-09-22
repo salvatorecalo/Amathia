@@ -68,8 +68,10 @@ class MonumentsCard extends StatelessWidget {
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,
-                          'location': location,
                           'image': image,
+                          'type': 'Monumenti',
+                          'location': location,
+                          'description': description,
                         },
                       ),
                     ],

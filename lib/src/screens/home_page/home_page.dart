@@ -28,8 +28,8 @@ class _HomePageState extends State<HomePage> {
       onPageChanged: (index) {
         pageChanged(index);
       },
-      children: <Widget>[
-        const SearchPage(),
+      children: const <Widget>[
+        SearchPage(),
         FavoritePage(),
         AccountPage(),
       ],

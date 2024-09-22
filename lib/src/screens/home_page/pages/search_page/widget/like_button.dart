@@ -7,17 +7,17 @@ class LikeButton extends ConsumerWidget {
   final Map<String, dynamic> itemData;
 
   const LikeButton({
-    Key? key,
+    super.key,
     required this.itemId,
     required this.itemData,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final isLiked =
         ref.watch(favoriteProvider).any((item) => item['title'] == itemId);
 
-    Future<void> _toggleLike() async {
+    Future<void> toggleLike() async {
       final notifier = ref.read(favoriteProvider.notifier);
       if (isLiked) {
         await notifier.removeFavorite(itemId);
@@ -31,7 +31,7 @@ class LikeButton extends ConsumerWidget {
         isLiked ? Icons.favorite : Icons.favorite_border,
         color: isLiked ? Colors.red : Colors.grey,
       ),
-      onPressed: _toggleLike,
+      onPressed: toggleLike,
     );
   }
 }

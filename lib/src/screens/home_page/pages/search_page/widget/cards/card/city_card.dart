@@ -59,6 +59,15 @@ class CityCard extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                   ),
+                  LikeButton(
+                    itemId: title, // Unique identifier for the item
+                    itemData: {
+                      'title': title,
+                      'image': image,
+                      'type': 'Borghi',
+                      'description': description,
+                    },
+                  ),
                 ],
               ),
             ),

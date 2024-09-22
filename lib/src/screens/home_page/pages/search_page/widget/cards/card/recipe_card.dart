@@ -72,8 +72,12 @@ class RecipeCard extends StatelessWidget {
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,
-                          'description': description,
                           'image': image,
+                          'type': 'Ricette',
+                          'peopleFor': peopleFor,
+                          'time': time,
+                          'ingredients': ingredients,
+                          'description': description,
                         },
                       ),
                     ],

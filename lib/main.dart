@@ -32,12 +32,12 @@ Future<void> main() async {
 class MyApp extends ConsumerWidget {
   final bool isLoggedIn;
 
-  const MyApp({Key? key, required this.isLoggedIn}) : super(key: key);
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final locale =
-        ref.watch(localeProvider) ?? Locale('en'); // Usa localeProvider
+        ref.watch(localeProvider) ?? const Locale('en'); // Usa localeProvider
     final isDarkTheme = ref.watch(darkThemeProvider);
 
     return MaterialApp(

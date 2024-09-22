@@ -55,24 +55,27 @@ class NatureCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          title,
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                          ),
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
                         ),
-                        LikeButton(
-                          itemId: title, // Unique identifier for the item
-                          itemData: {
-                            'title': title,
-                            'location': location,
-                            'image': image,
-                          },
-                        ),
-                      ]),
+                      ),
+                      LikeButton(
+                        itemId: title, // Unique identifier for the item
+                        itemData: {
+                          'title': title,
+                          'image': image,
+                          'location': location,
+                          'description': description,
+                          'type': 'Natura'
+                        },
+                      ),
+                    ],
+                  ),
                   const SizedBox(
                     height: 10,
                   ),

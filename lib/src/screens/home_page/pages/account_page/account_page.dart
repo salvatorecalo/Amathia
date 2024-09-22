@@ -9,11 +9,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AccountPage extends ConsumerWidget {
+  const AccountPage({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final email = supabase.auth.currentUser?.email;
     final localizations = AppLocalizations.of(context);
-    Future<void> _signOut(WidgetRef ref) async {
+    Future<void> signOut(WidgetRef ref) async {
       try {
         await supabase.auth.signOut();
         ref
@@ -99,7 +101,7 @@ class AccountPage extends ConsumerWidget {
           ),
           const SizedBox(height: 20),
           TextButton(
-            onPressed: () => _signOut(ref),
+            onPressed: () => signOut(ref),
             child: Text(
               localizations.signOut,
               textAlign: TextAlign.center,

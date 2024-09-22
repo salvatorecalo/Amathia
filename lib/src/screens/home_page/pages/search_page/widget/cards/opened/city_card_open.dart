@@ -83,7 +83,7 @@ class CityOpenCard extends StatelessWidget {
                           style: theme.textTheme.titleLarge?.copyWith(
                             fontWeight: FontWeight.w600,
                             fontSize: 24,
-                          ), // Usa il tema per il testo
+                          ),
                         ),
                       ),
                       const SizedBox(

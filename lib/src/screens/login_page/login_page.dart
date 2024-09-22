@@ -1,4 +1,4 @@
-import 'dart:io'; // Import necessario per controllare la connessione
+// Import necessario per controllare la connessione
 import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
@@ -85,34 +85,9 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  // Metodo per verificare la connessione Internet
-  Future<void> checkUserConnection() async {
-    try {
-      final result = await InternetAddress.lookup('google.com');
-      if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
-        setState(() {
-          hasInternet = true;
-        });
-      }
-    } on SocketException catch (_) {
-      setState(() {
-        hasInternet = false;
-      });
-
-      // Mostra la Snackbar se non c'è connessione
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Connessione internet assente!'),
-          duration: Duration(seconds: 5),
-        ),
-      );
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    checkUserConnection(); // Verifica la connessione quando la pagina viene caricata
   }
 
   @override
