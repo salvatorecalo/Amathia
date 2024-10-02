@@ -10,31 +10,27 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FavoritePage extends ConsumerStatefulWidget {
-  const FavoritePage({super.key});
+  final String userId; // Passa l'ID utente come argomento
+
+  const FavoritePage({super.key, required this.userId}); // Aggiungi userId al costruttore
 
   @override
   _FavoritePageState createState() => _FavoritePageState();
 }
 
 class _FavoritePageState extends ConsumerState<FavoritePage> {
-  String selectedCategory =
-      'All'; // Variabile per tracciare la categoria selezionata
+  String selectedCategory = 'All';
 
   @override
   Widget build(BuildContext context) {
-    final favorites = ref.watch(favoriteProvider);
+    final favorites = ref.watch(favoriteProvider(widget.userId));
     final localizations = AppLocalizations.of(context);
 
-    // Stampa i preferiti per il debug
-    print('Favorites: $favorites');
-    print('Selected Category: $selectedCategory');
-
-    // Filtra i preferiti in base al tipo (categoria) selezionata
+    // Filtra i preferiti in base alla categoria selezionata
     final filteredFavorites = selectedCategory == 'All'
         ? favorites
         : favorites.where((item) {
-            print('Checking item: ${item['title']} with type: ${item['type']}');
-            return item['type'] == selectedCategory;
+            return item.type == selectedCategory;
           }).toList();
 
     return Scaffold(
@@ -44,7 +40,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
       ),
       body: Column(
         children: [
-          // Bottoni di filtro in alto
+          // Bottoni di filtro
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: SingleChildScrollView(
@@ -103,12 +99,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           // Lista dei preferiti filtrati
           Expanded(
             child: filteredFavorites.isEmpty
-                ? Center(
-                    child: Text(
-                      localizations.favoriteEmpty,
-                      textAlign: TextAlign.center,
-                    ),
-                  )
+                ? Center(child: Text(localizations.favoriteEmpty, textAlign: TextAlign.center))
                 : ListView.builder(
                     itemCount: filteredFavorites.length,
                     itemBuilder: (context, index) {
@@ -118,35 +109,34 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(builder: (context) {
-                              print(favoriteItem['type']);
-                              if (favoriteItem['type'] == 'Ricette') {
+                              if (favoriteItem.type == 'Ricette') {
                                 return RecipeOpenCard(
-                                  title: favoriteItem['title'],
-                                  description: favoriteItem['description'],
-                                  image: favoriteItem['image'],
-                                  peopleFor: favoriteItem['peopleFor'],
-                                  time: favoriteItem['time'],
-                                  ingredients: favoriteItem['ingredients'],
+                                  title: favoriteItem.title,
+                                  description: favoriteItem.description,
+                                  image: favoriteItem.image,
+                                  peopleFor: favoriteItem.peopleFor ?? 1,
+                                  time: favoriteItem.time ?? 1,
+                                  ingredients: favoriteItem.ingredients ?? [],
                                 );
-                              } else if (favoriteItem['type'] == 'Borghi') {
+                              } else if (favoriteItem.type == 'Borghi') {
                                 return CityOpenCard(
-                                  title: favoriteItem['title'],
-                                  description: favoriteItem['description'],
-                                  image: favoriteItem['image'],
+                                  title: favoriteItem.title,
+                                  description: favoriteItem.description,
+                                  image: favoriteItem.image,
                                 );
-                              } else if (favoriteItem['type'] == 'Monumenti') {
+                              } else if (favoriteItem.type == 'Monumenti') {
                                 return MonumentOpenCard(
-                                  title: favoriteItem['title'],
-                                  location: favoriteItem['location'],
-                                  description: favoriteItem['description'],
-                                  image: favoriteItem['image'],
+                                  title: favoriteItem.title,
+                                  location: favoriteItem.location!,
+                                  description: favoriteItem.description,
+                                  image: favoriteItem.image,
                                 );
-                              } else if (favoriteItem['type'] == 'Natura') {
+                              } else if (favoriteItem.type == 'Natura') {
                                 return NatureOpenCard(
-                                  title: favoriteItem['title'],
-                                  location: favoriteItem['location'],
-                                  description: favoriteItem['description'],
-                                  image: favoriteItem['image'],
+                                  title: favoriteItem.title,
+                                  location: favoriteItem.location!,
+                                  description: favoriteItem.description,
+                                  image: favoriteItem.image,
                                 );
                               }
                               return const SizedBox.shrink();
@@ -154,20 +144,19 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                           );
                         },
                         child: Container(
-                          margin: const EdgeInsets.only(right: 15),
+                          margin: const EdgeInsets.all(15),
                           child: Card(
                             child: ListTile(
                               leading: Image.network(
-                                favoriteItem['image'],
+                                favoriteItem.image,
                                 fit: BoxFit.fitHeight,
                                 width: 50,
                               ),
-                              title: Text(
-                                favoriteItem['title'],
-                              ),
+                              title: Text(favoriteItem.title),
                               trailing: LikeButton(
-                                itemId: favoriteItem['title'],
-                                itemData: favoriteItem,
+                                itemId: favoriteItem.title,
+                                itemData: favoriteItem.toJson(),
+                                userId: widget.userId, // Passa l'ID utente al LikeButton
                               ),
                             ),
                           ),

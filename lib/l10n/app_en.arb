@@ -26,6 +26,7 @@
   "loginText": "Login",
   "registerText": "Register",
   "dontHaveAnAccount": "Don't have an account?",
+  "alreadyHaveAccountText": "Already have an account?",
   "instructionSent": "Inscruction sent",
   "noProblem": "No problem!\n",
   "associatedMail": "Enter the email associated with your account and we will send you instructions to recover your account.\n",

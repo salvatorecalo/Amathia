@@ -12,6 +12,7 @@ import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:amathia/src/screens/onboard/onboard.dart';
 
 final supabase = Supabase.instance.client;
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
@@ -22,22 +23,25 @@ Future<void> main() async {
   final prefs = await SharedPreferences.getInstance();
   final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
 
+  // Ottieni il userId dall'utente autenticato
+  final userId = supabase.auth.currentUser?.id;
+
   runApp(
     ProviderScope(
-      child: MyApp(isLoggedIn: isLoggedIn),
+      child: MyApp(isLoggedIn: isLoggedIn, userId: userId ?? ''),  // Assicurati di passare l'userId
     ),
   );
 }
 
 class MyApp extends ConsumerWidget {
   final bool isLoggedIn;
+  final String userId;  // Aggiungi userId come parametro
 
-  const MyApp({super.key, required this.isLoggedIn});
+  const MyApp({super.key, required this.isLoggedIn, required this.userId});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale =
-        ref.watch(localeProvider) ?? const Locale('en'); // Usa localeProvider
+    final locale = ref.watch(localeProvider) ?? const Locale('en'); // Usa localeProvider
     final isDarkTheme = ref.watch(darkThemeProvider);
 
     return MaterialApp(
@@ -49,7 +53,7 @@ class MyApp extends ConsumerWidget {
       routes: {
         '/': (_) => const OnBoard(),
         '/login': (_) => const LoginPage(),
-        '/homepage': (_) => const HomePage(),
+        '/homepage': (_) => HomePage(userId: userId),  // Passa l'userId a HomePage
       },
       supportedLocales: const [
         Locale('en'),

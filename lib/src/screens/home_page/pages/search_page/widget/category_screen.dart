@@ -14,12 +14,13 @@ class CategoryScreen extends StatefulWidget {
   final Color bgcolor;
   final String category;
   final String type;
-
+  final String userId;
   const CategoryScreen({
     super.key,
     required this.bgcolor,
     required this.category,
     required this.type,
+    required this.userId,
   });
 
   @override
@@ -53,8 +54,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
         if (language == 'en') {
           if (widget.type == "Ricette") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(10),
               child: RecipeCard(
+                userId: widget.userId,
                 title: e['title'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -66,8 +68,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Monumenti") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: MonumentsCard(
+                userId: widget.userId,
                 location: e['location'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -77,8 +81,9 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Natura") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
               child: NatureCard(
+                userId: widget.userId,
                 location: e['location'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -88,8 +93,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Borghi") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: CityCard(
+                userId: widget.userId,
                 description: e['description_en'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -101,8 +108,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
         } else {
           if (widget.type == "Ricette") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: RecipeCard(
+                userId: widget.userId,
                 title: e['title'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -114,8 +123,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Monumenti") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: MonumentsCard(
+                userId: widget.userId,
                 location: e['location'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -125,8 +136,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Natura") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: NatureCard(
+                userId: widget.userId,
                 location: e['location'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -136,8 +149,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
             );
           } else if (widget.type == "Borghi") {
             return Container(
-              margin: const EdgeInsets.only(right: 10),
+              margin: const EdgeInsets.all(20),
+
               child: CityCard(
+                userId: widget.userId,
                 description: e['description_it'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),

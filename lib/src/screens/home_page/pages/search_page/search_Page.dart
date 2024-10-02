@@ -33,7 +33,11 @@ extension LocalizationExtension on AppLocalizations {
 }
 
 class SearchPage extends StatefulWidget {
-  const SearchPage({super.key});
+  final String userId;
+  const SearchPage({
+    super.key,
+    required this.userId,
+  });
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -65,6 +69,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: RecipeCard(
+                  userId: widget.userId,
                   title: title,
                   image: image,
                   description: e['description_en'],
@@ -77,6 +82,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: MonumentsCard(
+                  userId: widget.userId,
                   location: location,
                   image: image,
                   title: title,
@@ -87,6 +93,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: NatureCard(
+                    userId: widget.userId,
                     location: location,
                     image: image,
                     title: title,
@@ -96,6 +103,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
+                  userId: widget.userId,
                   description: e['description_en'],
                   image: image,
                   title: title,
@@ -108,6 +116,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: RecipeCard(
+                  userId: widget.userId,
                   title: title,
                   image: image,
                   description: e['description_it'],
@@ -120,6 +129,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: MonumentsCard(
+                  userId: widget.userId,
                   location: location,
                   image: image,
                   title: title,
@@ -130,6 +140,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: NatureCard(
+                  userId: widget.userId,
                   location: location,
                   image: image,
                   title: title,
@@ -140,6 +151,7 @@ class _SearchPageState extends State<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
+                  userId: widget.userId,
                   description: e['description_it'],
                   image: image,
                   title: title,
@@ -214,7 +226,9 @@ class _SearchPageState extends State<SearchPage> {
           SliverToBoxAdapter(
             child: Container(
               margin: const EdgeInsets.symmetric(vertical: 30),
-              child: const CategoryButtons(),
+              child: CategoryButtons(
+                userId: widget.userId,
+              ),
             ),
           ),
           ...tables.map((table) {

@@ -7,11 +7,13 @@ class CityCard extends StatelessWidget {
   String title;
   String image;
   String description;
+  final String userId;
   CityCard({
     super.key,
     required this.title,
     required this.image,
     required this.description,
+    required this.userId,
   });
 
   @override
@@ -60,7 +62,8 @@ class CityCard extends StatelessWidget {
                     ),
                   ),
                   LikeButton(
-                    itemId: title, // Unique identifier for the item
+                    itemId: title, 
+                    userId: userId,
                     itemData: {
                       'title': title,
                       'image': image,

@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CategoryButtons extends StatelessWidget {
-  const CategoryButtons({super.key});
+  final String userId;
+  const CategoryButtons({super.key, required this.userId,});
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +16,7 @@ class CategoryButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CategoryButton(
+              userId: userId,
               colore: Colors.orangeAccent,
               text: localizations!.recipes,
               icon: Icons.restaurant,
@@ -25,6 +27,7 @@ class CategoryButtons extends StatelessWidget {
               width: 10,
             ),
             CategoryButton(
+              userId: userId,
               colore: Colors.pinkAccent,
               text: localizations.monuments,
               icon: Icons.account_balance,
@@ -40,6 +43,7 @@ class CategoryButtons extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             CategoryButton(
+              userId: userId,
               colore: Colors.greenAccent,
               text: localizations.nature,
               icon: Icons.energy_savings_leaf,
@@ -50,6 +54,7 @@ class CategoryButtons extends StatelessWidget {
               width: 10,
             ),
             CategoryButton(
+              userId: userId,
               colore: Colors.blueAccent,
               text: localizations.cities,
               icon: Icons.castle,

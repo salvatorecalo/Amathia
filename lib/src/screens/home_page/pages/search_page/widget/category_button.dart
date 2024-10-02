@@ -7,7 +7,7 @@ class CategoryButton extends StatelessWidget {
   final String text;
   final String title;
   final String type;
-
+  final String userId;
   const CategoryButton({
     super.key,
     required this.colore,
@@ -15,6 +15,7 @@ class CategoryButton extends StatelessWidget {
     required this.text,
     required this.title, 
     required this.type,
+    required this.userId,
   });
 
   @override
@@ -38,6 +39,7 @@ class CategoryButton extends StatelessWidget {
                 context,
                 MaterialPageRoute(
                   builder: (context) => CategoryScreen(
+                    userId: userId,
                     bgcolor: colore,
                     category: title,
                     type: type,

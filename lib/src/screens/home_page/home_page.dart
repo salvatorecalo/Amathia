@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String userId;
+
+  const HomePage({super.key, required this.userId});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -28,10 +30,10 @@ class _HomePageState extends State<HomePage> {
       onPageChanged: (index) {
         pageChanged(index);
       },
-      children: const <Widget>[
-        SearchPage(),
-        FavoritePage(),
-        AccountPage(),
+      children: <Widget>[
+        SearchPage(userId: widget.userId,),
+        FavoritePage(userId: widget.userId,),
+        const AccountPage(),
       ],
     );
   }

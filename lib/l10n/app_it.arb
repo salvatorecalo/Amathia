@@ -26,6 +26,7 @@
   "loginText": "Accedi",
   "registerText": "Registrati",
   "dontHaveAnAccount": "Non hai un account?",
+  "alreadyHaveAccountText": "Hai già un account?",
   "instructionSent": "Istruzioni inviate",
   "noProblem": "Nessun problema!\n",
   "associatedMail": "Enter the email associated with your account and we will send you instructions to recover your account.\n",

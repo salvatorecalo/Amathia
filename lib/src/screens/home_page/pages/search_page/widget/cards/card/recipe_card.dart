@@ -10,6 +10,7 @@ class RecipeCard extends StatelessWidget {
   final int time;
   final int peopleFor;
   List ingredients;
+  final String userId;
   RecipeCard({
     super.key,
     required this.title,
@@ -18,6 +19,7 @@ class RecipeCard extends StatelessWidget {
     required this.time,
     required this.peopleFor,
     required this.ingredients,
+    required this.userId,
   });
 
   @override
@@ -69,6 +71,7 @@ class RecipeCard extends StatelessWidget {
                         ),
                       ),
                       LikeButton(
+                        userId: userId,
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,

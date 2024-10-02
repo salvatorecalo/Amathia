@@ -8,12 +8,14 @@ class NatureCard extends StatelessWidget {
   String image;
   String location;
   String description;
+  final String userId;
   NatureCard({
     super.key,
     required this.title,
     required this.image,
     required this.location,
     required this.description,
+    required this.userId,
   });
 
   @override
@@ -65,6 +67,7 @@ class NatureCard extends StatelessWidget {
                         ),
                       ),
                       LikeButton(
+                        userId: userId,
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,

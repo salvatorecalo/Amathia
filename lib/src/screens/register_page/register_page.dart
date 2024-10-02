@@ -337,8 +337,8 @@ class _RegisterPageState extends State<RegisterPage> {
                                     : Colors.black,
                               ),
                               children: [
-                                const TextSpan(
-                                  text: 'Hai già un account? ',
+                                TextSpan(
+                                  text: localizations.alreadyHaveAccountText,
                                 ),
                                 TextSpan(
                                   text: localizations.loginText,

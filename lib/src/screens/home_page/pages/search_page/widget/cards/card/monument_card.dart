@@ -8,12 +8,14 @@ class MonumentsCard extends StatelessWidget {
   String location;
   String description;
   String image;
+  final String userId;
   MonumentsCard({
     super.key,
     required this.title,
     required this.location,
     required this.description,
     required this.image,
+    required this.userId,
   });
 
   @override
@@ -65,6 +67,7 @@ class MonumentsCard extends StatelessWidget {
                         ),
                       ),
                       LikeButton(
+                        userId: userId,
                         itemId: title, // Unique identifier for the item
                         itemData: {
                           'title': title,
