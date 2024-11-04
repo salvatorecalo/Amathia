@@ -34,8 +34,7 @@ class _RegisterPageState extends State<RegisterPage> {
     Future<String> setError(e) async {
       erroreLogin = e.statusCode;
       if (e.statusCode == "400") {
-        erroreLogin =
-            localizations!.alreadyHaveAnAccountError;
+        erroreLogin = localizations!.alreadyHaveAccountText;
       } else if (e.statusCode == '429') {
         erroreLogin = localizations!.tooManyRequests;
       } else if (e.statusCode == '500') {
