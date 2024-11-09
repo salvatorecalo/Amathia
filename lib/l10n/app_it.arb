@@ -81,5 +81,10 @@
   "termsText2": "Termini di Servizio",
   "noInternetTitle": "Nessuna connessione",
   "noInternetMessage": "Devi essere connesso alla rete per usare l'app",
-  "seeOnGithub": "Guarda il progetto su github"
+  "seeOnGithub": "Guarda il progetto su github",
+  "getInspired": "Non sai cosa fare? Lasciati ispirare...",
+  "recipeSuggestionText": "Consigliami una ricetta da fare",
+  "citySuggestionText": "Consigliami un borgo da visitare",
+  "monumentsSuggestionText": "Consigliami un monumento da visitare",
+  "natureSuggestionText": "Consigliami una posto da scoprire"
 }

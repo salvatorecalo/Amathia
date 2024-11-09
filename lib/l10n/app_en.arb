@@ -77,5 +77,10 @@
   "termsText2": "Terms of Services",
   "noInternetTitle": "No connection",
   "noInternetMessage": "You must be connected to use our app",
-  "seeOnGithub": "See the project on github"
+  "seeOnGithub": "See the project on github",
+  "getInspired": "Don't know what to do? Get inspired...",
+  "recipeSuggestionText": "Advise me a recipe to do",
+  "citySuggestionText": "Advise me a city to visit",
+  "monumentsSuggestionText": "Advise me a monuments to visit",
+  "natureSuggestionText": "Advise me a place do explore"
 }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/random_advice_group.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -274,6 +275,19 @@ class _SearchPageState extends State<SearchPage> {
               ),
             );
           }),
+          SliverToBoxAdapter(
+            child: Column(
+              children: [
+                Text(
+                  localizations!.getInspired,
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+      RandomAdviceGroup(widgetGenerated: fetchedData),              ],
+            ),
+          )
         ],
       ),
     );
