@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends ConsumerWidget {
   const AccountPage({super.key});
@@ -109,6 +110,20 @@ class AccountPage extends ConsumerWidget {
                 color: blue,
               ),
             ),
+          ),
+          const SizedBox(height: 20,),
+          ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
+            label: Text(
+              localizations.seeOnGithub,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                color: white,
+              ),
+            ),
+            onPressed: () async {
+             await launchUrl(Uri.parse('https://github.com/salvatorecalo/Amathia'));
+            },
           ),
         ],
       ),

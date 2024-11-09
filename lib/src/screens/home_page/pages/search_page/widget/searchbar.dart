@@ -1,100 +1,182 @@
+import 'package:amathia/provider/dark_theme_provider.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class SearchBarApp extends StatefulWidget {
-  const SearchBarApp({super.key});
-
+class SearchDropdown extends ConsumerStatefulWidget {
   @override
-  State<SearchBarApp> createState() => _SearchBarAppState();
+  _SearchDropdownState createState() => _SearchDropdownState();
 }
 
-class _SearchBarAppState extends State<SearchBarApp> {
-  final supabase = Supabase.instance.client;
-  final SearchController _searchController = SearchController();
-  List<Map<String, dynamic>> searchResults = [];
-  bool isLoading = false;
+class _SearchDropdownState extends ConsumerState<SearchDropdown> {
+  final TextEditingController _controller = TextEditingController();
+  final SupabaseClient _supabase = Supabase.instance.client;
 
-  Future<void> _search(String query) async {
-    print("Searching for: $query");
-    setState(() {
-      isLoading = true;
-    });
+  Map<String, List<Map<String, dynamic>>> searchResults = {}; // Map of results per table
+  bool isDropdownVisible = false;
+  final SupabaseClient client = Supabase.instance.client;
 
-    final ricetteResponse =
-        await supabase.from('Ricette').select().ilike('title', '%$query%');
-    print("Ricette response: $ricetteResponse");
-
-    final monumentiResponse =
-        await supabase.from('Monumenti').select().ilike('title', '%$query%');
-    print("Monumenti response: $monumentiResponse");
-
-    final naturaResponse =
-        await supabase.from('Natura').select().ilike('title', '%$query%');
-    print("Natura response: $naturaResponse");
-
-    final borghiResponse =
-        await supabase.from('Borghi').select().ilike('title', '%$query%');
-    print("Borghi response: $borghiResponse");
-
-    setState(() {
-      searchResults = [
-        ...ricetteResponse.map((e) => {'type': 'Ricetta', 'data': e}),
-        ...monumentiResponse.map((e) => {'type': 'Monumento', 'data': e}),
-        ...naturaResponse.map((e) => {'type': 'Natura', 'data': e}),
-        ...borghiResponse.map((e) => {'type': 'Borgo', 'data': e}),
-      ];
-      isLoading = false;
-    });
-
-    if (searchResults.isEmpty) {
-      print("No results found");
+  Future<void> search(String query) async {
+    final searchText = query.trim().toLowerCase();
+    print("Search text $searchText");
+    
+    // If the search field is empty, clear results and hide the dropdown
+    if (searchText.isEmpty) {
+      setState(() {
+        searchResults = {};
+        isDropdownVisible = false;
+      });
+      return;
     }
+
+    // Map to accumulate results
+    Map<String, List<Map<String, dynamic>>> results = {};
+
+    // Query the "Natura" table
+    final naturaResponse = await _supabase
+        .from('Natura')
+        .select()
+        .textSearch('title', searchText);
+    if (naturaResponse.isNotEmpty) {
+      results['Natura'] = naturaResponse;
+    }
+
+    // Query the "Ricette" table
+    final ricetteResponse = await _supabase
+        .from('Ricette')
+        .select()
+        .textSearch('title', searchText);
+    if (ricetteResponse.isNotEmpty) {
+      results['Ricette'] = ricetteResponse;
+    }
+
+    // Query the "Borghi" table
+    final borghiResponse = await _supabase
+        .from('Borghi')
+        .select()
+        .textSearch('title', searchText);
+    if (borghiResponse.isNotEmpty) {
+      results['Borghi'] = borghiResponse;
+    }
+
+    // Query the "Monumenti" table
+    final monumentiResponse = await _supabase
+        .from('Monumenti')
+        .select()
+        .textSearch('title', searchText);
+    if (monumentiResponse.isNotEmpty) {
+      results['Monumenti'] = monumentiResponse;
+    }
+
+    // Update state with the results and show dropdown only if there are results
+    setState(() {
+      searchResults = results;
+      isDropdownVisible = results.isNotEmpty;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-
-    return SearchAnchor(
-      builder: (BuildContext context, SearchController controller) {
-        return SearchBar(
-          hintText: localizations!.searchText,
-          controller: _searchController,
-          padding: const WidgetStatePropertyAll<EdgeInsets>(
-              EdgeInsets.symmetric(horizontal: 16.0)),
-          onTap: () {
-            controller.openView();
-            print("SearchBar tapped");
-          },
-          onChanged: (query) {
-            print("Search query changed: $query");
-            _search(query);
-          },
-          leading: const Icon(Icons.search),
+    final isDark = ref.watch(darkThemeProvider);
+    return Column(
+    children: [
+      // Search text field
+      TextField(
+        controller: _controller,
+        onChanged: search,
+        decoration: InputDecoration(
+          labelText: 'Search...',
+          prefixIcon: Icon(Icons.search),
+        ),
+      ),
+        
+      // Dropdown menu displaying results for each table
+      if (isDropdownVisible)
+        Container(
+          color: isDark ? Colors.black : Colors.white, // Use Colors.black and Colors.white directly or import custom constants
+          child: Expanded(
+            child: ListView(
+              shrinkWrap: true,
+              children: searchResults.entries.expand((entry) {
+                final tableName = entry.key;
+                final tableResults = entry.value;
+                    
+                return [
+                  ...tableResults.map((result) {
+                    return ListTile(
+                      leading: result['image'] != null
+                          ? Image.network(
+                              client.storage.from(tableName).getPublicUrl(result['image']),
+                              width: 50,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(Icons.image_not_supported, size: 50), // Placeholder icon if image is missing
+                      title: Text(result['title'] ?? 'No title'),
+                      onTap: () {
+                        if (tableName == 'Ricette') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RecipeOpenCard(
+                                title: result['title'],
+                                description: result['description_it'],
+                                image: result['image'],
+                                peopleFor: result['peopleFor'],
+                                time: result['time'],
+                                ingredients: result['ingredients_it'],
+                              ),
+                            ),
+                          );
+                        } else if (tableName == 'Monumenti') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MonumentOpenCard(
+                                title: result['title'],
+                                description: result['description_it'],
+                                location: result['location'],
+                                image: result['image'],
+                              ),
+                            ),
+                          );
+                        } else if (tableName == 'Borghi') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CityOpenCard(
+                                title: result['title'],
+                                description: result['description_it'],
+                                image: result['image'],
+                              ),
+                            ),
+                          );
+                        } else if (tableName == 'Natura') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NatureOpenCard(
+                                title: result['title'],
+                                location: result['location'],
+                                description: result['description_it'],
+                                image: result['image'],
+                              ),
+                            ),
+                          );
+                        }
+                      },
+                    );
+                  }).toList(),
+                ];
+              }).toList(),
+            ),
+          ),
+        ),
+    ],
         );
-      },
-      suggestionsBuilder: (BuildContext context, SearchController controller) {
-        if (isLoading) {
-          print("Loading...");
-          return [const Center(child: CircularProgressIndicator())];
-        }
-
-        print("Search results: $searchResults");
-        return List<ListTile>.generate(searchResults.length, (int index) {
-          final result = searchResults[index];
-          final String item = result['data']['title'] ?? 'Senza nome';
-
-          return ListTile(
-            title: Text(item),
-            onTap: () {
-              setState(() {
-                controller.closeView(item);
-              });
-            },
-          );
-        });
-      },
-    );
   }
 }

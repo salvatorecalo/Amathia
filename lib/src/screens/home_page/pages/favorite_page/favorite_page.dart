@@ -156,7 +156,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                               trailing: LikeButton(
                                 itemId: favoriteItem.title,
                                 itemData: favoriteItem.toJson(),
-                                userId: widget.userId, // Passa l'ID utente al LikeButton
+                                userId: widget.userId,
                               ),
                             ),
                           ),

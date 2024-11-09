@@ -80,5 +80,6 @@
   "termsText1": "Crendo un account, accetti i nostri ",
   "termsText2": "Termini di Servizio",
   "noInternetTitle": "Nessuna connessione",
-  "noInternetMessage": "Devi essere connesso alla rete per usare l'app"
+  "noInternetMessage": "Devi essere connesso alla rete per usare l'app",
+  "seeOnGithub": "Guarda il progetto su github"
 }

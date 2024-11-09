@@ -76,5 +76,6 @@
   "termsText1": "Creating an account, you accept our ",
   "termsText2": "Terms of Services",
   "noInternetTitle": "No connection",
-  "noInternetMessage": "You must be connected to use our app"
+  "noInternetMessage": "You must be connected to use our app",
+  "seeOnGithub": "See the project on github"
 }

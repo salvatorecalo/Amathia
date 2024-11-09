@@ -214,10 +214,10 @@ class _SearchPageState extends State<SearchPage> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const SliverPadding(
-            padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
+          SliverPadding(
+            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
             sliver: SliverAppBar(
-              flexibleSpace: SearchBarApp(),
+              flexibleSpace: Stack(children: [SearchDropdown()]),
               backgroundColor: Colors.transparent,
               shadowColor: Colors.transparent,
               foregroundColor: Colors.transparent,
