@@ -1,3 +1,4 @@
+import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/monument_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/nature_card.dart';
@@ -7,15 +8,45 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/ope
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RandomAdviceThing extends StatelessWidget {
   final String tableName;
   final Widget randomWidget;
-
+  
   const RandomAdviceThing({super.key, required this.tableName, required this.randomWidget});
-
+  
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context);
+    String getString(tableName){
+      String txt;
+        if (tableName == "Ricette"){
+          return txt = localizations!.recipeSuggestionText;
+        } else if (tableName == "Monumenti"){
+          return txt = localizations!.monumentsSuggestionText;
+        } else if (tableName == "Natura"){
+          return txt = localizations!.natureSuggestionText;
+        } else if (tableName == "Borghi") {
+          return txt = localizations!.citySuggestionText;
+        }
+        return "";
+    }
+
+    Color getColor(tableName){
+      Color color;
+        if (tableName == "Ricette"){
+          return color = Colors.orangeAccent;
+        } else if (tableName == "Monumenti"){
+          return color = Colors.pinkAccent;
+        } else if (tableName == "Natura"){
+          return color = Colors.greenAccent;
+        } else if (tableName == "Borghi") {
+          return color = Colors.blueAccent;
+        }
+        return Colors.grey;
+    }
+
     return GestureDetector(
       onTap: () {
         if (tableName == "Ricette" && randomWidget is RecipeCard) {
@@ -33,6 +64,7 @@ class RandomAdviceThing extends StatelessWidget {
             ),
           );
         } else if (tableName == "Monumenti" && randomWidget is MonumentsCard) {
+          String txt = localizations!.citySuggestionText;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -45,6 +77,7 @@ class RandomAdviceThing extends StatelessWidget {
             ),
           );
         } else if (tableName == "Natura" && randomWidget is NatureCard) {
+          String txt = localizations!.natureSuggestionText;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -57,6 +90,7 @@ class RandomAdviceThing extends StatelessWidget {
             ),
           );
         } else if (tableName == "Borghi" && randomWidget is CityCard) {
+          final txt = localizations!.monumentsSuggestionText;
           Navigator.push(
             context,
             MaterialPageRoute(
@@ -69,13 +103,17 @@ class RandomAdviceThing extends StatelessWidget {
           );
         }
       },
-      child: Card(
-        elevation: 4,
-        margin: const EdgeInsets.symmetric(vertical: 10),
-        child: ListTile(
-          title: Text(tableName),
-          subtitle: Text('Tap to see a random item'),
-          trailing: Icon(Icons.arrow_forward),
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 18),
+        child: Card(
+          color: getColor(tableName),
+          elevation: 4,
+          margin: const EdgeInsets.symmetric(vertical: 10),
+          child: ListTile(
+            title: Text(tableName, style: TextStyle(color: white),),
+            subtitle: Text(getString(tableName), style: TextStyle(color: white),),
+            trailing: Icon(Icons.arrow_forward, color: white,),
+          ),
         ),
       ),
     );

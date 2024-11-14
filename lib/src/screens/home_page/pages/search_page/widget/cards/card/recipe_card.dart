@@ -7,7 +7,7 @@ class RecipeCard extends StatelessWidget {
   final String title;
   final String description;
   final String image;
-  final int time;
+  final String time;
   final int peopleFor;
   List ingredients;
   final String userId;
@@ -93,7 +93,7 @@ class RecipeCard extends StatelessWidget {
                       const Icon(Icons.schedule, size: 18),
                       const SizedBox(width: 5),
                       Text(
-                        "$time min",
+                        time,
                         style: const TextStyle(fontSize: 18),
                       ),
                     ],

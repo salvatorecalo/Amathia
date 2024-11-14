@@ -1,4 +1,5 @@
 import 'package:amathia/provider/dark_theme_provider.dart';
+import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
@@ -11,7 +12,6 @@ class SearchDropdown extends ConsumerStatefulWidget {
   @override
   _SearchDropdownState createState() => _SearchDropdownState();
 }
-
 class _SearchDropdownState extends ConsumerState<SearchDropdown> {
   final TextEditingController _controller = TextEditingController();
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -23,8 +23,8 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
   Future<void> search(String query) async {
     final searchText = query.trim().toLowerCase();
     print("Search text $searchText");
-    
-    // If the search field is empty, clear results and hide the dropdown
+
+    // Se il campo di ricerca è vuoto, cancella i risultati e nascondi il dropdown
     if (searchText.isEmpty) {
       setState(() {
         searchResults = {};
@@ -33,10 +33,10 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
       return;
     }
 
-    // Map to accumulate results
+    // Mappa per accumulare i risultati
     Map<String, List<Map<String, dynamic>>> results = {};
 
-    // Query the "Natura" table
+    // Esegui la query sulle tabelle
     final naturaResponse = await _supabase
         .from('Natura')
         .select()
@@ -45,7 +45,6 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
       results['Natura'] = naturaResponse;
     }
 
-    // Query the "Ricette" table
     final ricetteResponse = await _supabase
         .from('Ricette')
         .select()
@@ -54,7 +53,6 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
       results['Ricette'] = ricetteResponse;
     }
 
-    // Query the "Borghi" table
     final borghiResponse = await _supabase
         .from('Borghi')
         .select()
@@ -63,7 +61,6 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
       results['Borghi'] = borghiResponse;
     }
 
-    // Query the "Monumenti" table
     final monumentiResponse = await _supabase
         .from('Monumenti')
         .select()
@@ -72,7 +69,7 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
       results['Monumenti'] = monumentiResponse;
     }
 
-    // Update state with the results and show dropdown only if there are results
+    // Aggiorna lo stato con i risultati e mostra il dropdown solo se ci sono risultati
     setState(() {
       searchResults = results;
       isDropdownVisible = results.isNotEmpty;
@@ -83,100 +80,111 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
   Widget build(BuildContext context) {
     final isDark = ref.watch(darkThemeProvider);
     return Column(
-    children: [
-      // Search text field
-      TextField(
-        controller: _controller,
-        onChanged: search,
-        decoration: InputDecoration(
-          labelText: 'Search...',
-          prefixIcon: Icon(Icons.search),
-        ),
-      ),
-        
-      // Dropdown menu displaying results for each table
-      if (isDropdownVisible)
-        Container(
-          color: isDark ? Colors.black : Colors.white, // Use Colors.black and Colors.white directly or import custom constants
-          child: Expanded(
-            child: ListView(
-              shrinkWrap: true,
-              children: searchResults.entries.expand((entry) {
-                final tableName = entry.key;
-                final tableResults = entry.value;
-                    
-                return [
-                  ...tableResults.map((result) {
-                    return ListTile(
-                      leading: result['image'] != null
-                          ? Image.network(
-                              client.storage.from(tableName).getPublicUrl(result['image']),
-                              width: 50,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            )
-                          : Icon(Icons.image_not_supported, size: 50), // Placeholder icon if image is missing
-                      title: Text(result['title'] ?? 'No title'),
-                      onTap: () {
-                        if (tableName == 'Ricette') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => RecipeOpenCard(
-                                title: result['title'],
-                                description: result['description_it'],
-                                image: result['image'],
-                                peopleFor: result['peopleFor'],
-                                time: result['time'],
-                                ingredients: result['ingredients_it'],
-                              ),
-                            ),
-                          );
-                        } else if (tableName == 'Monumenti') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MonumentOpenCard(
-                                title: result['title'],
-                                description: result['description_it'],
-                                location: result['location'],
-                                image: result['image'],
-                              ),
-                            ),
-                          );
-                        } else if (tableName == 'Borghi') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CityOpenCard(
-                                title: result['title'],
-                                description: result['description_it'],
-                                image: result['image'],
-                              ),
-                            ),
-                          );
-                        } else if (tableName == 'Natura') {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => NatureOpenCard(
-                                title: result['title'],
-                                location: result['location'],
-                                description: result['description_it'],
-                                image: result['image'],
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                    );
-                  }).toList(),
-                ];
-              }).toList(),
-            ),
+      children: [
+        // Campo di testo per la ricerca
+        TextField(
+          controller: _controller,
+          onChanged: search,
+          decoration: InputDecoration(
+            fillColor: isDark ? Colors.black : white,
+            labelText: 'Search...',
+            prefixIcon: Icon(Icons.search),
           ),
         ),
-    ],
-        );
+        
+        // Dropdown in sovraimpressione
+        if (isDropdownVisible)
+          Stack(
+            children:[ Material(
+              child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: 300, // Impostiamo un'altezza massima per evitare overflow
+                ),
+                decoration: BoxDecoration(
+                  color: isDark ? Colors.black : Colors.white,
+                  boxShadow: [BoxShadow(blurRadius: 5, color: Colors.black26)],
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: ListView(
+                  shrinkWrap: true,
+                  children: searchResults.entries.expand((entry) {
+                    final tableName = entry.key;
+                    final tableResults = entry.value;
+            
+                    return [
+                      ...tableResults.map((result) {
+                        return ListTile(
+                          leading: result['image'] != null
+                              ? Image.network(
+                                  client.storage.from(tableName).getPublicUrl(result['image']),
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.cover,
+                                )
+                              : Icon(Icons.image_not_supported, size: 50), // Icona di fallback
+                          title: Text(result['title'] ?? 'No title'),
+                          onTap: () {
+                            // Gestione del tap sui risultati
+                            if (tableName == 'Ricette') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => RecipeOpenCard(
+                                    title: result['title'],
+                                    description: result['description_it'],
+                                    image: result['image'],
+                                    peopleFor: result['peopleFor'],
+                                    time: result['time'],
+                                    ingredients: result['ingredients_it'],
+                                  ),
+                                ),
+                              );
+                            } else if (tableName == 'Monumenti') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => MonumentOpenCard(
+                                    title: result['title'],
+                                    description: result['description_it'],
+                                    location: result['location'],
+                                    image: result['image'],
+                                  ),
+                                ),
+                              );
+                            } else if (tableName == 'Borghi') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CityOpenCard(
+                                    title: result['title'],
+                                    description: result['description_it'],
+                                    image: result['image'],
+                                  ),
+                                ),
+                              );
+                            } else if (tableName == 'Natura') {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => NatureOpenCard(
+                                    title: result['title'],
+                                    location: result['location'],
+                                    description: result['description_it'],
+                                    image: result['image'],
+                                  ),
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }).toList(),
+                    ];
+                  }).toList(),
+                ),
+              ),
+            ),],
+          ),
+      ],
+    );
   }
 }

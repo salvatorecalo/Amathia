@@ -115,7 +115,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                   description: favoriteItem.description,
                                   image: favoriteItem.image,
                                   peopleFor: favoriteItem.peopleFor ?? 1,
-                                  time: favoriteItem.time ?? 1,
+                                  time: favoriteItem.time.toString(),
                                   ingredients: favoriteItem.ingredients ?? [],
                                 );
                               } else if (favoriteItem.type == 'Borghi') {

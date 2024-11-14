@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:amathia/provider/dark_theme_provider.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/random_advice_group.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/city_card.dart';
@@ -33,7 +35,7 @@ extension LocalizationExtension on AppLocalizations {
   }
 }
 
-class SearchPage extends StatefulWidget {
+class SearchPage extends ConsumerStatefulWidget {
   final String userId;
   const SearchPage({
     super.key,
@@ -44,7 +46,7 @@ class SearchPage extends StatefulWidget {
   _SearchPageState createState() => _SearchPageState();
 }
 
-class _SearchPageState extends State<SearchPage> {
+class _SearchPageState extends ConsumerState<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
@@ -74,7 +76,7 @@ class _SearchPageState extends State<SearchPage> {
                   title: title,
                   image: image,
                   description: e['description_en'],
-                  time: e['time'] ?? 2,
+                  time: e['time'],
                   peopleFor: e['peopleFor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_en'] ?? []),
                 ),
@@ -121,7 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                   title: title,
                   image: image,
                   description: e['description_it'],
-                  time: e['time'] ?? 2,
+                  time: e['time'],
                   peopleFor: e['peopleFor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_it'] ?? []),
                 ),
@@ -211,15 +213,16 @@ class _SearchPageState extends State<SearchPage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-
+    final isDark = ref.watch(darkThemeProvider);
     return Scaffold(
       body: CustomScrollView(
         slivers: [
           SliverPadding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
             sliver: SliverAppBar(
-              flexibleSpace: Stack(children: [SearchDropdown()]),
-              backgroundColor: Colors.transparent,
+              toolbarHeight: 115,
+              flexibleSpace: SearchDropdown(),
+              backgroundColor: isDark ? const Color(0x000000) : white,
               shadowColor: Colors.transparent,
               foregroundColor: Colors.transparent,
             ),
@@ -285,7 +288,8 @@ class _SearchPageState extends State<SearchPage> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-      RandomAdviceGroup(widgetGenerated: fetchedData),              ],
+                RandomAdviceGroup(widgetGenerated: fetchedData),
+              ],
             ),
           )
         ],

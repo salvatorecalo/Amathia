@@ -61,7 +61,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 description: e['description_en'],
-                time: e['time'] ?? 2,
+                time: e['time'],
                 peopleFor: e['peopleFor'] ?? 1,
                 ingredients: List<String>.from(e['ingredients_en'] ?? []),
               ),

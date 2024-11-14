@@ -6,7 +6,7 @@ class RecipeOpenCard extends StatelessWidget {
   final String title;
   final String description;
   final String image;
-  final int time;
+  final String time;
   final int peopleFor;
   final List<dynamic> ingredients;
 
