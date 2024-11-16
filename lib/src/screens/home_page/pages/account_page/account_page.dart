@@ -6,6 +6,7 @@ import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,6 +20,8 @@ class AccountPage extends ConsumerWidget {
     Future<void> signOut(WidgetRef ref) async {
       try {
         await supabase.auth.signOut();
+        final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', false); // false indica che il login è stato completato
         ref
             .read(localeProvider.notifier)
             .setLocale('en'); // Reset locale if needed
@@ -35,13 +38,22 @@ class AccountPage extends ConsumerWidget {
     }
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations!.userProfile),
-        centerTitle: true,
-      ),
       body: ListView(
         padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
         children: [
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 20,
+            ),
+            child: Text(
+              localizations!.userProfile,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           Text(
             "$email",
             textAlign: TextAlign.center,
@@ -111,9 +123,12 @@ class AccountPage extends ConsumerWidget {
               ),
             ),
           ),
-          const SizedBox(height: 20,),
+          const SizedBox(
+            height: 20,
+          ),
           ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
+            style: ElevatedButton.styleFrom(
+                backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
             label: Text(
               localizations.seeOnGithub,
               textAlign: TextAlign.center,
@@ -122,7 +137,8 @@ class AccountPage extends ConsumerWidget {
               ),
             ),
             onPressed: () async {
-             await launchUrl(Uri.parse('https://github.com/salvatorecalo/Amathia'));
+              await launchUrl(
+                  Uri.parse('https://github.com/salvatorecalo/Amathia'));
             },
           ),
         ],

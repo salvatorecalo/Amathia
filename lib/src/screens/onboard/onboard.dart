@@ -1,15 +1,14 @@
-import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:flutter/material.dart';
-import '../../costants/costants.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import './Model/onboard_model.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import '../../costants/costants.dart';
+import './Model/onboard_model.dart';
+import 'package:amathia/src/screens/login_page/login_page.dart';
 
 class OnBoard extends StatefulWidget {
   const OnBoard({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _OnBoardState createState() => _OnBoardState();
 }
 
@@ -30,10 +29,17 @@ class _OnBoardState extends State<OnBoard> {
     super.dispose();
   }
 
-  _storeOnboardInfo() async {
-    int isViewed = 0;
+  // Salva lo stato di completamento dell'onboarding
+  Future<void> _storeOnboardInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('onBoard', isViewed);
+    await prefs.setInt('onBoard', 0); // 0 indica che l'onboarding è stato completato
+  }
+
+  // Controlla se l'utente ha già visto l'onboarding
+  static Future<bool> hasCompletedOnboarding() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    int? isViewed = prefs.getInt('onBoard');
+    return isViewed == 0; // True se l'onboarding è già stato completato
   }
 
   @override
@@ -41,12 +47,13 @@ class _OnBoardState extends State<OnBoard> {
     final localizations = AppLocalizations.of(context);
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
 
+    // Definizione delle schermate di onboarding
     screens = <OnboardModel>[
       OnboardModel(
         img: "assets/santAndrea_onboard.png",
         text: localizations!.explore,
         desc: localizations.exploredesc,
-        bg: isDarkTheme ? Colors.black : Colors.white, // Usa il colore del tema
+        bg: isDarkTheme ? Colors.black : Colors.white,
         button: Colors.white,
       ),
       OnboardModel(
@@ -97,9 +104,7 @@ class _OnBoardState extends State<OnBoard> {
                           topLeft: Radius.circular(30),
                           topRight: Radius.circular(30),
                         ),
-                        color: isDarkTheme
-                            ? Colors.black
-                            : Colors.white, // Colore di sfondo
+                        color: isDarkTheme ? Colors.black : Colors.white,
                       ),
                       child: Column(
                         children: [
@@ -154,8 +159,8 @@ class _OnBoardState extends State<OnBoard> {
                               mainAxisAlignment: MainAxisAlignment.spaceAround,
                               children: [
                                 TextButton(
-                                  onPressed: () {
-                                    _storeOnboardInfo();
+                                  onPressed: () async {
+                                    await _storeOnboardInfo();
                                     Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
@@ -180,18 +185,19 @@ class _OnBoardState extends State<OnBoard> {
                                             builder: (context) =>
                                                 const LoginPage()),
                                       );
+                                    } else {
+                                      _pageController.nextPage(
+                                        duration:
+                                            const Duration(milliseconds: 300),
+                                        curve: Curves.ease,
+                                      );
                                     }
-                                    _pageController.nextPage(
-                                      duration:
-                                          const Duration(milliseconds: 300),
-                                      curve: Curves.ease,
-                                    );
                                   },
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 30.0, vertical: 10),
                                     decoration: BoxDecoration(
-                                      color: blue, // Colore del pulsante
+                                      color: blue,
                                       borderRadius: BorderRadius.circular(15.0),
                                     ),
                                     child: Row(

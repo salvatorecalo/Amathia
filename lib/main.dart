@@ -16,8 +16,8 @@ final supabase = Supabase.instance.client;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: const String.fromEnvironment('API_URL'),
-    anonKey: const String.fromEnvironment('API_KEY'),
+    url: "https://eyjclibhojxnqhnbjzpe.supabase.co",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5amNsaWJob2p4bnFobmJqenBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk5NzEzODgsImV4cCI6MjA0NTU0NzM4OH0.3jtNX80khX3Spe2olFRPzNL7lE5oSKMaCHFMBUz7IVo",
   );
 
   final prefs = await SharedPreferences.getInstance();
@@ -28,43 +28,78 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      child: MyApp(isLoggedIn: isLoggedIn, userId: userId ?? ''),  // Assicurati di passare l'userId
+      child: MyApp(isLoggedIn: isLoggedIn, userId: userId ?? ''),
     ),
   );
 }
 
 class MyApp extends ConsumerWidget {
   final bool isLoggedIn;
-  final String userId;  // Aggiungi userId come parametro
+  final String userId;
 
-  const MyApp({super.key, required this.isLoggedIn, required this.userId});
+  MyApp({super.key, required this.isLoggedIn, required this.userId});
+
+  Future<bool> getOnBoardViewed() async {
+    final prefs = await SharedPreferences.getInstance();
+    final isOnBoardViewed = prefs.getInt('onBoard');
+    if (isOnBoardViewed == null) {
+      // Se è la prima volta, imposta il valore iniziale
+      await prefs.setInt('onBoard', 1); // 1 significa "non visto"
+      return false; // Mostra l'onboarding
+    }
+    return isOnBoardViewed == 0; // 0 significa "già visto"
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final locale = ref.watch(localeProvider) ?? const Locale('en'); // Usa localeProvider
+    final locale = ref.watch(localeProvider) ?? const Locale('en');
     final isDarkTheme = ref.watch(darkThemeProvider);
 
-    return MaterialApp(
-      title: 'Amathia',
-      locale: locale,
-      theme: Styles.themeData(isDarkTheme, context),
-      debugShowCheckedModeBanner: false,
-      initialRoute: isLoggedIn ? '/homepage' : '/',
-      routes: {
-        '/': (_) => const OnBoard(),
-        '/login': (_) => const LoginPage(),
-        '/homepage': (_) => HomePage(userId: userId),  // Passa l'userId a HomePage
+    return FutureBuilder<bool>(
+      future: getOnBoardViewed(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          // Mostra un indicatore di caricamento mentre aspettiamo
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          // Gestisci eventuali errori
+          return MaterialApp(
+            home: Scaffold(
+              body: Center(
+                child: Text('Errore durante il caricamento: ${snapshot.error}'),
+              ),
+            ),
+          );
+        } else {
+          // Valore recuperato correttamente
+          final hasViewedOnBoard = snapshot.data ?? false;
+
+          return MaterialApp(
+            title: 'Amathia',
+            locale: locale,
+            theme: Styles.themeData(isDarkTheme, context),
+            debugShowCheckedModeBanner: false,
+            initialRoute: isLoggedIn
+                ? (hasViewedOnBoard ? '/homepage' : '/onboard')
+                : '/login',
+            routes: {
+              '/onboard': (_) => const OnBoard(),
+              '/login': (_) => const LoginPage(),
+              '/homepage': (_) => HomePage(userId: userId),
+            },
+            supportedLocales: const [
+              Locale('en'),
+              Locale('it'),
+            ],
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+          );
+        }
       },
-      supportedLocales: const [
-        Locale('en'),
-        Locale('it'),
-      ],
-      localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
     );
   }
 }

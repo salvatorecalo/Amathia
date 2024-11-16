@@ -106,7 +106,7 @@ class RecipeOpenCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 5),
                           Text(
-                            "$time min.",
+                            time,
                             style: theme.textTheme.bodyMedium?.copyWith(
                               color: isDarkTheme
                                   ? colorScheme.onSurface

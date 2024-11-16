@@ -5,7 +5,7 @@ class Favorite {
   final String description;
   final String? location;
   final int? peopleFor;
-  final int? time;
+  final String? time;
   final List<String>? ingredients;
 
   Favorite({

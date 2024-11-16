@@ -12,7 +12,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class FavoritePage extends ConsumerStatefulWidget {
   final String userId; // Passa l'ID utente come argomento
 
-  const FavoritePage({super.key, required this.userId}); // Aggiungi userId al costruttore
+  const FavoritePage(
+      {super.key, required this.userId}); // Aggiungi userId al costruttore
 
   @override
   _FavoritePageState createState() => _FavoritePageState();
@@ -34,12 +35,21 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           }).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text(localizations!.favoriteText),
-        centerTitle: true,
-      ),
       body: Column(
         children: [
+          Container(
+            margin: const EdgeInsets.symmetric(
+              vertical: 20,
+            ),
+            child: Text(
+              localizations!.favoriteText,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
           // Bottoni di filtro
           Padding(
             padding: const EdgeInsets.all(8.0),
@@ -99,7 +109,9 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           // Lista dei preferiti filtrati
           Expanded(
             child: filteredFavorites.isEmpty
-                ? Center(child: Text(localizations.favoriteEmpty, textAlign: TextAlign.center))
+                ? Center(
+                    child: Text(localizations.favoriteEmpty,
+                        textAlign: TextAlign.center))
                 : ListView.builder(
                     itemCount: filteredFavorites.length,
                     itemBuilder: (context, index) {

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LikeButton extends ConsumerWidget {
-  final String itemId; // Identificativo unico dell'elemento
-  final Map<String, dynamic> itemData; // Dati dell'elemento
+  final String itemId;
+  final Map<String, dynamic> itemData; 
   final String userId; // ID utente
 
   const LikeButton({
@@ -17,19 +17,17 @@ class LikeButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Usa il provider con l'ID utente
     final favorites = ref.watch(favoriteProvider(userId));
     
-    // Accedi al titolo usando la chiave 'title'
     final isLiked = favorites.any((item) => item.title == itemId); 
 
     Future<void> toggleLike() async {
       final notifier = ref.read(favoriteProvider(userId).notifier);
       if (isLiked) {
-        await notifier.removeFavorite(itemId); // Rimuovi l'elemento dai preferiti
+        await notifier.removeFavorite(itemId); 
       } else {
-        final favorite = Favorite.fromJson(itemData); // Crea un oggetto Favorite da itemData
-        await notifier.addFavorite(favorite); // Aggiungi l'elemento ai preferiti
+        final favorite = Favorite.fromJson(itemData); 
+        await notifier.addFavorite(favorite); 
       }
     }
 
