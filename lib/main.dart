@@ -1,3 +1,4 @@
+import 'package:amathia/provider/local_provider.dart';
 import 'package:amathia/provider/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +7,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:amathia/provider/dark_theme_provider.dart';
-import 'package:amathia/provider/local_provider.dart';
 import 'package:amathia/src/screens/home_page/home_page.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:amathia/src/screens/onboard/onboard.dart';
@@ -17,15 +17,12 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: "https://eyjclibhojxnqhnbjzpe.supabase.co",
-    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5amNsaWJob2p4bnFobmJqenBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk5NzEzODgsImV4cCI6MjA0NTU0NzM4OH0.3jtNX80khX3Spe2olFRPzNL7lE5oSKMaCHFMBUz7IVo",
+    anonKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5amNsaWJob2p4bnFobmJqenBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk5NzEzODgsImV4cCI6MjA0NTU0NzM4OH0.3jtNX80khX3Spe2olFRPzNL7lE5oSKMaCHFMBUz7IVo", // La tua chiave anonima
   );
 
   final prefs = await SharedPreferences.getInstance();
   final isLoggedIn = prefs.getBool('isLoggedIn') ?? false;
-
-  // Ottieni il userId dall'utente autenticato
   final userId = supabase.auth.currentUser?.id;
-
   runApp(
     ProviderScope(
       child: MyApp(isLoggedIn: isLoggedIn, userId: userId ?? ''),
@@ -37,17 +34,21 @@ class MyApp extends ConsumerWidget {
   final bool isLoggedIn;
   final String userId;
 
-  MyApp({super.key, required this.isLoggedIn, required this.userId});
+  const MyApp({super.key, required this.isLoggedIn, required this.userId});
 
   Future<bool> getOnBoardViewed() async {
     final prefs = await SharedPreferences.getInstance();
     final isOnBoardViewed = prefs.getInt('onBoard');
     if (isOnBoardViewed == null) {
-      // Se è la prima volta, imposta il valore iniziale
-      await prefs.setInt('onBoard', 1); // 1 significa "non visto"
-      return false; // Mostra l'onboarding
+      await prefs.setInt('onBoard', 1); // 1 means "not viewed"
+      return false;
     }
-    return isOnBoardViewed == 0; // 0 significa "già visto"
+    return isOnBoardViewed == 0; // 0 means "already viewed"
+  }
+
+  Future<void> setOnBoardComplete() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('onBoard', 0); // 0 means "completed"
   }
 
   @override
@@ -59,19 +60,16 @@ class MyApp extends ConsumerWidget {
       future: getOnBoardViewed(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          // Mostra un indicatore di caricamento mentre aspettiamo
           return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
-          // Gestisci eventuali errori
           return MaterialApp(
             home: Scaffold(
               body: Center(
-                child: Text('Errore durante il caricamento: ${snapshot.error}'),
+                child: Text('Error loading onboarding: ${snapshot.error}'),
               ),
             ),
           );
         } else {
-          // Valore recuperato correttamente
           final hasViewedOnBoard = snapshot.data ?? false;
 
           return MaterialApp(
@@ -79,11 +77,13 @@ class MyApp extends ConsumerWidget {
             locale: locale,
             theme: Styles.themeData(isDarkTheme, context),
             debugShowCheckedModeBanner: false,
-            initialRoute: isLoggedIn
-                ? (hasViewedOnBoard ? '/homepage' : '/onboard')
-                : '/login',
+            initialRoute: hasViewedOnBoard
+                ? (isLoggedIn ? '/homepage' : '/onboard')
+                : '/onboard',
             routes: {
-              '/onboard': (_) => const OnBoard(),
+              '/onboard': (_) => OnBoard(
+                    onComplete: setOnBoardComplete,
+                  ),
               '/login': (_) => const LoginPage(),
               '/homepage': (_) => HomePage(userId: userId),
             },

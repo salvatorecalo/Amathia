@@ -4,6 +4,7 @@ import 'package:amathia/src/screens/login_page/login_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -51,6 +52,8 @@ class _RegisterPageState extends State<RegisterPage> {
     } on AuthException catch (e) {
       setError(e);
     }
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoggedIn', true); // false indica che il login è stato completato
     if (erroreLogin == "") {
       Navigator.of(context).pushReplacementNamed('/homepage');
     } else {

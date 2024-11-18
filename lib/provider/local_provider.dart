@@ -2,25 +2,28 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LocaleProvider extends StateNotifier<Locale?> {
-  LocaleProvider() : super(null) {
-    _loadLocale();
-  }
+class LocaleNotifier extends StateNotifier<Locale?> {
+  LocaleNotifier() : super(null);
 
-  Future<void> _loadLocale() async {
+  // Carica la lingua salvata
+  Future<void> loadLocalePreference() async {
     final prefs = await SharedPreferences.getInstance();
-    String? languageCode = prefs.getString('languageCode');
-    state = languageCode != null ? Locale(languageCode) : const Locale('en');
+    final languageCode = prefs.getString('locale');
+    if (languageCode != null) {
+      state = Locale(languageCode);
+    }
   }
 
+  // Cambia lingua e salva la preferenza
   Future<void> setLocale(String langCode) async {
     state = Locale(langCode);
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('languageCode', langCode);
+    await prefs.setString('locale', langCode);
   }
 }
 
-// Provider
-final localeProvider = StateNotifierProvider<LocaleProvider, Locale?>((ref) {
-  return LocaleProvider();
-});
+
+final localeProvider = StateNotifierProvider<LocaleNotifier, Locale?>(
+  (ref) => LocaleNotifier()..loadLocalePreference(),
+);
+

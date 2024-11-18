@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../../costants/costants.dart';
 import './Model/onboard_model.dart';
 import 'package:amathia/src/screens/login_page/login_page.dart';
 
 class OnBoard extends StatefulWidget {
-  const OnBoard({super.key});
+  final Future<void> Function() onComplete;
+
+  const OnBoard({super.key, required this.onComplete});
 
   @override
   _OnBoardState createState() => _OnBoardState();
@@ -20,7 +21,7 @@ class _OnBoardState extends State<OnBoard> {
   @override
   void initState() {
     super.initState();
-    _pageController = PageController(); // Inizializzazione del PageController
+    _pageController = PageController();
   }
 
   @override
@@ -29,25 +30,11 @@ class _OnBoardState extends State<OnBoard> {
     super.dispose();
   }
 
-  // Salva lo stato di completamento dell'onboarding
-  Future<void> _storeOnboardInfo() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setInt('onBoard', 0); // 0 indica che l'onboarding è stato completato
-  }
-
-  // Controlla se l'utente ha già visto l'onboarding
-  static Future<bool> hasCompletedOnboarding() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    int? isViewed = prefs.getInt('onBoard');
-    return isViewed == 0; // True se l'onboarding è già stato completato
-  }
-
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final isDarkTheme = Theme.of(context).brightness == Brightness.dark;
 
-    // Definizione delle schermate di onboarding
     screens = <OnboardModel>[
       OnboardModel(
         img: "assets/santAndrea_onboard.png",
@@ -97,7 +84,6 @@ class _OnBoardState extends State<OnBoard> {
                   child: FractionallySizedBox(
                     alignment: Alignment.bottomCenter,
                     heightFactor: 0.5,
-                    widthFactor: 1,
                     child: Container(
                       decoration: BoxDecoration(
                         borderRadius: const BorderRadius.only(
@@ -112,7 +98,12 @@ class _OnBoardState extends State<OnBoard> {
                             padding: const EdgeInsets.symmetric(vertical: 50.0),
                             child: Text(
                               screens[index].text,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleLarge
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                             ),
                           ),
                           SizedBox(
@@ -124,112 +115,80 @@ class _OnBoardState extends State<OnBoard> {
                             ),
                           ),
                           SizedBox(
-                            height: 100.0,
-                            child: ListView.builder(
-                              itemCount: screens.length,
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemBuilder: (context, index) {
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 3.0, vertical: 10),
-                                      width: currentIndex == index ? 30 : 12,
-                                      height: 8,
-                                      decoration: BoxDecoration(
-                                        color: currentIndex == index
-                                            ? blue
-                                            : isDarkTheme
-                                                ? white
-                                                : black,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0),
-                                      ),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ),
+                            height: 80,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                TextButton(
-                                  onPressed: () async {
-                                    await _storeOnboardInfo();
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              const LoginPage()),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              // Bottoni di "skip"
+                              TextButton(
+                                onPressed: () async {
+                                  await _completeOnBoarding();
+                                },
+                                child: Text(
+                                  localizations.skip,
+                                  style: TextStyle(
+                                      color:
+                                          isDarkTheme ? Colors.white : black),
+                                ),
+                              ),
+                              // Bottone "next" o ultima schermata per completare
+                              InkWell(
+                                onTap: () async {
+                                  if (index == screens.length - 1) {
+                                    await _completeOnBoarding();
+                                  } else {
+                                    _pageController.nextPage(
+                                      duration:
+                                          const Duration(milliseconds: 300),
+                                      curve: Curves.ease,
                                     );
-                                  },
-                                  child: Text(
-                                    localizations.skip,
-                                    style: TextStyle(
-                                        color:
-                                            isDarkTheme ? Colors.white : black),
+                                  }
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 30.0, vertical: 10),
+                                  decoration: BoxDecoration(
+                                    color: blue,
+                                    borderRadius: BorderRadius.circular(15.0),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text(
+                                        localizations.next,
+                                        style: const TextStyle(
+                                            fontSize: 16.0, color: white),
+                                      ),
+                                      const SizedBox(width: 15.0),
+                                      const Icon(
+                                        Icons.arrow_forward_sharp,
+                                        color: white,
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                InkWell(
-                                  onTap: () async {
-                                    if (index == screens.length - 1) {
-                                      await _storeOnboardInfo();
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                const LoginPage()),
-                                      );
-                                    } else {
-                                      _pageController.nextPage(
-                                        duration:
-                                            const Duration(milliseconds: 300),
-                                        curve: Curves.ease,
-                                      );
-                                    }
-                                  },
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 30.0, vertical: 10),
-                                    decoration: BoxDecoration(
-                                      color: blue,
-                                      borderRadius: BorderRadius.circular(15.0),
-                                    ),
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text(
-                                          localizations.next,
-                                          style: const TextStyle(
-                                              fontSize: 16.0, color: white),
-                                        ),
-                                        const SizedBox(width: 15.0),
-                                        const Icon(
-                                          Icons.arrow_forward_sharp,
-                                          color: white,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
                     ),
                   ),
-                )
+                ),
               ],
             );
           },
         ),
       ),
+    );
+  }
+
+  Future<void> _completeOnBoarding() async {
+    await widget.onComplete();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
     );
   }
 }

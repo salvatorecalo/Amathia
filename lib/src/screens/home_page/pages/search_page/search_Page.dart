@@ -56,7 +56,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
 
   Future<void> fetchAllTables(AppLocalizations localizations) async {
     if (isDataFetched) return;
-
+    if (!mounted) return;
     for (String tableName in tables) {
       try {
         final response = await client.from(tableName).select("*");

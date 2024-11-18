@@ -1,4 +1,3 @@
-// Import necessario per controllare la connessione
 import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
@@ -19,15 +18,13 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   late final TextEditingController _emailController = TextEditingController();
-  late final TextEditingController _passwordController =
-      TextEditingController();
+  late final TextEditingController _passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   String erroreLogin = "";
   bool _obsureText = true;
-  bool hasInternet = true; // Variabile per tracciare lo stato della connessione
 
-  Future<String> setError(e) async {
-    erroreLogin = e.statusCode;
+  Future<String> setError(AuthException e) async {
+    erroreLogin = e.message; // Use the exception message directly
     if (e.statusCode == "400") {
       erroreLogin = "Credenziali Invalide, ricontrolla e riprova";
     }
@@ -35,62 +32,72 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Future<void> signIn() async {
+    setState(() {
+      erroreLogin = "";
+    });
+
     try {
-      await supabase.auth.signInWithPassword(
+      final response = await supabase.auth.signInWithPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text.trim(),
       );
-    } on AuthException catch (e) {
-      setError(e);
-    }
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isLoggedIn', true); // false indica che il login è stato completato
-    if (erroreLogin == "") {
-      Navigator.of(context).pushReplacementNamed('/homepage');
-    } else {
-      return showDialog<void>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          final theme = Theme.of(context);
-          final colorScheme = theme.colorScheme;
 
-          return AlertDialog(
-            backgroundColor: colorScheme.error,
-            title: Text(
-              'Errore',
-              style: TextStyle(color: colorScheme.onError),
-            ),
-            content: SingleChildScrollView(
-              child: ListBody(
-                children: <Widget>[
-                  Text(
-                    erroreLogin,
-                    style: TextStyle(color: colorScheme.onError),
-                  ),
-                ],
-              ),
-            ),
-            actions: <Widget>[
-              TextButton(
-                child: Text(
-                  'ok',
-                  style: TextStyle(color: colorScheme.onError),
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          );
-        },
-      );
+      if (response.session != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setBool('isLoggedIn', true);
+        Navigator.of(context).pushReplacementNamed('/homepage');
+      } else {
+        setState(() {
+          erroreLogin = response.toString();
+        });
+        _showErrorDialog();
+      }
+    } on AuthException catch (e) {
+      setState(() {
+        erroreLogin = e.message;
+      });
+      _showErrorDialog();
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
+  void _showErrorDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        final theme = Theme.of(context);
+        final colorScheme = theme.colorScheme;
+
+        return AlertDialog(
+          backgroundColor: colorScheme.error,
+          title: Text(
+            'Errore',
+            style: TextStyle(color: colorScheme.onError),
+          ),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(
+                  erroreLogin,
+                  style: TextStyle(color: colorScheme.onError),
+                ),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                'OK',
+                style: TextStyle(color: colorScheme.onError),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -118,7 +125,6 @@ class _LoginPageState extends State<LoginPage> {
                 child: FractionallySizedBox(
                   alignment: Alignment.bottomCenter,
                   heightFactor: 0.8,
-                  widthFactor: 1,
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.only(
@@ -138,8 +144,7 @@ class _LoginPageState extends State<LoginPage> {
                             child: RichText(
                               textAlign: TextAlign.center,
                               text: TextSpan(
-                                style:
-                                    const TextStyle(height: 1.5, fontSize: 16),
+                                style: const TextStyle(height: 1.5, fontSize: 16),
                                 children: [
                                   TextSpan(
                                     text: localizations!.loginText1,
@@ -313,13 +318,12 @@ class _LoginPageState extends State<LoginPage> {
                                 children: [
                                   TextSpan(
                                     text: localizations.dontHaveAnAccount,
-                                    style: TextStyle(
-                                        color: isDarkTheme
-                                            ? colorScheme.onSurface
-                                            : colorScheme.onSurface),
                                   ),
                                   TextSpan(
-                                    text: localizations.registerText,
+                                    text: " ${localizations.registerText}",
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        color: blue),
                                     recognizer: TapGestureRecognizer()
                                       ..onTap = () {
                                         Navigator.pushReplacement(
@@ -330,7 +334,6 @@ class _LoginPageState extends State<LoginPage> {
                                           ),
                                         );
                                       },
-                                    style: const TextStyle(color: blue),
                                   ),
                                 ],
                               ),

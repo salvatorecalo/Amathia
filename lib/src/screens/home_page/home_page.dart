@@ -4,6 +4,7 @@ import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   final String userId;
@@ -11,17 +12,41 @@ class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.userId});
 
   @override
-  // ignore: library_private_types_in_public_api
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int bottomSelectedIndex = 0;
+  int bottomSelectedIndex = 0; // Default index
+  late PageController pageController;
 
-  PageController pageController = PageController(
-    initialPage: 0,
-    keepPage: true,
-  );
+  // Carica l'indice della pagina da SharedPreferences
+  Future<void> _loadCurrentPage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentPageIndex = prefs.getInt('currentPageIndex') ?? 0; // Default page is 0
+
+    setState(() {
+      bottomSelectedIndex = currentPageIndex; // Update state
+    });
+    pageController.jumpToPage(currentPageIndex); // Navigate to the correct page
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    pageController = PageController(initialPage: bottomSelectedIndex);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Call _loadCurrentPage after the widget has been initialized
+    _loadCurrentPage();
+  }
+
+  Future<void> _saveCurrentPage(int index) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setInt('currentPageIndex', index); // Save the page index
+  }
 
   Widget buildPageView() {
     return PageView(
@@ -31,35 +56,42 @@ class _HomePageState extends State<HomePage> {
         pageChanged(index);
       },
       children: <Widget>[
-        SearchPage(userId: widget.userId,),
-        FavoritePage(userId: widget.userId,),
+        SearchPage(userId: widget.userId),
+        FavoritePage(userId: widget.userId),
         const AccountPage(),
       ],
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void pageChanged(int index) {
-    setState(() {
-      bottomSelectedIndex = index;
-    });
+    // Salva la pagina solo se l'indice cambia
+    if (bottomSelectedIndex != index) {
+      _saveCurrentPage(index);
+      setState(() {
+        bottomSelectedIndex = index;
+      });
+    }
   }
 
   void bottomTapped(int index) {
-    setState(() {
-      bottomSelectedIndex = index;
-      pageController.animateToPage(index,
-          duration: const Duration(milliseconds: 500), curve: Curves.ease);
-    });
+    // Evita di fare il salto a pagina se già selezionata
+    if (bottomSelectedIndex != index) {
+      pageController.animateToPage(
+        index,
+        duration: const Duration(milliseconds: 500),
+        curve: Curves.ease,
+      );
+      _saveCurrentPage(index);
+      setState(() {
+        bottomSelectedIndex = index;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+
     List<BottomNavigationBarItem> buildBottomNavBarItems() {
       return [
         BottomNavigationBarItem(
@@ -73,7 +105,7 @@ class _HomePageState extends State<HomePage> {
         const BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Account',
-        )
+        ),
       ];
     }
 
