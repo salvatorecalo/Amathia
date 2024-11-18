@@ -19,17 +19,6 @@ class _HomePageState extends State<HomePage> {
   int bottomSelectedIndex = 0; // Default index
   late PageController pageController;
 
-  // Carica l'indice della pagina da SharedPreferences
-  Future<void> _loadCurrentPage() async {
-    final prefs = await SharedPreferences.getInstance();
-    final currentPageIndex = prefs.getInt('currentPageIndex') ?? 0; // Default page is 0
-
-    setState(() {
-      bottomSelectedIndex = currentPageIndex; // Update state
-    });
-    pageController.jumpToPage(currentPageIndex); // Navigate to the correct page
-  }
-
   @override
   void initState() {
     super.initState();
@@ -39,8 +28,26 @@ class _HomePageState extends State<HomePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // Call _loadCurrentPage after the widget has been initialized
-    _loadCurrentPage();
+    if (_isFirstLoad) {
+      _loadCurrentPage();
+      _isFirstLoad = false;
+    }
+  }
+
+  bool _isFirstLoad = true;
+
+  Future<void> _loadCurrentPage() async {
+    final prefs = await SharedPreferences.getInstance();
+    final currentPageIndex =
+        prefs.getInt('currentPageIndex') ?? 0; // Default page is 0
+
+    if (bottomSelectedIndex != currentPageIndex) {
+      setState(() {
+        bottomSelectedIndex = currentPageIndex; // Update state
+      });
+      pageController
+          .jumpToPage(currentPageIndex); // Navigate to the correct page
+    }
   }
 
   Future<void> _saveCurrentPage(int index) async {
