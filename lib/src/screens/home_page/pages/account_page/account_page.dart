@@ -16,130 +16,131 @@ class AccountPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = supabase.auth.currentUser?.email;
     final localizations = AppLocalizations.of(context);
-
     return Scaffold(
       body: ListView(
-        padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            child: Text(
-              localizations!.userProfile,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+          padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: Text(
+                localizations!.userProfile,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          Text(
-            "$email",
-            textAlign: TextAlign.center,
-            style: const TextStyle(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 18),
-
-          // Sezione Dark Mode
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(localizations.darkMode),
-              Switch(
-                value: ref.watch(darkThemeProvider),
-                onChanged: (value) {
-                  ref.read(darkThemeProvider.notifier).toggleTheme();
-                },
-                activeColor: blue,
-              ),
-            ],
-          ),
-          const SizedBox(height: 18),
-
-          // Sezione Cambia lingua
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 18.0),
-            child: Row(
+            Text(
+              "$email",
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 18),
+      
+            // Sezione Dark Mode
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(localizations.selectLanguage),
-                DropdownButton<String>(
-                  value: ref.watch(localeProvider)?.languageCode,
-                  items: const [
-                    DropdownMenuItem(value: 'en', child: Text('English')),
-                    DropdownMenuItem(value: 'it', child: Text('Italiano')),
-                  ],
-                  onChanged: (langCode) {
-                    if (langCode != null) {
-                      ref.read(localeProvider.notifier).setLocale(langCode);
-                    }
+                Text(localizations.darkMode),
+                Switch(
+                  value: ref.watch(darkThemeProvider),
+                  onChanged: (value) {
+                    ref.watch(darkThemeProvider.notifier).toggleTheme();
                   },
+                  activeColor: blue,
                 ),
               ],
             ),
-          ),
-          const SizedBox(height: 20),
-
-          // Cambio password
-          TextButton(
-            onPressed: () async {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const RecoveryPasswordPage()),
-              );
-            },
-            child: Text(
-              localizations.changePassword,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: blue,
+            const SizedBox(height: 18),
+      
+            // Sezione Cambia lingua
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(localizations.selectLanguage),
+                  DropdownButton<String>(
+                    value: ref.read(localeProvider)?.languageCode,
+                    items: const [
+                      DropdownMenuItem(value: 'en', child: Text('English')),
+                      DropdownMenuItem(value: 'it', child: Text('Italiano')),
+                    ],
+                    onChanged: (langCode) {
+                      if (langCode != null) {
+                        ref.read(localeProvider.notifier).setLocale(langCode);
+                      }
+                    },
+                  ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 20),
-
-          // Logout
-          TextButton(
-            onPressed: () async {
-              try {
-                await supabase.auth.signOut();
-                final prefs = await SharedPreferences.getInstance();
-                await prefs.setBool('isLoggedIn', false);
-                Navigator.of(context).pushReplacementNamed('/login');
-              } catch (error) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Unexpected error occurred')),
+            const SizedBox(height: 20),
+      
+            // Cambio password
+            TextButton(
+              onPressed: () async {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const RecoveryPasswordPage()),
                 );
-              }
-            },
-            child: Text(
-              localizations.signOut,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: blue,
+              },
+              child: Text(
+                localizations.changePassword,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: blue,
+                ),
               ),
             ),
-          ),
-
-          const SizedBox(height: 20),
-
-          // Vedi su GitHub
-          ElevatedButton.icon(
-            style: ElevatedButton.styleFrom(
-                backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
-            label: Text(
-              localizations.seeOnGithub,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: white,
+            const SizedBox(height: 20),
+      
+            // Logout
+            TextButton(
+              onPressed: () async {
+                try {
+                  await supabase.auth.signOut();
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setBool('isLoggedIn', false);
+      
+                  // Solo al logout, fai il push alla pagina di login
+                  Navigator.of(context).pushReplacementNamed('/login');
+                } catch (error) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Unexpected error occurred')),
+                  );
+                }
+              },
+              child: Text(
+                localizations.signOut,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: blue,
+                ),
               ),
             ),
-            onPressed: () async {
-              await launchUrl(
-                  Uri.parse('https://github.com/salvatorecalo/Amathia'));
-            },
-          ),
-        ],
+      
+            const SizedBox(height: 20),
+      
+            // Vedi su GitHub
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
+              label: Text(
+                localizations.seeOnGithub,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: white,
+                ),
+              ),
+              onPressed: () async {
+                await launchUrl(
+                    Uri.parse('https://github.com/salvatorecalo/Amathia'));
+              },
+            ),
+          ],
       ),
     );
   }

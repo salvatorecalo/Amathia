@@ -14,6 +14,8 @@ class RecoveryPasswordPage extends StatefulWidget {
 
 class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
   late final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   Future<void> _showMyDialog() async {
     late final String email = _emailController.text;
 
@@ -35,8 +37,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
             child: ListBody(
               children: <Widget>[
                 Text(
-                  localizations.passwordRecoveryInstructions(
-                      email), // Traduzione per il messaggio con l'email                  style: TextStyle(color: colorScheme.onSurface),
+                  localizations.passwordRecoveryInstructions(email),
                 ),
               ],
             ),
@@ -82,120 +83,122 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
                   borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30)),
-                  color:
-                      isDarkTheme ? colorScheme.surface : colorScheme.surface,
+                  color: isDarkTheme ? colorScheme.surface : colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 24.0),
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: TextStyle(
-                              height: 1.5,
-                              fontSize: 16,
-                              color: isDarkTheme
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
+                  child: Form(
+                    key: _formKey, // Aggiungi il FormKey qui
+                    child: Column(
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 24.0),
+                          child: RichText(
+                            textAlign: TextAlign.center,
+                            text: TextSpan(
+                              style: TextStyle(
+                                height: 1.5,
+                                fontSize: 16,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurface,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: localizations!.passwordLost,
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : Colors.black),
+                                ),
+                                TextSpan(
+                                  text: localizations.noProblem,
+                                  style: const TextStyle(color: blue),
+                                ),
+                                TextSpan(
+                                  text: localizations.associatedMail,
+                                  style: TextStyle(
+                                      color: isDarkTheme
+                                          ? colorScheme.onSurface
+                                          : Colors.black),
+                                ),
+                              ],
                             ),
-                            children: [
-                              TextSpan(
-                                text: localizations!.passwordLost,
-                                style: TextStyle(
-                                    color: isDarkTheme
-                                        ? colorScheme.onSurface
-                                        : Colors.black),
-                              ),
-                              TextSpan(
-                                text: localizations.noProblem,
-                                style: const TextStyle(color: blue),
-                              ),
-                              TextSpan(
-                                text: localizations.associatedMail,
-                                style: TextStyle(
-                                    color: isDarkTheme
-                                        ? colorScheme.onSurface
-                                        : Colors.black),
-                              ),
-                            ],
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: TextFormField(
-                          autovalidateMode: AutovalidateMode.onUserInteraction,
-                          controller: _emailController,
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return localizations.mailEmpty;
-                            } else if (!EmailValidator.validate(value)) {
-                              return localizations.mailInvalid;
-                            }
-                            return null;
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: TextFormField(
+                            controller: _emailController,
+                            autovalidateMode: AutovalidateMode.onUserInteraction,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return localizations.mailEmpty;
+                              } else if (!EmailValidator.validate(value)) {
+                                return localizations.mailInvalid;
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              border: const OutlineInputBorder(),
+                              hintText: localizations.enterMail,
+                              prefixIcon: Icon(
+                                Icons.email,
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 16),
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              if (_formKey.currentState!.validate()) {
+                                await supabase.auth
+                                    .resetPasswordForEmail(
+                                        _emailController.text);
+                                _showMyDialog();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              minimumSize: const Size.fromHeight(40),
+                              foregroundColor: Colors.white,
+                              backgroundColor: blue,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24.0, vertical: 12.0),
+                              child: Text(
+                                localizations.send,
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                            ),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () async {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const LoginPage()),
+                            );
                           },
-                          decoration: InputDecoration(
-                            border: const OutlineInputBorder(),
-                            hintText: localizations.enterMail,
-                            errorText: _emailController.text != ""
-                                ? null
-                                : localizations.mailEmpty,
-                            prefixIcon: Icon(
-                              Icons.email,
-                              color: isDarkTheme
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
+                          child: Text(
+                            localizations.backToLogin,
+                            style: const TextStyle(
+                              color: blue,
                             ),
                           ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 16),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await supabase.auth
-                                .resetPasswordForEmail(_emailController.text);
-                            _showMyDialog();
-                          },
-                          style: ElevatedButton.styleFrom(
-                            minimumSize: const Size.fromHeight(40),
-                            foregroundColor: Colors.white,
-                            backgroundColor: blue,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5.0),
-                            ),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 24.0, vertical: 12.0),
-                            child: Text(
-                              localizations.send,
-                              style: const TextStyle(fontSize: 18),
-                            ),
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () async {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const LoginPage()),
-                          );
-                        },
-                        child: Text(
-                          localizations.backToLogin,
-                          style: const TextStyle(
-                            color: blue,
-                          ),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

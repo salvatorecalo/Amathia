@@ -5,7 +5,7 @@
   "signOut": "Sign Out",
   "unexpectedError": "Unexpected error occurred",
   "selectLanguage": "Change Laungage",
-  "favoriteEmpty": "There's nothing here. Add something to see it displayed here",
+  "favoriteEmpty": "There's nothing here.\n Add something to see it displayed here",
   "favoriteText": "Your Favorites",
   "favorite": "Favorite",
   "loginText1": "Login to ",
@@ -82,5 +82,6 @@
   "recipeSuggestionText": "Advise me a recipe to do",
   "citySuggestionText": "Advise me a city to visit",
   "monumentsSuggestionText": "Advise me a monuments to visit",
-  "natureSuggestionText": "Advise me a place do explore"
+  "natureSuggestionText": "Advise me a place do explore",
+  "done": "Done"
 }

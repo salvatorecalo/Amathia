@@ -86,5 +86,6 @@
   "recipeSuggestionText": "Consigliami una ricetta da fare",
   "citySuggestionText": "Consigliami un borgo da visitare",
   "monumentsSuggestionText": "Consigliami un monumento da visitare",
-  "natureSuggestionText": "Consigliami una posto da scoprire"
+  "natureSuggestionText": "Consigliami una posto da scoprire",
+  "done": "Completa"
 }

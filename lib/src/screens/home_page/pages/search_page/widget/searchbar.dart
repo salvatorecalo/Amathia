@@ -155,7 +155,9 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                 builder: (context) => RecipeOpenCard(
                                   title: result['title'],
                                   description: result['description_it'],
-                                  image: result['image'],
+                                  image: client.storage
+                                    .from(tableName)
+                                    .getPublicUrl(result['image']),
                                   peopleFor: result['peopleFor'],
                                   time: result['time'],
                                   ingredients: result['ingredients_it'],
@@ -170,7 +172,9 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   title: result['title'],
                                   description: result['description_it'],
                                   location: result['location'],
-                                  image: result['image'],
+                                  image: client.storage
+                                    .from(tableName)
+                                    .getPublicUrl(result['image']),
                                 ),
                               ),
                             );
@@ -181,7 +185,9 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                 builder: (context) => CityOpenCard(
                                   title: result['title'],
                                   description: result['description_it'],
-                                  image: result['image'],
+                                  image: client.storage
+                                    .from(tableName)
+                                    .getPublicUrl(result['image']),
                                 ),
                               ),
                             );
@@ -193,7 +199,9 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   title: result['title'],
                                   location: result['location'],
                                   description: result['description_it'],
-                                  image: result['image'],
+                                  image: client.storage
+                                    .from(tableName)
+                                    .getPublicUrl(result['image']),
                                 ),
                               ),
                             );

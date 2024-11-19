@@ -340,7 +340,7 @@ class _RegisterPageState extends State<RegisterPage> {
                               ),
                               children: [
                                 TextSpan(
-                                  text: localizations.alreadyHaveAccountText,
+                                  text: "${localizations.alreadyHaveAccountText} " ,
                                 ),
                                 TextSpan(
                                   text: localizations.loginText,

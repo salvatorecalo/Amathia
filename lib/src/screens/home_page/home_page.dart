@@ -13,9 +13,7 @@ class HomePage extends StatefulWidget {
 
   @override
   _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+}class _HomePageState extends State<HomePage> {
   int bottomSelectedIndex = 0; // Default index
   late PageController pageController;
 
@@ -23,31 +21,16 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     pageController = PageController(initialPage: bottomSelectedIndex);
+    _loadCurrentPage(); // Load current page from SharedPreferences
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_isFirstLoad) {
-      _loadCurrentPage();
-      _isFirstLoad = false;
-    }
-  }
-
-  bool _isFirstLoad = true;
 
   Future<void> _loadCurrentPage() async {
     final prefs = await SharedPreferences.getInstance();
-    final currentPageIndex =
-        prefs.getInt('currentPageIndex') ?? 0; // Default page is 0
-
-    if (bottomSelectedIndex != currentPageIndex) {
-      setState(() {
-        bottomSelectedIndex = currentPageIndex; // Update state
-      });
-      pageController
-          .jumpToPage(currentPageIndex); // Navigate to the correct page
-    }
+    final currentPageIndex = prefs.getInt('currentPageIndex') ?? 0; // Default page is 0
+    setState(() {
+      bottomSelectedIndex = currentPageIndex; // Update the selected page index
+    });
+    pageController.jumpToPage(currentPageIndex); // Navigate to the correct page
   }
 
   Future<void> _saveCurrentPage(int index) async {
@@ -55,44 +38,40 @@ class _HomePageState extends State<HomePage> {
     await prefs.setInt('currentPageIndex', index); // Save the page index
   }
 
-  Widget buildPageView() {
-    return PageView(
-      physics: const NeverScrollableScrollPhysics(),
-      controller: pageController,
-      onPageChanged: (index) {
-        pageChanged(index);
-      },
-      children: <Widget>[
-        SearchPage(userId: widget.userId),
-        FavoritePage(userId: widget.userId),
-        const AccountPage(),
-      ],
-    );
-  }
-
   void pageChanged(int index) {
-    // Salva la pagina solo se l'indice cambia
     if (bottomSelectedIndex != index) {
-      _saveCurrentPage(index);
+      _saveCurrentPage(index); // Save the new page index
       setState(() {
-        bottomSelectedIndex = index;
+        bottomSelectedIndex = index; // Update the selected page index
       });
     }
   }
 
   void bottomTapped(int index) {
-    // Evita di fare il salto a pagina se già selezionata
     if (bottomSelectedIndex != index) {
       pageController.animateToPage(
         index,
         duration: const Duration(milliseconds: 500),
         curve: Curves.ease,
       );
-      _saveCurrentPage(index);
+      _saveCurrentPage(index); // Save the new page index
       setState(() {
-        bottomSelectedIndex = index;
+        bottomSelectedIndex = index; // Update the selected page index
       });
     }
+  }
+
+  Widget buildPageView() {
+    return PageView(
+      physics: const NeverScrollableScrollPhysics(),
+      controller: pageController,
+      onPageChanged: pageChanged,
+      children: <Widget>[
+        SearchPage(userId: widget.userId),
+        FavoritePage(userId: widget.userId),
+        const AccountPage(), // AccountPage is now part of the PageView
+      ],
+    );
   }
 
   @override
@@ -119,10 +98,10 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: bottomSelectedIndex,
+        currentIndex: bottomSelectedIndex, // Sync the BottomNavigationBar with the page index
         selectedItemColor: blue,
         onTap: (index) {
-          bottomTapped(index);
+          bottomTapped(index); // Handle tap on BottomNavigationBar
         },
         items: buildBottomNavBarItems(),
       ),

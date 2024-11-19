@@ -17,6 +17,7 @@ class _OnBoardState extends State<OnBoard> {
   int currentIndex = 0;
   late PageController _pageController;
   late List<OnboardModel> screens;
+  bool _isCompleting = false; // Per evitare doppie chiamate
 
   @override
   void initState() {
@@ -72,6 +73,7 @@ class _OnBoardState extends State<OnBoard> {
           itemBuilder: (_, index) {
             return Stack(
               children: [
+                // Immagine di sfondo
                 Image.asset(
                   screens[index].img,
                   fit: BoxFit.fill,
@@ -79,6 +81,7 @@ class _OnBoardState extends State<OnBoard> {
                   height: 500,
                   alignment: Alignment.center,
                 ),
+                // Contenuto
                 SizedBox(
                   height: double.infinity,
                   child: FractionallySizedBox(
@@ -93,14 +96,15 @@ class _OnBoardState extends State<OnBoard> {
                         color: isDarkTheme ? Colors.black : Colors.white,
                       ),
                       child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 50.0),
+                            padding: const EdgeInsets.symmetric(vertical: 30.0),
                             child: Text(
                               screens[index].text,
                               style: Theme.of(context)
                                   .textTheme
-                                  .titleLarge
+                                  .headlineSmall // Titolo più grande
                                   ?.copyWith(
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -114,13 +118,11 @@ class _OnBoardState extends State<OnBoard> {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
-                          SizedBox(
-                            height: 80,
-                          ),
+                          const Spacer(), // Spazio flessibile
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
-                              // Bottoni di "skip"
+                              // Bottone "Skip"
                               TextButton(
                                 onPressed: () async {
                                   await _completeOnBoarding();
@@ -128,11 +130,11 @@ class _OnBoardState extends State<OnBoard> {
                                 child: Text(
                                   localizations.skip,
                                   style: TextStyle(
-                                      color:
-                                          isDarkTheme ? Colors.white : black),
+                                    color: isDarkTheme ? Colors.white : black,
+                                  ),
                                 ),
                               ),
-                              // Bottone "next" o ultima schermata per completare
+                              // Bottone "Next" o "Done"
                               InkWell(
                                 onTap: () async {
                                   if (index == screens.length - 1) {
@@ -147,7 +149,9 @@ class _OnBoardState extends State<OnBoard> {
                                 },
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
-                                      horizontal: 30.0, vertical: 10),
+                                    horizontal: 30.0,
+                                    vertical: 10,
+                                  ),
                                   decoration: BoxDecoration(
                                     color: blue,
                                     borderRadius: BorderRadius.circular(15.0),
@@ -156,9 +160,13 @@ class _OnBoardState extends State<OnBoard> {
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
                                       Text(
-                                        localizations.next,
+                                        index == screens.length - 1
+                                            ? localizations.done
+                                            : localizations.next,
                                         style: const TextStyle(
-                                            fontSize: 16.0, color: white),
+                                          fontSize: 16.0,
+                                          color: white,
+                                        ),
                                       ),
                                       const SizedBox(width: 15.0),
                                       const Icon(
@@ -185,6 +193,8 @@ class _OnBoardState extends State<OnBoard> {
   }
 
   Future<void> _completeOnBoarding() async {
+    if (_isCompleting) return;
+    _isCompleting = true;
     await widget.onComplete();
     Navigator.pushReplacement(
       context,
