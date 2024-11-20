@@ -8,8 +8,15 @@ class RandomAdviceGroup extends StatelessWidget {
   const RandomAdviceGroup({super.key, required this.widgetGenerated});
 
   Widget extractWidget(MapEntry<String, List<Widget>> entry) {
+    // Check if the list is empty before generating a random index
+    if (entry.value.isEmpty) {
+      // Handle the empty list case, for example, return a default widget or an error widget
+      return const Text(
+          "No advice available"); // Or you could return any default widget
+    }
+
     final randomIndex = Random().nextInt(entry.value.length);
-    if (entry.value[randomIndex] is Container && 
+    if (entry.value[randomIndex] is Container &&
         (entry.value[randomIndex] as Container).child != null) {
       return (entry.value[randomIndex] as Container).child!;
     }

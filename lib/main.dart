@@ -17,9 +17,9 @@ final supabase = Supabase.instance.client;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
-    url: "https://eyjclibhojxnqhnbjzpe.supabase.co",
+    url: const String.fromEnvironment('API_URL'),
     anonKey:
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImV5amNsaWJob2p4bnFobmJqenBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mjk5NzEzODgsImV4cCI6MjA0NTU0NzM4OH0.3jtNX80khX3Spe2olFRPzNL7lE5oSKMaCHFMBUz7IVo",
+        const String.fromEnvironment('API_KEY'),
   );
 
   final prefs = await SharedPreferences.getInstance();

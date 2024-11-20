@@ -51,7 +51,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
   final Map<String, String> fetchedTitles =
-      {}; // Mappa per memorizzare i titoli
+      {};
   bool isDataFetched = false;
 
   Future<void> fetchAllTables(AppLocalizations localizations) async {
