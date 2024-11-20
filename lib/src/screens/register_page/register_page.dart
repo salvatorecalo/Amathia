@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -293,7 +294,9 @@ class _RegisterPageState extends State<RegisterPage> {
                                   text: localizations.termsText2,
                                   style: const TextStyle(color: blue),
                                   recognizer: TapGestureRecognizer()
-                                    ..onTap = () {},
+                                    ..onTap = () {
+                                      launchUrl(Uri.parse('https://salvatorecalo.github.io/Amathia_privacy_policy.github.io/'));
+                                    },
                                 ),
                               ],
                             ),
