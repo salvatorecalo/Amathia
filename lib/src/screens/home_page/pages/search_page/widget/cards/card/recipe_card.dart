@@ -33,6 +33,7 @@ class RecipeCard extends StatelessWidget {
               title: title,
               description: description,
               peopleFor: peopleFor,
+              userId: userId,
               time: time,
               image: image,
               ingredients: ingredients,

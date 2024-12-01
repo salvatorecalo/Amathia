@@ -1,4 +1,5 @@
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,9 +9,11 @@ class MonumentOpenCard extends StatelessWidget {
   final String location;
   final String description;
   final String image;
+  final String userId;
 
   const MonumentOpenCard({
     super.key,
+    required this.userId,
     required this.title,
     required this.location,
     required this.description,
@@ -75,16 +78,31 @@ class MonumentOpenCard extends StatelessWidget {
                   ),
                   child: ListView(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        width: 420,
-                        child: Text(
-                          title,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 24,
+                      Row(
+                        children: [
+                          Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          width: 300,
+                          child: Text(
+                            title,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 24,
+                            ),
                           ),
                         ),
+                        LikeButton(
+                        userId: userId,
+                        itemId: title, // Unique identifier for the item
+                        itemData: {
+                          'title': title,
+                          'image': image,
+                          'type': 'Monumenti',
+                          'location': location,
+                          'description': description,
+                        },
+                      ),
+                        ]
                       ),
                       const SizedBox(
                         height: 20,

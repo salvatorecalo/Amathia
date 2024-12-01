@@ -18,7 +18,6 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     state = data.map((item) => Favorite.fromJson(item)).toList();
   }
 
-  // Aggiungi un preferito
   Future<void> addFavorite(Favorite favorite) async {
     final response = await Supabase.instance.client
         .from('favorites')
@@ -27,7 +26,6 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     state = [...state, favorite];
   }
 
-  // Rimuovi un preferito
   Future<void> removeFavorite(String title) async {
     final response = await Supabase.instance.client
         .from('favorites')

@@ -10,6 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class SearchDropdown extends ConsumerStatefulWidget {
+  final String userId;
+
+  const SearchDropdown({super.key, required this.userId,});
   @override
   _SearchDropdownState createState() => _SearchDropdownState();
 }
@@ -153,6 +156,7 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => RecipeOpenCard(
+                                  userId: widget.userId,
                                   title: result['title'],
                                   description: result['description_it'],
                                   image: client.storage
@@ -169,6 +173,7 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => MonumentOpenCard(
+                                  userId: widget.userId,
                                   title: result['title'],
                                   description: result['description_it'],
                                   location: result['location'],
@@ -196,6 +201,7 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => NatureOpenCard(
+                                  userId: widget.userId,
                                   title: result['title'],
                                   location: result['location'],
                                   description: result['description_it'],

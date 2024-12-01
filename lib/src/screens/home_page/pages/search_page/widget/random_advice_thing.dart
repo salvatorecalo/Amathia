@@ -13,8 +13,8 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 class RandomAdviceThing extends StatelessWidget {
   final String tableName;
   final Widget randomWidget;
-  
-  const RandomAdviceThing({super.key, required this.tableName, required this.randomWidget});
+  final String userId;
+  const RandomAdviceThing({super.key, required this.tableName, required this.randomWidget, required this.userId,});
   
   @override
   Widget build(BuildContext context) {
@@ -54,6 +54,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => RecipeOpenCard(
+                userId: userId,
                 title: (randomWidget as RecipeCard).title,
                 image: (randomWidget as RecipeCard).image,
                 description: (randomWidget as RecipeCard).description,
@@ -69,6 +70,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => MonumentOpenCard(
+                userId: userId,
                 title: (randomWidget as MonumentsCard).title,
                 image: (randomWidget as MonumentsCard).image,
                 description: (randomWidget as MonumentsCard).description,
@@ -82,6 +84,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => NatureOpenCard(
+                userId: userId,
                 title: (randomWidget as NatureCard).title,
                 image: (randomWidget as NatureCard).image,
                 description: (randomWidget as NatureCard).description,

@@ -1,3 +1,4 @@
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -8,11 +9,13 @@ class RecipeOpenCard extends StatelessWidget {
   final String image;
   final String time;
   final int peopleFor;
+  final String userId;
   final List<dynamic> ingredients;
 
   const RecipeOpenCard({
     super.key,
     required this.title,
+    required this.userId,
     required this.description,
     required this.image,
     required this.peopleFor,
@@ -79,19 +82,36 @@ class RecipeOpenCard extends StatelessWidget {
                   ),
                   child: ListView(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        width: 420,
-                        child: Text(
-                          title,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: isDarkTheme
-                                ? colorScheme.onSurface
-                                : colorScheme.onSurface,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          Container(
+                          margin: const EdgeInsets.only(top: 20),
+                          width: 300,
+                          child: Text(
+                            title,
+                            style: theme.textTheme.titleLarge?.copyWith(
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onSurface,
+                              fontSize: 24,
+                              fontWeight: FontWeight.w600,
+                            ),
                           ),
                         ),
+                        LikeButton(
+                        userId: userId,
+                        itemId: title, // Unique identifier for the item
+                        itemData: {
+                          'title': title,
+                          'image': image,
+                          'type': 'Ricette',
+                          'peoplefor': peopleFor,
+                          'time': time.toString(),
+                          'ingredients': ingredients,
+                          'description': description,
+                        },
+                      ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(

@@ -221,7 +221,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
             sliver: SliverAppBar(
               toolbarHeight: 115,
-              flexibleSpace: SearchDropdown(),
+              flexibleSpace: SearchDropdown(userId: widget.userId,),
               backgroundColor: isDark ? const Color(0x000000) : white,
               shadowColor: Colors.transparent,
               foregroundColor: Colors.transparent,
@@ -288,7 +288,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                RandomAdviceGroup(widgetGenerated: fetchedData),
+                RandomAdviceGroup(widgetGenerated: fetchedData, userId: widget.userId,),
               ],
             ),
           )

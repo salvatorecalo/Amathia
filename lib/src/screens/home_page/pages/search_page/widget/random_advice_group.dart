@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 
 class RandomAdviceGroup extends StatelessWidget {
   final Map<String, List<Widget>> widgetGenerated;
-
-  const RandomAdviceGroup({super.key, required this.widgetGenerated});
+  final String userId;
+  const RandomAdviceGroup({super.key, required this.widgetGenerated, required this.userId,});
 
   Widget extractWidget(MapEntry<String, List<Widget>> entry) {
     // Check if the list is empty before generating a random index
@@ -28,6 +28,7 @@ class RandomAdviceGroup extends StatelessWidget {
     return Column(
       children: widgetGenerated.entries.map((entry) {
         return RandomAdviceThing(
+          userId: userId,
           tableName: entry.key,
           randomWidget: extractWidget(entry),
         );

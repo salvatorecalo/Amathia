@@ -124,6 +124,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                               if (favoriteItem.type == 'Ricette') {
                                 return RecipeOpenCard(
                                   title: favoriteItem.title,
+                                  userId: widget.userId,
                                   description: favoriteItem.description,
                                   image: favoriteItem.image,
                                   peopleFor: favoriteItem.peoplefor ?? 1,
@@ -138,6 +139,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                 );
                               } else if (favoriteItem.type == 'Monumenti') {
                                 return MonumentOpenCard(
+                                  userId: widget.userId,
                                   title: favoriteItem.title,
                                   location: favoriteItem.location!,
                                   description: favoriteItem.description,
@@ -145,6 +147,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                 );
                               } else if (favoriteItem.type == 'Natura') {
                                 return NatureOpenCard(
+                                  userId: widget.userId,
                                   title: favoriteItem.title,
                                   location: favoriteItem.location!,
                                   description: favoriteItem.description,

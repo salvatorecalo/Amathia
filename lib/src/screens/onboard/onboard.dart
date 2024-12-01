@@ -118,7 +118,7 @@ class _OnBoardState extends State<OnBoard> {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
-                          const Spacer(), // Spazio flessibile
+                          const SizedBox(height: 100,), // Spazio flessibile
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [

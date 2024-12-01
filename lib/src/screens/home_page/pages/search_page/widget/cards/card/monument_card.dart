@@ -26,6 +26,7 @@ class MonumentsCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => MonumentOpenCard(
+              userId: userId,
               title: title,
               location: location,
               image: image,

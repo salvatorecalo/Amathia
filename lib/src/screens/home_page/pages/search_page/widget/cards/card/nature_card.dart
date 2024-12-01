@@ -26,6 +26,7 @@ class NatureCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => NatureOpenCard(
+              userId: userId,
               title: title,
               location: location,
               image: image,

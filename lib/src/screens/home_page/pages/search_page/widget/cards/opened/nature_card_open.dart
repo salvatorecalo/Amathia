@@ -1,4 +1,5 @@
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -8,9 +9,11 @@ class NatureOpenCard extends StatelessWidget {
   final String location;
   final String description;
   final String image;
+  final String userId;
 
   const NatureOpenCard({
     super.key,
+    required this.userId,
     required this.title,
     required this.location,
     required this.description,
@@ -73,17 +76,32 @@ class NatureOpenCard extends StatelessWidget {
                   ),
                   child: ListView(
                     children: [
-                      Container(
-                        margin: const EdgeInsets.only(top: 20),
-                        width: 420,
-                        child: Text(
-                          title,
-                          style: theme.textTheme.titleLarge?.copyWith(
-                            color: colorScheme.onSurface,
-                            fontSize: 24,
-                            fontWeight: FontWeight.w600,
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            width: 300,
+                            child: Text(
+                              title,
+                              style: theme.textTheme.titleLarge?.copyWith(
+                                color: colorScheme.onSurface,
+                                fontSize: 24,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                        ),
+                          LikeButton(
+                            userId: userId,
+                            itemId: title, // Unique identifier for the item
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'location': location,
+                              'description': description,
+                              'type': 'Natura'
+                            },
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 20),
                       Row(
