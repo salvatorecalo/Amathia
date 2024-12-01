@@ -43,9 +43,7 @@ class RecipeOpenCard extends StatelessWidget {
             child: Container(
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: isDarkTheme
-                    ? colorScheme.onSurface.withOpacity(0.7)
-                    : colorScheme.surface,
+                color: colorScheme.surface,
               ),
               child: IconButton(
                 onPressed: () {
