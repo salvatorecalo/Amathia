@@ -1,44 +1,39 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/model/Favorite/Favorite.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'dart:convert';
 
+import 'package:supabase_flutter/supabase_flutter.dart';
 class FavoriteNotifier extends StateNotifier<List<Favorite>> {
   final String userId;
 
   FavoriteNotifier(this.userId) : super([]);
 
-  // Carica i preferiti dell'utente al momento della creazione
+  // Carica i preferiti dall'API di Supabase
   Future<void> loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? favoritesString = prefs.getString('favorites_$userId'); // Chiave specifica per l'utente
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .select()
+        .eq('user_id', userId);
 
-    if (favoritesString != null) {
-      List<dynamic> jsonData = json.decode(favoritesString);
-      state = jsonData.map((item) => Favorite.fromJson(item)).toList();
-    }
+    final data = response as List<dynamic>;
+    state = data.map((item) => Favorite.fromJson(item)).toList();
   }
 
-  // Aggiungi un preferito e salva la lista aggiornata
+  // Aggiungi un preferito
   Future<void> addFavorite(Favorite favorite) async {
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .insert(favorite.toJson());
+
     state = [...state, favorite];
-    await saveFavorites();
   }
 
-  // Rimuovi un preferito e salva la lista aggiornata
+  // Rimuovi un preferito
   Future<void> removeFavorite(String title) async {
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('title', title);
     state = state.where((favorite) => favorite.title != title).toList();
-    await saveFavorites();
-  }
-
-  // Salva i preferiti in SharedPreferences
-  Future<void> saveFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('favorites_$userId', json.encode(state));
   }
 }
-
-// Provider familiare che accetta un userId e fornisce i preferiti specifici per l'utente
-final favoriteProvider = StateNotifierProvider.family<FavoriteNotifier, List<Favorite>, String>(
-  (ref, userId) => FavoriteNotifier(userId)..loadFavorites(),
-);

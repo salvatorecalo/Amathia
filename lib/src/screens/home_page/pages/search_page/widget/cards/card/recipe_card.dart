@@ -77,7 +77,7 @@ class RecipeCard extends StatelessWidget {
                           'title': title,
                           'image': image,
                           'type': 'Ricette',
-                          'peopleFor': peopleFor,
+                          'peoplefor': peopleFor,
                           'time': time.toString(),
                           'ingredients': ingredients,
                           'description': description,

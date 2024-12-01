@@ -1,45 +1,50 @@
-import 'dart:convert';
-import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/model/Favorite/Favorite.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-class FavoriteManager extends ChangeNotifier {
-  static const String favoritesKey = 'favorites';
-
-  final String userId;  // L'ID univoco dell'utente
-  List<Favorite> favorites = [];  // Lista dei preferiti
+class FavoriteManager {
+  final String userId;
 
   FavoriteManager(this.userId);
 
-  // Carica i preferiti specifici per l'utente da SharedPreferences
-  Future<void> loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final String? favoritesString = prefs.getString('${favoritesKey}_$userId'); // Chiave specifica per l'utente
+  // Carica i preferiti da Supabase
+  Future<List<Favorite>> loadFavorites() async {
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .select()
+        .eq('user_id', userId);
 
-    if (favoritesString != null) {
-      List<dynamic> jsonData = json.decode(favoritesString);
-      favorites = jsonData.map((item) => Favorite.fromJson(item)).toList();
-    } else {
-      favorites = [];  // Se non ci sono preferiti, inizia con una lista vuota
-    }
-    notifyListeners();
+
+    final data = response as List<dynamic>;
+    return data.map((item) => Favorite.fromJson(item)).toList();
   }
 
-  // Aggiungi un preferito e salva i dati
+  // Aggiungi un preferito a Supabase
   Future<void> addFavorite(Favorite favorite) async {
-    favorites.add(favorite);
-    await saveFavorites();  // Salva i preferiti dopo aver aggiunto uno nuovo
+    final user = Supabase.instance.client.auth.currentUser;
+    if (user == null || user.id.isEmpty) {
+      throw Exception('User not authenticated or user ID is null');
+    } else {
+      print("utente esiste");
+    }
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .insert(favorite.toJson());
+
+    if (response.error != null) {
+      throw Exception('Failed to add favorite');
+    }
   }
 
-  // Rimuovi un preferito e salva i dati
+  // Rimuovi un preferito da Supabase
   Future<void> removeFavorite(String title) async {
-    favorites.removeWhere((favorite) => favorite.title == title);
-    await saveFavorites();  // Salva i preferiti dopo la rimozione
-  }
+    final response = await Supabase.instance.client
+        .from('favorites')
+        .delete()
+        .eq('user_id', userId)
+        .eq('title', title);
 
-  // Salva i preferiti dell'utente in SharedPreferences
-  Future<void> saveFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('${favoritesKey}_$userId', json.encode(favorites)); // Usa chiave con userId
+    if (response.error != null) {
+      throw Exception('Failed to remove favorite');
+    }
   }
 }

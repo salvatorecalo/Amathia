@@ -126,7 +126,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                   title: favoriteItem.title,
                                   description: favoriteItem.description,
                                   image: favoriteItem.image,
-                                  peopleFor: favoriteItem.peopleFor ?? 1,
+                                  peopleFor: favoriteItem.peoplefor ?? 1,
                                   time: favoriteItem.time.toString(),
                                   ingredients: favoriteItem.ingredients ?? [],
                                 );

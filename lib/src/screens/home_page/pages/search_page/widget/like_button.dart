@@ -23,6 +23,7 @@ class LikeButton extends ConsumerWidget {
 
     Future<void> toggleLike() async {
       final notifier = ref.read(favoriteProvider(userId).notifier);
+      print("user id: $userId");
       if (isLiked) {
         await notifier.removeFavorite(itemId); 
       } else {

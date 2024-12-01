@@ -77,7 +77,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   image: image,
                   description: e['description_en'],
                   time: e['time'],
-                  peopleFor: e['peopleFor'] ?? 1,
+                  peopleFor: e['peoplefor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_en'] ?? []),
                 ),
               );
@@ -124,7 +124,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   image: image,
                   description: e['description_it'],
                   time: e['time'],
-                  peopleFor: e['peopleFor'] ?? 1,
+                  peopleFor: e['peoplefor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_it'] ?? []),
                 ),
               );

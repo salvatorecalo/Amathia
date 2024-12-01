@@ -4,7 +4,7 @@ class Favorite {
   final String image;
   final String description;
   final String? location;
-  final int? peopleFor;
+  final int? peoplefor;
   final String? time;
   final List<String>? ingredients;
 
@@ -14,7 +14,7 @@ class Favorite {
     required this.image,
     required this.description,
     this.location,
-    this.peopleFor,
+    this.peoplefor,
     this.time,
     this.ingredients,
   });
@@ -26,7 +26,7 @@ class Favorite {
       image: json['image'],
       description: json['description'],
       location: json['location'],
-      peopleFor: json['peopleFor'],
+      peoplefor: json['peoplefor'],
       time: json['time'],
       ingredients: json['ingredients'] != null
           ? List<String>.from(json['ingredients'])
@@ -41,7 +41,7 @@ class Favorite {
       'image': image,
       'description': description,
       'location': location,
-      'peopleFor': peopleFor,
+      'peoplefor': peoplefor,
       'time': time,
       'ingredients': ingredients,
     };
