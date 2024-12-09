@@ -98,6 +98,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => CityOpenCard(
+                userId: userId,
                 title: (randomWidget as CityCard).title,
                 image: (randomWidget as CityCard).image,
                 description: (randomWidget as CityCard).description,

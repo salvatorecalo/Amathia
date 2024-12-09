@@ -1,6 +1,7 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
+import 'package:amathia/src/screens/home_page/pages/itinerari_page/itinerari_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -69,6 +70,7 @@ class HomePage extends StatefulWidget {
       children: <Widget>[
         SearchPage(userId: widget.userId),
         FavoritePage(userId: widget.userId),
+        ItinerariesPage(userId: widget.userId,),
         const AccountPage(), // AccountPage is now part of the PageView
       ],
     );
@@ -88,7 +90,11 @@ class HomePage extends StatefulWidget {
           icon: const Icon(Icons.favorite),
           label: localizations.favorite,
         ),
-        const BottomNavigationBarItem(
+        BottomNavigationBarItem(
+          icon: Icon(Icons.map),
+          label: localizations.itineraries,
+        ),
+        BottomNavigationBarItem(
           icon: Icon(Icons.person),
           label: 'Account',
         ),
@@ -100,6 +106,8 @@ class HomePage extends StatefulWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomSelectedIndex, // Sync the BottomNavigationBar with the page index
         selectedItemColor: blue,
+        unselectedItemColor: Colors.grey, // Colore degli elementi non selezionati
+        showUnselectedLabels: true,
         onTap: (index) {
           bottomTapped(index); // Handle tap on BottomNavigationBar
         },

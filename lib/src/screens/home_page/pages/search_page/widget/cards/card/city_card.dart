@@ -24,6 +24,7 @@ class CityCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CityOpenCard(
+              userId: userId,
               title: title,
               description: description,
               image: image,
@@ -49,6 +50,7 @@ class CityCard extends StatelessWidget {
             const SizedBox(
               height: 20,
             ),
+            
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(

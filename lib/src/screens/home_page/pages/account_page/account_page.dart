@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class AccountPage extends ConsumerWidget {
   const AccountPage({super.key});
@@ -16,20 +15,21 @@ class AccountPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final email = supabase.auth.currentUser?.email;
     final localizations = AppLocalizations.of(context);
-    return Scaffold(
-      body: ListView(
+    return SafeArea(
+      child: Scaffold(
+        body: ListView(
           padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
           children: [
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              child: Text(
-                localizations!.userProfile,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                ),
+            Text(
+              localizations!.userProfile,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
+            ),
+            const SizedBox(
+              height: 10,
             ),
             Text(
               "$email",
@@ -37,7 +37,7 @@ class AccountPage extends ConsumerWidget {
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 18),
-      
+
             // Sezione Dark Mode
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -53,7 +53,7 @@ class AccountPage extends ConsumerWidget {
               ],
             ),
             const SizedBox(height: 18),
-      
+
             // Sezione Cambia lingua
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18.0),
@@ -62,7 +62,7 @@ class AccountPage extends ConsumerWidget {
                 children: [
                   Text(localizations.selectLanguage),
                   DropdownButton<String>(
-                    value: ref.read(localeProvider)?.languageCode,
+                    value: ref.read(localeProvider)?.languageCode ?? 'en',
                     items: const [
                       DropdownMenuItem(value: 'en', child: Text('English')),
                       DropdownMenuItem(value: 'it', child: Text('Italiano')),
@@ -77,7 +77,7 @@ class AccountPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-      
+
             // Cambio password
             TextButton(
               onPressed: () async {
@@ -96,7 +96,7 @@ class AccountPage extends ConsumerWidget {
               ),
             ),
             const SizedBox(height: 20),
-      
+
             // Logout
             TextButton(
               onPressed: () async {
@@ -104,8 +104,7 @@ class AccountPage extends ConsumerWidget {
                   await supabase.auth.signOut();
                   final prefs = await SharedPreferences.getInstance();
                   await prefs.setBool('isLoggedIn', false);
-      
-                  // Solo al logout, fai il push alla pagina di login
+
                   Navigator.of(context).pushReplacementNamed('/login');
                 } catch (error) {
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -121,26 +120,78 @@ class AccountPage extends ConsumerWidget {
                 ),
               ),
             ),
-      
+
             const SizedBox(height: 20),
-      
-            // Vedi su GitHub
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 99, 21, 225)),
-              label: Text(
-                localizations.seeOnGithub,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: white,
+
+            // Pulsante Cancella Account
+            ElevatedButton(
+  onPressed: () {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: Text(
+            localizations.deleteAccount,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+          content: Text(
+            localizations.warningDelete,
+            style: const TextStyle(fontSize: 16),
+          ),
+          actions: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Pulsante Conferma
+                ElevatedButton(
+                  onPressed: () async {
+                    try {
+                      await supabase.auth.admin
+                          .deleteUser(supabase.auth.currentUser!.id);
+                      final prefs = await SharedPreferences.getInstance();
+                      await prefs.clear();
+                      Navigator.of(context).pushReplacementNamed('/login');
+                    } catch (error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(localizations.unexpectedError),
+                        ),
+                      );
+                    }
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: Colors.red,
+                  ),
+                  child: Text("ok"),
                 ),
-              ),
-              onPressed: () async {
-                await launchUrl(
-                    Uri.parse('https://github.com/salvatorecalo/Amathia'));
-              },
+                const SizedBox(height: 10),
+                // Pulsante Annulla
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(localizations.cancel),
+                ),
+              ],
             ),
           ],
+        );
+      },
+    );
+  },
+  style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.red,
+  ),
+  child: Text(
+    localizations.deleteAccount,
+    style: const TextStyle(color: Colors.white),
+  ),
+),
+
+          ],
+        ),
       ),
     );
   }

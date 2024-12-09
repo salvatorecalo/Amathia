@@ -19,6 +19,7 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
   }
 
   Future<void> addFavorite(Favorite favorite) async {
+    // ignore: unused_local_variable
     final response = await Supabase.instance.client
         .from('favorites')
         .insert(favorite.toJson());

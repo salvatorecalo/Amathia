@@ -44,10 +44,12 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
             child: Text(
               localizations!.favoriteText,
               textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
+              style:  Theme.of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
             ),
           ),
           // Bottoni di filtro
@@ -110,8 +112,18 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
           Expanded(
             child: filteredFavorites.isEmpty
                 ? Center(
-                    child: Text(localizations.favoriteEmpty,
-                        textAlign: TextAlign.center))
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset('assets/no_favorite.png', width: 200,),
+                        Text(
+                          localizations.favoriteEmpty,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                    ),
+                  )
                 : ListView.builder(
                     itemCount: filteredFavorites.length,
                     itemBuilder: (context, index) {
@@ -133,6 +145,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                 );
                               } else if (favoriteItem.type == 'Borghi') {
                                 return CityOpenCard(
+                                  userId: widget.userId,
                                   title: favoriteItem.title,
                                   description: favoriteItem.description,
                                   image: favoriteItem.image,

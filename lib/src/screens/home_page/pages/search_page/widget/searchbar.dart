@@ -188,6 +188,7 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => CityOpenCard(
+                                  userId: widget.userId,
                                   title: result['title'],
                                   description: result['description_it'],
                                   image: client.storage
