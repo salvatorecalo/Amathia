@@ -13,6 +13,7 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/car
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/card/recipe_card.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/category_buttons.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/searchbar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 extension LocalizationExtension on AppLocalizations {
   String? getString(String key) {
@@ -50,8 +51,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final SupabaseClient client = Supabase.instance.client;
   final List<String> tables = ['Ricette', 'Borghi', 'Monumenti', 'Natura'];
   final Map<String, List<Widget>> fetchedData = {};
-  final Map<String, String> fetchedTitles =
-      {};
+  final Map<String, String> fetchedTitles = {};
   bool isDataFetched = false;
 
   Future<void> fetchAllTables(AppLocalizations localizations) async {
@@ -107,6 +107,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
                   userId: widget.userId,
+                  itineraryId: e['id'],
                   description: e['description_en'],
                   image: image,
                   title: title,
@@ -154,6 +155,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
+                  itineraryId: e['uuid'],
                   userId: widget.userId,
                   description: e['description_it'],
                   image: image,
@@ -221,7 +223,9 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
             sliver: SliverAppBar(
               toolbarHeight: 115,
-              flexibleSpace: SearchDropdown(userId: widget.userId,),
+              flexibleSpace: SearchDropdown(
+                userId: widget.userId,
+              ),
               backgroundColor: isDark ? const Color(0x000000) : white,
               shadowColor: Colors.transparent,
               foregroundColor: Colors.transparent,
@@ -288,7 +292,23 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     fontWeight: FontWeight.w700,
                   ),
                 ),
-                RandomAdviceGroup(widgetGenerated: fetchedData, userId: widget.userId,),
+                RandomAdviceGroup(
+                  widgetGenerated: fetchedData,
+                  userId: widget.userId,
+                ),
+                Container(
+                  margin: const EdgeInsets.only(
+                    top: 10,
+                  ),
+                  child: TextButton(
+                    onPressed: () {
+                      launchUrl(
+                        Uri.parse('https://freepik.com'),
+                      );
+                    },
+                    child: Text(localizations.copyright),
+                  ),
+                ),
               ],
             ),
           )

@@ -18,9 +18,30 @@ class FavoritePage extends ConsumerStatefulWidget {
   @override
   _FavoritePageState createState() => _FavoritePageState();
 }
-
 class _FavoritePageState extends ConsumerState<FavoritePage> {
   String selectedCategory = 'All';
+
+  bool _isInitialized = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Carica i preferiti ogni volta che la pagina viene visualizzata
+    if (!_isInitialized) {
+      _isInitialized = true; // Evita chiamate multiple in caso di rebuild
+    } else {
+      _loadFavorites();
+    }
+  }
+
+  void _loadFavorites() async {
+    try {
+      await ref.read(favoriteProvider(widget.userId).notifier).loadFavorites();
+    } catch (e) {
+      debugPrint("Errore durante il caricamento dei preferiti: $e");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,18 +59,13 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
       body: Column(
         children: [
           Container(
-            margin: const EdgeInsets.symmetric(
-              vertical: 20,
-            ),
+            margin: const EdgeInsets.symmetric(vertical: 20),
             child: Text(
               localizations!.favoriteText,
               textAlign: TextAlign.center,
-              style:  Theme.of(context)
-                    .textTheme
-                    .headlineSmall
-                    ?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
           ),
           // Bottoni di filtro
@@ -116,7 +132,10 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Image.asset('assets/no_favorite.png', width: 200,),
+                        Image.asset(
+                          'assets/no_favorite.png',
+                          width: 200,
+                        ),
                         Text(
                           localizations.favoriteEmpty,
                           textAlign: TextAlign.center,

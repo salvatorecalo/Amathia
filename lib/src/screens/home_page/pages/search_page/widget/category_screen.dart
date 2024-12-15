@@ -97,6 +97,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
               child: CityCard(
                 userId: widget.userId,
+                itineraryId: e['id'],
                 description: e['description_en'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
@@ -148,10 +149,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
               ),
             );
           } else if (widget.type == "Borghi") {
+            print("Francesco scrimieri ${e['id']}");
             return Container(
               margin: const EdgeInsets.all(20),
 
               child: CityCard(
+                itineraryId: e['uuid'],
                 userId: widget.userId,
                 description: e['description_it'],
                 image:

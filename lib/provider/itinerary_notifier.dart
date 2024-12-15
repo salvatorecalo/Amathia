@@ -7,37 +7,64 @@ class ItineraryNotifier extends StateNotifier<List<Itinerary>> {
 
   ItineraryNotifier(this.userId) : super([]);
 
+  // Carica gli itinerari per l'utente con gestione errori
   Future<List<Itinerary>> loadItineraries() async {
-    final response = await supabase
-        .from('itineraries')
-        .select()
-        .eq('user_id', userId);
+    try {
+      final response = await supabase
+          .from('itineraries')
+          .select()
+          .eq('user_id', userId);
 
-    final itineraries = (response as List<dynamic>)
-        .map((item) => Itinerary.fromJson(item))
-        .toList();
-
-    state = itineraries; // Aggiorna lo stato
-    return itineraries; // Restituisci la lista
+      if (response is List<dynamic>) {
+        final itineraries = response
+            .map((item) => Itinerary.fromJson(item))
+            .toList();
+        state = itineraries;
+        return itineraries;
+      } else {
+        throw Exception('Formato risposta inaspettato');
+      }
+    } catch (error) {
+      print("Errore durante il caricamento degli itinerari: $error");
+      state = []; // Stato vuoto in caso di errore
+      return [];
+    }
   }
 
+  // Aggiungi un nuovo itinerario con gestione errori
   Future<void> addItinerary(Itinerary itinerary) async {
-    await supabase.from('itineraries').insert(itinerary.toJson());
-    state = [...state, itinerary];
+    try {
+      await supabase.from('itineraries').insert(itinerary.toJson());
+      state = [...state, itinerary]; // Aggiorna lo stato locale
+    } catch (error) {
+      print("Errore durante l'aggiunta dell'itinerario: $error");
+    }
   }
 
+  // Elimina un itinerario con gestione errori
   Future<void> deleteItinerary(String id) async {
-    await supabase.from('itineraries').delete().eq('id', id);
+    try {
+      await supabase.from('itineraries').delete().eq('id', id);
+      state = state.where((itinerary) => itinerary.id != id).toList(); // Rimuovi dallo stato locale
+    } catch (error) {
+      print("Errore durante l'eliminazione dell'itinerario: $error");
+    }
   }
 
+  // Aggiorna un itinerario esistente con gestione errori
   Future<void> updateItinerary(Itinerary itinerary) async {
-    await supabase
-        .from('itineraries')
-        .update(itinerary.toJson())
-        .eq('id', itinerary.id);
-    state = [
-      for (final it in state)
-        if (it.id == itinerary.id) itinerary else it
-    ];
+    try {
+      await supabase
+          .from('itineraries')
+          .update(itinerary.toJson())
+          .eq('id', itinerary.id);
+
+      state = [
+        for (final it in state)
+          if (it.id == itinerary.id) itinerary else it
+      ]; // Aggiorna l'elemento nello stato locale
+    } catch (error) {
+      print("Errore durante l'aggiornamento dell'itinerario: $error");
+    }
   }
 }

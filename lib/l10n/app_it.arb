@@ -110,5 +110,6 @@
   "confirmDelete": "Conferma eliminazione",
   "deleteAccount": "Cancella Account",
   "warningDelete": "ATTENZIONE: Questa azione è irreversibile! Eliminando il tuo account, perderai tutti i dati salvati. Sei sicuro di voler procedere?",
-  "itinineraryEmpty": "Sembra che non ci sia niente qui...\n Crea un itinerario e goditi il ​​viaggio!"
+  "itinineraryEmpty": "Sembra che non ci sia niente qui...\n Crea un itinerario e goditi il ​​viaggio!",
+  "copyright": "La maggior parte delle immagini è presa da Freepik.com"
 }

@@ -105,5 +105,6 @@
   "sortByLocation": "Location",
   "deleteAccount": "Delete Account",
   "warningDelete": "Are you sure you want to delete your account? This action is irreversible, and all your associated data will be permanently lost. Do you wish to continue?",
-  "itinineraryEmpty": "There doesn't seem to be anything here...\n Create an itinerary and enjoy your trip!"
+  "itinineraryEmpty": "There doesn't seem to be anything here...\n Create an itinerary and enjoy your trip!",
+  "copyright": "Most of the images are taken from Freepik.com"
 }

@@ -77,7 +77,7 @@ class _ItinerariesPageState extends State<ItinerariesPage> {
                       final uuid = Uuid();
                       final newItinerary = Itinerary(
                         id: uuid.v4(),
-                        user_id: widget.userId,
+                        userId: widget.userId,
                         title: titleController.text,
                         locations: [],
                       );
@@ -121,6 +121,64 @@ class _ItinerariesPageState extends State<ItinerariesPage> {
         },
       );
     }
+
+    void editItinerary(Itinerary itinerary) {
+  final TextEditingController titleController =
+      TextEditingController(text: itinerary.title);
+
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: const Text('Modifica Itinerario'),
+        content: TextField(
+          controller: titleController,
+          decoration: const InputDecoration(hintText: 'Inserisci un nuovo titolo'),
+        ),
+        actions: [
+          ElevatedButton(
+            onPressed: () async {
+              final newTitle = titleController.text.trim();
+              if (newTitle.isNotEmpty) {
+                final updatedItinerary = itinerary.copyWith(title: newTitle);
+
+                // Aggiorna l'itinerario nel database
+                await ItineraryNotifier(itinerary.userId)
+                    .updateItinerary(updatedItinerary);
+
+                // Aggiorna la lista locale degli itinerari
+                setState(() {
+                  // Modifica l'itinerario nella lista locale
+                  int index = itineraries.indexWhere((it) => it.id == itinerary.id);
+                  if (index != -1) {
+                    itineraries[index] = updatedItinerary;
+                    filteredItineraries = List.from(itineraries);
+                  }
+                });
+
+                // Chiudi il dialog e mostra il messaggio di successo
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Itinerario aggiornato con successo!'),
+                  ),
+                );
+              }
+            },
+            child: const Text('Salva'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Chiudi il dialog senza fare nulla
+            },
+            child: const Text('Annulla'),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
     void filterItineraries(String query) {
       final filtered = itineraries.where((itinerary) {
@@ -267,6 +325,12 @@ class _ItinerariesPageState extends State<ItinerariesPage> {
                                 Text(itinerary.title),
                                 Row(
                                   children: [
+                                    IconButton(
+                                      onPressed: () => {
+                                        editItinerary(itinerary),
+                                      },
+                                      icon: Icon(Icons.edit),
+                                    ),
                                     IconButton(
                                       icon: const Icon(Icons.delete),
                                       onPressed: () =>

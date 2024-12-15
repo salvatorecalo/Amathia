@@ -112,7 +112,7 @@ class _ItineraryDetailPageState extends State<ItineraryDetailPage> {
                 final items = _sortLocations(entry.value);
 
                 return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     // Titolo della sezione
                     Padding(
