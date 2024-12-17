@@ -1,264 +1,48 @@
 import 'package:amathia/provider/itinerary_notifier.dart';
+import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/widget/Itinerari_card_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
-class ItinerariesPage extends StatefulWidget {
-  final String userId;
-
-  const ItinerariesPage({Key? key, required this.userId}) : super(key: key);
+class ItinerariesPage extends ConsumerStatefulWidget {
+  const ItinerariesPage({super.key});
 
   @override
   _ItinerariesPageState createState() => _ItinerariesPageState();
 }
 
-class _ItinerariesPageState extends State<ItinerariesPage> {
-  List<Itinerary> itineraries = [];
-  List<Itinerary> filteredItineraries = [];
+class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   final TextEditingController searchController = TextEditingController();
+  List<Itinerary> filteredItineraries = [];
 
   @override
   void initState() {
     super.initState();
-    loadItineraries();
+    searchController.addListener(() => filterItineraries());
   }
 
-  Future<void> loadItineraries() async {
-    try {
-      final userItineraries =
-          (await ItineraryNotifier(widget.userId).loadItineraries())
-              .cast<Itinerary>();
-      if (mounted) {
-        setState(() {
-          itineraries = userItineraries;
-          filteredItineraries = userItineraries;
-        });
-      }
-    } catch (error) {
-      debugPrint("Errore durante il caricamento degli itinerari: $error");
-    }
-  }
-
-  @override
-  void dispose() {
-    searchController.dispose();
-    super.dispose();
+  void filterItineraries() {
+    final query = searchController.text.toLowerCase();
+    final itineraries = ref.read(itineraryNotifierProvider);
+    setState(() {
+      filteredItineraries = itineraries
+          .where((it) => it.title.toLowerCase().contains(query))
+          .toList();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-    if (localizations == null) {
-      return const Center(
-        child: Text("Errore: Localizzazioni non disponibili."),
-      );
-    }
-
-    void createItinerary() {
-      TextEditingController titleController = TextEditingController();
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text(localizations.createitinerary),
-            content: TextField(
-              controller: titleController,
-              decoration: InputDecoration(hintText: localizations.insertTitle),
-            ),
-            actions: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      final uuid = Uuid();
-                      final newItinerary = Itinerary(
-                        id: uuid.v4(),
-                        userId: widget.userId,
-                        title: titleController.text,
-                        locations: [],
-                      );
-                      try {
-                        await ItineraryNotifier(widget.userId)
-                            .addItinerary(newItinerary);
-                        if (mounted) {
-                          setState(() {
-                            itineraries.add(newItinerary);
-                            filteredItineraries = itineraries;
-                          });
-                        }
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content:
-                                Text(localizations.successfulCreateItinenary),
-                          ),
-                        );
-                      } catch (error) {
-                        debugPrint("Errore durante la creazione: $error");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text(localizations.create),
-                  ),
-                  const SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(localizations.cancel),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    }
-
-    void editItinerary(Itinerary itinerary) {
-  final TextEditingController titleController =
-      TextEditingController(text: itinerary.title);
-
-  showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text('Modifica Itinerario'),
-        content: TextField(
-          controller: titleController,
-          decoration: const InputDecoration(hintText: 'Inserisci un nuovo titolo'),
-        ),
-        actions: [
-          ElevatedButton(
-            onPressed: () async {
-              final newTitle = titleController.text.trim();
-              if (newTitle.isNotEmpty) {
-                final updatedItinerary = itinerary.copyWith(title: newTitle);
-
-                // Aggiorna l'itinerario nel database
-                await ItineraryNotifier(itinerary.userId)
-                    .updateItinerary(updatedItinerary);
-
-                // Aggiorna la lista locale degli itinerari
-                setState(() {
-                  // Modifica l'itinerario nella lista locale
-                  int index = itineraries.indexWhere((it) => it.id == itinerary.id);
-                  if (index != -1) {
-                    itineraries[index] = updatedItinerary;
-                    filteredItineraries = List.from(itineraries);
-                  }
-                });
-
-                // Chiudi il dialog e mostra il messaggio di successo
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('Itinerario aggiornato con successo!'),
-                  ),
-                );
-              }
-            },
-            child: const Text('Salva'),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context); // Chiudi il dialog senza fare nulla
-            },
-            child: const Text('Annulla'),
-          ),
-        ],
-      );
-    },
-  );
-}
-
-
-    void filterItineraries(String query) {
-      final filtered = itineraries.where((itinerary) {
-        return itinerary.title.toLowerCase().contains(query.toLowerCase());
-      }).toList();
-      setState(() {
-        filteredItineraries = filtered;
-      });
-    }
-
-    void deleteItinerary(Itinerary itinerary) {
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            backgroundColor: Colors.white,
-            title: Text(localizations.confirmDelete),
-            content: Text(
-                '${localizations.deleteConfirmation} "${itinerary.title}"?'),
-            actions: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  ElevatedButton(
-                    onPressed: () async {
-                      try {
-                        await ItineraryNotifier(widget.userId)
-                            .deleteItinerary(itinerary.id);
-                        if (mounted) {
-                          setState(() {
-                            itineraries
-                                .removeWhere((it) => it.id == itinerary.id);
-                            filteredItineraries = itineraries;
-                          });
-                        }
-                        Navigator.pop(context);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                                'Itinerario "${itinerary.title}" eliminato con successo!'),
-                          ),
-                        );
-                      } catch (error) {
-                        debugPrint("Errore durante l'eliminazione: $error");
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
-                    ),
-                    child: Text(localizations.delete),
-                  ),
-                  const SizedBox(height: 10),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Text(localizations.cancel),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
-    }
+    final localizations = AppLocalizations.of(context)!;
+    final itineraries = ref.watch(itineraryNotifierProvider);
 
     return SafeArea(
       child: Scaffold(
         body: Column(
           children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              child: Text(
-                localizations.itineraries,
-                style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: TextField(
@@ -270,76 +54,37 @@ class _ItinerariesPageState extends State<ItinerariesPage> {
                     borderRadius: BorderRadius.circular(8.0),
                   ),
                 ),
-                onChanged: filterItineraries,
               ),
             ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 20),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  backgroundColor: Colors.blue,
-                ),
-                onPressed: createItinerary,
-                child: Text(localizations.createitinerary),
-              ),
+            ElevatedButton(
+              onPressed: () => createItinerary(context, ref),
+              child: Text(localizations.createitinerary),
             ),
             Expanded(
-              child: filteredItineraries.isEmpty
+              child: itineraries.isEmpty
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/no_favorite.png',
-                            width: 200,
-                          ),
-                          Text(
-                            localizations.itinineraryEmpty,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                      child: Text(localizations.itinineraryEmpty),
                     )
                   : ListView.builder(
-                      itemCount: filteredItineraries.length,
+                      itemCount: itineraries.length,
                       itemBuilder: (context, index) {
-                        final itinerary = filteredItineraries[index];
-                        return InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => ItineraryDetailPage(
-                                  itinerary: itinerary,
-                                ),
+                        final itinerary = itineraries[index];
+                        return ListTile(
+                          title: Text(itinerary.title),
+                          trailing: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () => editItinerary(itinerary, ref),
                               ),
-                            );
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 18),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(itinerary.title),
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () => {
-                                        editItinerary(itinerary),
-                                      },
-                                      icon: Icon(Icons.edit),
-                                    ),
-                                    IconButton(
-                                      icon: const Icon(Icons.delete),
-                                      onPressed: () =>
-                                          deleteItinerary(itinerary),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                              IconButton(
+                                icon: const Icon(Icons.delete),
+                                onPressed: () =>
+                                    ref.read(itineraryNotifierProvider.notifier)
+                                        .deleteItinerary(itinerary.id),
+                              ),
+                            ],
                           ),
                         );
                       },
@@ -348,6 +93,80 @@ class _ItinerariesPageState extends State<ItinerariesPage> {
           ],
         ),
       ),
+    );
+  }
+
+  void createItinerary(BuildContext context, WidgetRef ref) {
+    final TextEditingController titleController = TextEditingController();
+    final uuid = Uuid();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Create Itinerary'),
+          content: TextField(
+            controller: titleController,
+            decoration: const InputDecoration(hintText: 'Enter Title'),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                final newItinerary = Itinerary(
+                  id: uuid.v4(),
+                  userId: 'user123', // Può essere dinamico
+                  title: titleController.text,
+                  locations: [],
+                );
+                ref
+                    .read(itineraryNotifierProvider.notifier)
+                    .addItinerary(newItinerary);
+                Navigator.pop(context);
+              },
+              child: const Text('Create'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void editItinerary(Itinerary itinerary, WidgetRef ref) {
+    final TextEditingController titleController =
+        TextEditingController(text: itinerary.title);
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Edit Itinerary'),
+          content: TextField(
+            controller: titleController,
+            decoration: const InputDecoration(hintText: 'Enter new title'),
+          ),
+          actions: [
+            ElevatedButton(
+              onPressed: () {
+                final updatedItinerary =
+                    itinerary.copyWith(title: titleController.text);
+                ref
+                    .read(itineraryNotifierProvider.notifier)
+                    .updateItinerary(updatedItinerary);
+                Navigator.pop(context);
+              },
+              child: const Text('Save'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+          ],
+        );
+      },
     );
   }
 }

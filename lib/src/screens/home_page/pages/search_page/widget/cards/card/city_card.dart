@@ -49,7 +49,8 @@ class CityCard extends StatelessWidget {
                 height: 100,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
-                  return const Icon(Icons.error); // Mostra un'icona in caso di errore
+                  return const Icon(
+                      Icons.error); // Mostra un'icona in caso di errore
                 },
               ),
             ),
@@ -69,7 +70,8 @@ class CityCard extends StatelessWidget {
                         fontSize: 16,
                         fontWeight: FontWeight.w700,
                       ),
-                      overflow: TextOverflow.ellipsis, // Troncamento del testo se è troppo lungo
+                      overflow: TextOverflow
+                          .ellipsis, // Troncamento del testo se è troppo lungo
                     ),
                   ),
                   Row(
@@ -85,8 +87,14 @@ class CityCard extends StatelessWidget {
                         },
                       ),
                       SaveItineraryButton(
-                        itineraryId: itineraryId,
+                        itineraryId:
+                            itineraryId, // Passa l'id dell'itinerario corrente (vuoto se nessun itinerario)
                         userId: userId,
+                        itemData: {
+                          'title': title,
+                          'image': image,
+                          'description': description,
+                        },
                       ),
                     ],
                   ),

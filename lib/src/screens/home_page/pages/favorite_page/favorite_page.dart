@@ -18,6 +18,7 @@ class FavoritePage extends ConsumerStatefulWidget {
   @override
   _FavoritePageState createState() => _FavoritePageState();
 }
+
 class _FavoritePageState extends ConsumerState<FavoritePage> {
   String selectedCategory = 'All';
 

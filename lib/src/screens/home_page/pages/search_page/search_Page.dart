@@ -103,11 +103,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     description: e['description_en']),
               );
             } else if (tableName == "Borghi") {
+              print("itinery id city card: ${e['uuid']}");
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
                   userId: widget.userId,
-                  itineraryId: e['id'],
+                  itineraryId: e['uuid'], // uuid is the unique id for itinerary
                   description: e['description_en'],
                   image: image,
                   title: title,
@@ -152,6 +153,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 ),
               );
             } else if (tableName == "Borghi") {
+              print("pippo fa le seghe ${e['uuid']}");
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(

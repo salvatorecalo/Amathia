@@ -70,7 +70,7 @@ class HomePage extends StatefulWidget {
       children: <Widget>[
         SearchPage(userId: widget.userId),
         FavoritePage(userId: widget.userId),
-        ItinerariesPage(userId: widget.userId,),
+        ItinerariesPage(),
         const AccountPage(), // AccountPage is now part of the PageView
       ],
     );

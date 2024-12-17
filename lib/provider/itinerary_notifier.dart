@@ -1,70 +1,65 @@
-import 'package:amathia/main.dart';
-import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 
 class ItineraryNotifier extends StateNotifier<List<Itinerary>> {
   final String userId;
 
-  ItineraryNotifier(this.userId) : super([]);
+  ItineraryNotifier(this.userId) : super([]) {
+    loadItineraries(); // Carica i dati iniziali
+  }
 
-  // Carica gli itinerari per l'utente con gestione errori
-  Future<List<Itinerary>> loadItineraries() async {
+  // Metodo per caricare gli itinerari (dovrebbe chiamare una sorgente dati esterna)
+  Future<void> loadItineraries() async {
     try {
-      final response = await supabase
-          .from('itineraries')
-          .select()
-          .eq('user_id', userId);
-
-      if (response is List<dynamic>) {
-        final itineraries = response
-            .map((item) => Itinerary.fromJson(item))
-            .toList();
-        state = itineraries;
-        return itineraries;
-      } else {
-        throw Exception('Formato risposta inaspettato');
-      }
-    } catch (error) {
-      print("Errore durante il caricamento degli itinerari: $error");
-      state = []; // Stato vuoto in caso di errore
-      return [];
+      // Simulazione: carica dati iniziali
+      final dummyItineraries = [
+        Itinerary(id: '1', userId: userId, title: 'Itinerario 1', locations: []),
+        Itinerary(id: '2', userId: userId, title: 'Itinerario 2', locations: []),
+      ];
+      state = dummyItineraries;
+    } catch (e) {
+      // Puoi aggiungere gestione degli errori
+      print('Errore nel caricamento: $e');
     }
   }
 
-  // Aggiungi un nuovo itinerario con gestione errori
+  // Aggiunge un nuovo itinerario
   Future<void> addItinerary(Itinerary itinerary) async {
-    try {
-      await supabase.from('itineraries').insert(itinerary.toJson());
-      state = [...state, itinerary]; // Aggiorna lo stato locale
-    } catch (error) {
-      print("Errore durante l'aggiunta dell'itinerario: $error");
-    }
+    state = [...state, itinerary]; // Aggiunge alla lista esistente
   }
 
-  // Elimina un itinerario con gestione errori
+  // Modifica un itinerario
+  Future<void> updateItinerary(Itinerary updatedItinerary) async {
+    state = state.map((it) {
+      return it.id == updatedItinerary.id ? updatedItinerary : it;
+    }).toList();
+  }
+
+  // Elimina un itinerario
   Future<void> deleteItinerary(String id) async {
-    try {
-      await supabase.from('itineraries').delete().eq('id', id);
-      state = state.where((itinerary) => itinerary.id != id).toList(); // Rimuovi dallo stato locale
-    } catch (error) {
-      print("Errore durante l'eliminazione dell'itinerario: $error");
-    }
+    state = state.where((it) => it.id != id).toList();
   }
 
-  // Aggiorna un itinerario esistente con gestione errori
-  Future<void> updateItinerary(Itinerary itinerary) async {
-    try {
-      await supabase
-          .from('itineraries')
-          .update(itinerary.toJson())
-          .eq('id', itinerary.id);
-
-      state = [
-        for (final it in state)
-          if (it.id == itinerary.id) itinerary else it
-      ]; // Aggiorna l'elemento nello stato locale
-    } catch (error) {
-      print("Errore durante l'aggiornamento dell'itinerario: $error");
-    }
+  // Aggiunge un elemento all'itinerario
+  Future<void> addItemToItinerary(String itineraryId, Map<String, dynamic> item) async {
+    state = state.map((itinerary) {
+      if (itinerary.id == itineraryId) {
+        return itinerary.copyWith(locations: [...itinerary.locations, item]);
+      }
+      return itinerary;
+    }).toList();
   }
+
+  // Rimuove un elemento dall'itinerario
+  Future<void> removeItemFromItinerary(String itineraryId, Map<String, dynamic> item) async {
+    state = state.map((itinerary) {
+      if (itinerary.id == itineraryId) {
+        return itinerary.copyWith(
+          locations: itinerary.locations.where((location) => location != item).toList(),
+        );
+      }
+      return itinerary;
+    }).toList();
+  }
+
 }
