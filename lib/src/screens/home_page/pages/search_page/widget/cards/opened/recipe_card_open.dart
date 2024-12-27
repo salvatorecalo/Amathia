@@ -1,3 +1,4 @@
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -72,136 +73,150 @@ class RecipeOpenCard extends StatelessWidget {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  color:
-                      isDarkTheme ? colorScheme.surface : colorScheme.surface,
+                  color: isDarkTheme ? colorScheme.surface : colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 20,
                   ),
-                  child: ListView(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          width: 300,
-                          child: Text(
-                            title,
-                            style: theme.textTheme.titleLarge?.copyWith(
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: isDarkTheme
+                                      ? colorScheme.onSurface
+                                      : colorScheme.onSurface,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                maxLines: 1,
+                              ),
+                            ),
+                            LikeButton(
+                              userId: userId,
+                              itemId: title,
+                              itemData: {
+                                'title': title,
+                                'image': image,
+                                'type': 'Ricette',
+                                'peoplefor': peopleFor,
+                                'time': time.toString(),
+                                'ingredients': ingredients,
+                                'description': description,
+                              },
+                            ),
+                            const SizedBox(width: 10,),
+                            SaveItineraryButton(
+                              type: 'Ricette',
+                              itineraryId: '',
+                              userId: userId,
+                              itemData: {
+                                'title': title,
+                                'image': image,
+                                'description': description,
+                                'type': 'Ricette',
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.schedule,
                               color: isDarkTheme
                                   ? colorScheme.onSurface
                                   : colorScheme.onSurface,
-                              fontSize: 24,
-                              fontWeight: FontWeight.w600,
                             ),
-                          ),
+                            const SizedBox(width: 5),
+                            Text(
+                              time,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurface,
+                              ),
+                            ),
+                          ],
                         ),
-                        LikeButton(
-                        userId: userId,
-                        itemId: title, // Unique identifier for the item
-                        itemData: {
-                          'title': title,
-                          'image': image,
-                          'type': 'Ricette',
-                          'peoplefor': peopleFor,
-                          'time': time.toString(),
-                          'ingredients': ingredients,
-                          'description': description,
-                        },
-                      ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.schedule,
+                        const SizedBox(height: 20),
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Icon(
+                              Icons.person,
+                              color: isDarkTheme
+                                  ? colorScheme.onSurface
+                                  : colorScheme.onSurface,
+                            ),
+                            const SizedBox(width: 5),
+                            Text(
+                              '$peopleFor',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurface,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 40),
+                        Text(
+                          localizations!.ingredients,
+                          style: theme.textTheme.titleMedium?.copyWith(
                             color: isDarkTheme
                                 ? colorScheme.onSurface
                                 : colorScheme.onSurface,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
                           ),
-                          const SizedBox(width: 5),
-                          Text(
-                            time,
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: isDarkTheme
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
+                        ),
+                        const SizedBox(height: 20),
+                        ...ingredients.map(
+                          (ingredient) => Container(
+                            margin: const EdgeInsets.only(bottom: 5),
+                            child: Text(
+                              '- $ingredient',
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                color: isDarkTheme
+                                    ? colorScheme.onSurface
+                                    : colorScheme.onSurface,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                      const SizedBox(height: 20),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.person,
+                        ),
+                        const SizedBox(height: 20),
+                        Text(
+                          localizations.process,
+                          style: theme.textTheme.titleMedium?.copyWith(
                             color: isDarkTheme
                                 ? colorScheme.onSurface
                                 : colorScheme.onSurface,
-                          ),
-                          const SizedBox(width: 5),
-                          Text(
-                            '$peopleFor',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: isDarkTheme
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 40),
-                      Text(
-                        localizations!.ingredients,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: isDarkTheme
-                              ? colorScheme.onSurface
-                              : colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
-                        ),
-                      ),
-                      const SizedBox(height: 20),
-                      ...ingredients.map(
-                        (ingredient) => Container(
-                          margin: const EdgeInsets.only(bottom: 5),
-                          child: Text(
-                            '- $ingredient',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: isDarkTheme
-                                  ? colorScheme.onSurface
-                                  : colorScheme.onSurface,
-                            ),
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
                           ),
                         ),
-                      ),
-                      const SizedBox(height: 20),
-                      Text(
-                        localizations.process,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: isDarkTheme
-                              ? colorScheme.onSurface
-                              : colorScheme.onSurface,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                        const SizedBox(height: 5),
+                        Text(
+                          description,
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: isDarkTheme
+                                ? colorScheme.onSurface
+                                : colorScheme.onSurface,
+                            height: 2,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        description,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: isDarkTheme
-                              ? colorScheme.onSurface
-                              : colorScheme.onSurface,
-                          height: 2,
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

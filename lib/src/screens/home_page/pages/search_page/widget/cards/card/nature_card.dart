@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -62,23 +63,47 @@ class NatureCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                      // Usa Flexible per evitare overflow nel titolo
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
-                      LikeButton(
-                        userId: userId,
-                        itemId: title, // Unique identifier for the item
-                        itemData: {
-                          'title': title,
-                          'image': image,
-                          'location': location,
-                          'description': description,
-                          'type': 'Natura'
-                        },
+                      Row(
+                        children: [
+                          LikeButton(
+                            userId: userId,
+                            itemId: title, // Unique identifier for the item
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'location': location,
+                              'description': description,
+                              'type': 'Natura'
+                            },
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          // Aggiungi SaveItineraryButton
+                          SaveItineraryButton(
+                            type: type,
+                            itineraryId: '', // Passa l'id dell'itinerario corrente, vuoto se non presente
+                            userId: userId,
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'location': location,
+                              'description': description,
+                              'type': 'Natura',
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -105,7 +130,7 @@ class NatureCard extends StatelessWidget {
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),

@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -30,7 +31,7 @@ class CityOpenCard extends StatelessWidget {
         children: [
           Image.network(
             image,
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.cover,
             width: double.infinity,
             height: 350,
             alignment: Alignment.center,
@@ -68,63 +69,81 @@ class CityOpenCard extends StatelessWidget {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  color:
-                      colorScheme.surface, // Usa il colore di sfondo del tema
+                  color: colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 20,
                   ),
-                  child: ListView(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            width: 300,
-                            child: Text(
-                              title,
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.w600,
-                                fontSize: 24,
+                  child: SingleChildScrollView( // Aggiungi lo scroll
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24,
+                                  overflow: TextOverflow.ellipsis, // Previeni l'overflow
+                                ),
+                                maxLines: 1,
                               ),
                             ),
-                          ),
-                          LikeButton(
-                    itemId: title, 
-                    userId: userId,
-                    itemData: {
-                      'title': title,
-                      'image': image,
-                      'type': 'Borghi',
-                      'description': description,
-                    },
-                  ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        localizations!.story,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
+                            Row(
+                              children: [
+                                LikeButton(
+                                  itemId: title,
+                                  userId: userId,
+                                  itemData: {
+                                    'title': title,
+                                    'image': image,
+                                    'type': 'Borghi',
+                                    'description': description,
+                                  },
+                                ),
+                                const SizedBox(width: 10),
+                                SaveItineraryButton(
+                                  type: 'Borghi',
+                                  itineraryId: '',
+                                  userId: userId,
+                                  itemData: {
+                                    'title': title,
+                                    'image': image,
+                                    'description': description,
+                                    'type': 'Borghi',
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 30.0),
-                        child: Text(
-                          description,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            height: 2,
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          localizations!.story,
+                          style: theme.textTheme.titleSmall?.copyWith(
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(
+                          height: 5,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 30.0),
+                          child: Text(
+                            description,
+                            style: theme.textTheme.bodyMedium?.copyWith(
+                              height: 2,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -139,8 +158,8 @@ class CityOpenCard extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(40),
-                  foregroundColor: white, // Colore del testo del bottone
-                  backgroundColor: blue, // Colore del bottone
+                  foregroundColor: white,
+                  backgroundColor: blue,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),

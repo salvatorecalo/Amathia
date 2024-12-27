@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -62,23 +63,47 @@ class MonumentsCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                      // Usa Flexible per evitare overflow nel titolo
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
-                      LikeButton(
-                        userId: userId,
-                        itemId: title, // Unique identifier for the item
-                        itemData: {
-                          'title': title,
-                          'image': image,
-                          'type': 'Monumenti',
-                          'location': location,
-                          'description': description,
-                        },
+                      Row(
+                        children: [
+                          LikeButton(
+                            userId: userId,
+                            itemId: title, // Unique identifier for the item
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'type': 'Monumenti',
+                              'location': location,
+                              'description': description,
+                            },
+                          ),
+                          const SizedBox(
+                            width: 10,
+                          ),
+                          SaveItineraryButton(
+                            type: type,
+                            itineraryId:
+                                '', // Passa l'id dell'itinerario corrente, vuoto se non presente
+                            userId: userId,
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'location': location,
+                              'description': description,
+                              'type': 'Monumenti',
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -98,7 +123,7 @@ class MonumentsCard extends StatelessWidget {
                         location,
                         style: const TextStyle(
                           fontSize: 18,
-                          overflow: TextOverflow.ellipsis,
+                          overflow: TextOverflow.ellipsis, // Evita overflow del testo
                         ),
                       ),
                     ],

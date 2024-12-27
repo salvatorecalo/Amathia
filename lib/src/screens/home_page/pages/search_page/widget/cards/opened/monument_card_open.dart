@@ -1,5 +1,6 @@
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -26,12 +27,13 @@ class MonumentOpenCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
     final localizations = AppLocalizations.of(context);
+
     return Material(
       child: Stack(
         children: [
           Image.network(
             image,
-            fit: BoxFit.fitHeight,
+            fit: BoxFit.cover,
             width: double.infinity,
             height: 350,
             alignment: Alignment.center,
@@ -68,108 +70,115 @@ class MonumentOpenCard extends StatelessWidget {
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
                   ),
-                  color: colorScheme
-                      .surface, // Usa il colore "surface" per il background
+                  color: colorScheme.surface,
                 ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 20.0,
                     vertical: 20,
                   ),
-                  child: ListView(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                          margin: const EdgeInsets.only(top: 20),
-                          width: 300,
-                          child: Text(
-                            title,
-                            style: theme.textTheme.titleLarge?.copyWith(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 24,
+                  child: SingleChildScrollView(
+                    // Aggiungi il SingleChildScrollView
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 24,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                maxLines: 1,
+                              ),
                             ),
+                            LikeButton(
+                              userId: userId,
+                              itemId: title,
+                              itemData: {
+                                'title': title,
+                                'image': image,
+                                'type': 'Monumenti',
+                                'location': location,
+                                'description': description,
+                              },
+                            ),
+                            SaveItineraryButton(
+                              type: 'Monumenti',
+                              itineraryId: '',
+                              userId: userId,
+                              itemData: {
+                                'title': title,
+                                'image': image,
+                                'description': description,
+                                'type': 'Monumenti',
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.location_pin,
+                              color: theme.iconTheme.color,
+                            ),
+                            const SizedBox(width: 8),
+                            Text(
+                              location,
+                              style: theme.textTheme.bodyLarge,
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 40,
+                        ),
+                        Text(
+                          localizations!.story,
+                          style: theme.textTheme.titleMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 18,
                           ),
                         ),
-                        LikeButton(
-                        userId: userId,
-                        itemId: title, // Unique identifier for the item
-                        itemData: {
-                          'title': title,
-                          'image': image,
-                          'type': 'Monumenti',
-                          'location': location,
-                          'description': description,
-                        },
-                      ),
-                        ]
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.location_pin,
-                            color: theme.iconTheme.color,
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            location,
-                            style: theme.textTheme.bodyLarge,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 40,
-                      ),
-                      Text(
-                        localizations!.story,
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 18,
+                        const SizedBox(
+                          height: 20,
                         ),
-                      ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      Text(
-                        description,
-                        style: theme.textTheme.bodyLarge?.copyWith(
-                          height: 2,
+                        Text(
+                          description,
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            height: 2,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(40),
-                  foregroundColor: white, // Colore del testo del bottone
-                  backgroundColor: blue, // Colore del bottone
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                ),
-                onPressed: () async {
-                  final Uri url =
-                      Uri.parse('geo:0,0?q=${Uri.encodeComponent(title)}');
-                  if (!await launchUrl(url)) {
-                    throw Exception('Could not launch $url');
-                  }
-                },
-                child: Text(localizations.getLocation),
+          const SizedBox(width: 10),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              minimumSize: const Size.fromHeight(40),
+              foregroundColor: white,
+              backgroundColor: blue,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
               ),
             ),
+            onPressed: () async {
+              final Uri url =
+                  Uri.parse('geo:0,0?q=${Uri.encodeComponent(title)}');
+              if (!await launchUrl(url)) {
+                throw Exception('Could not launch $url');
+              }
+            },
+            child: Text(localizations.getLocation),
           ),
         ],
       ),

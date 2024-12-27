@@ -1,4 +1,5 @@
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -25,6 +26,7 @@ class NatureOpenCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
+    
     return Material(
       child: Stack(
         children: [
@@ -78,15 +80,18 @@ class NatureOpenCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(top: 20),
-                            width: 300,
-                            child: Text(
-                              title,
-                              style: theme.textTheme.titleLarge?.copyWith(
-                                color: colorScheme.onSurface,
-                                fontSize: 24,
-                                fontWeight: FontWeight.w600,
+                          // Responsive Text width
+                          Expanded(
+                            child: Container(
+                              margin: const EdgeInsets.only(top: 20),
+                              child: Text(
+                                title,
+                                style: theme.textTheme.titleLarge?.copyWith(
+                                  color: colorScheme.onSurface,
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ),
@@ -101,6 +106,18 @@ class NatureOpenCard extends StatelessWidget {
                               'type': 'Natura'
                             },
                           ),
+                          const SizedBox(width: 10),
+                          SaveItineraryButton(
+                            type: 'Natura',
+                            itineraryId: '',
+                            userId: userId,
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'description': description,
+                              'type': 'Natura',
+                            },
+                          ),
                         ],
                       ),
                       const SizedBox(height: 20),
@@ -111,10 +128,13 @@ class NatureOpenCard extends StatelessWidget {
                             color: colorScheme.onSurface,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            location,
-                            style: theme.textTheme.bodyLarge?.copyWith(
-                              color: colorScheme.onSurface,
+                          Expanded(
+                            child: Text(
+                              location,
+                              style: theme.textTheme.bodyLarge?.copyWith(
+                                color: colorScheme.onSurface,
+                              ),
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],

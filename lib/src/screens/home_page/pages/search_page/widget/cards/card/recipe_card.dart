@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -66,31 +67,53 @@ class RecipeCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
+                      // Usa Flexible per evitare overflow nel titolo
+                      Flexible(
+                        child: Text(
+                          title,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w700,
+                          ),
+                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
-                      LikeButton(
-                        userId: userId,
-                        itemId: title, // Unique identifier for the item
-                        itemData: {
-                          'title': title,
-                          'image': image,
-                          'type': 'Ricette',
-                          'peoplefor': peopleFor,
-                          'time': time.toString(),
-                          'ingredients': ingredients,
-                          'description': description,
-                        },
+                      Row(
+                        children: [
+                          LikeButton(
+                            userId: userId,
+                            itemId: title, // Unique identifier for the item
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'type': 'Ricette',
+                              'peoplefor': peopleFor,
+                              'time': time.toString(),
+                              'ingredients': ingredients,
+                              'description': description,
+                            },
+                          ),
+                          const SizedBox(width: 10),
+                          // Aggiungi SaveItineraryButton
+                          SaveItineraryButton(
+                            type: type,
+                            itineraryId: '', // Passa l'id dell'itinerario corrente, vuoto se non presente
+                            userId: userId,
+                            itemData: {
+                              'title': title,
+                              'image': image,
+                              'description': description,
+                              'time': time,
+                              'peopleFor': peopleFor,
+                              'ingredients': ingredients,
+                              'type': 'Ricette',
+                            },
+                          ),
+                        ],
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       const Icon(Icons.schedule, size: 18),
@@ -101,15 +124,11 @@ class RecipeCard extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(
-                    height: 10,
-                  ),
+                  const SizedBox(height: 10),
                   Row(
                     children: [
                       const Icon(Icons.people),
-                      const SizedBox(
-                        width: 10,
-                      ),
+                      const SizedBox(width: 10),
                       Text(
                         "$peopleFor",
                         style: const TextStyle(
