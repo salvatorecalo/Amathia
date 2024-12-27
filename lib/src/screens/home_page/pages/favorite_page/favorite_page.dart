@@ -56,164 +56,166 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
             return item.type == selectedCategory;
           }).toList();
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Container(
-            margin: const EdgeInsets.symmetric(vertical: 20),
-            child: Text(
-              localizations!.favoriteText,
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-          ),
-          // Bottoni di filtro
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: [
-                  FilterButton(
-                    text: localizations.all,
-                    isSelected: selectedCategory == 'All',
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = 'All';
-                      });
-                    },
-                  ),
-                  FilterButton(
-                    text: 'Borghi',
-                    isSelected: selectedCategory == 'Borghi',
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = 'Borghi';
-                      });
-                    },
-                  ),
-                  FilterButton(
-                    text: 'Monumenti',
-                    isSelected: selectedCategory == 'Monumenti',
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = 'Monumenti';
-                      });
-                    },
-                  ),
-                  FilterButton(
-                    text: 'Ricette',
-                    isSelected: selectedCategory == 'Ricette',
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = 'Ricette';
-                      });
-                    },
-                  ),
-                  FilterButton(
-                    text: 'Natura',
-                    isSelected: selectedCategory == 'Natura',
-                    onTap: () {
-                      setState(() {
-                        selectedCategory = 'Natura';
-                      });
-                    },
-                  ),
-                ],
+    return SafeArea(
+      child: Scaffold(
+        body: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              child: Text(
+                localizations!.favoriteText,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
-          ),
-          // Lista dei preferiti filtrati
-          Expanded(
-            child: filteredFavorites.isEmpty
-                ? Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Image.asset(
-                          'assets/no_favorite.png',
-                          width: 200,
-                        ),
-                        Text(
-                          localizations.favoriteEmpty,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
+            // Bottoni di filtro
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children: [
+                    FilterButton(
+                      text: localizations.all,
+                      isSelected: selectedCategory == 'All',
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = 'All';
+                        });
+                      },
                     ),
-                  )
-                : ListView.builder(
-                    itemCount: filteredFavorites.length,
-                    itemBuilder: (context, index) {
-                      final favoriteItem = filteredFavorites[index];
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) {
-                              if (favoriteItem.type == 'Ricette') {
-                                return RecipeOpenCard(
-                                  title: favoriteItem.title,
+                    FilterButton(
+                      text: 'Borghi',
+                      isSelected: selectedCategory == 'Borghi',
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = 'Borghi';
+                        });
+                      },
+                    ),
+                    FilterButton(
+                      text: 'Monumenti',
+                      isSelected: selectedCategory == 'Monumenti',
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = 'Monumenti';
+                        });
+                      },
+                    ),
+                    FilterButton(
+                      text: 'Ricette',
+                      isSelected: selectedCategory == 'Ricette',
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = 'Ricette';
+                        });
+                      },
+                    ),
+                    FilterButton(
+                      text: 'Natura',
+                      isSelected: selectedCategory == 'Natura',
+                      onTap: () {
+                        setState(() {
+                          selectedCategory = 'Natura';
+                        });
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Lista dei preferiti filtrati
+            Expanded(
+              child: filteredFavorites.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/no_favorite.png',
+                            width: 200,
+                          ),
+                          Text(
+                            localizations.favoriteEmpty,
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: filteredFavorites.length,
+                      itemBuilder: (context, index) {
+                        final favoriteItem = filteredFavorites[index];
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) {
+                                if (favoriteItem.type == 'Ricette') {
+                                  return RecipeOpenCard(
+                                    title: favoriteItem.title,
+                                    userId: widget.userId,
+                                    description: favoriteItem.description,
+                                    image: favoriteItem.image,
+                                    peopleFor: favoriteItem.peoplefor ?? 1,
+                                    time: favoriteItem.time.toString(),
+                                    ingredients: favoriteItem.ingredients ?? [],
+                                  );
+                                } else if (favoriteItem.type == 'Borghi') {
+                                  return CityOpenCard(
+                                    userId: widget.userId,
+                                    title: favoriteItem.title,
+                                    description: favoriteItem.description,
+                                    image: favoriteItem.image,
+                                  );
+                                } else if (favoriteItem.type == 'Monumenti') {
+                                  return MonumentOpenCard(
+                                    userId: widget.userId,
+                                    title: favoriteItem.title,
+                                    location: favoriteItem.location!,
+                                    description: favoriteItem.description,
+                                    image: favoriteItem.image,
+                                  );
+                                } else if (favoriteItem.type == 'Natura') {
+                                  return NatureOpenCard(
+                                    userId: widget.userId,
+                                    title: favoriteItem.title,
+                                    location: favoriteItem.location!,
+                                    description: favoriteItem.description,
+                                    image: favoriteItem.image,
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              }),
+                            );
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.all(15),
+                            child: Card(
+                              child: ListTile(
+                                leading: Image.network(
+                                  favoriteItem.image,
+                                  fit: BoxFit.fitHeight,
+                                  width: 50,
+                                ),
+                                title: Text(favoriteItem.title),
+                                trailing: LikeButton(
+                                  itemId: favoriteItem.title,
+                                  itemData: favoriteItem.toJson(),
                                   userId: widget.userId,
-                                  description: favoriteItem.description,
-                                  image: favoriteItem.image,
-                                  peopleFor: favoriteItem.peoplefor ?? 1,
-                                  time: favoriteItem.time.toString(),
-                                  ingredients: favoriteItem.ingredients ?? [],
-                                );
-                              } else if (favoriteItem.type == 'Borghi') {
-                                return CityOpenCard(
-                                  userId: widget.userId,
-                                  title: favoriteItem.title,
-                                  description: favoriteItem.description,
-                                  image: favoriteItem.image,
-                                );
-                              } else if (favoriteItem.type == 'Monumenti') {
-                                return MonumentOpenCard(
-                                  userId: widget.userId,
-                                  title: favoriteItem.title,
-                                  location: favoriteItem.location!,
-                                  description: favoriteItem.description,
-                                  image: favoriteItem.image,
-                                );
-                              } else if (favoriteItem.type == 'Natura') {
-                                return NatureOpenCard(
-                                  userId: widget.userId,
-                                  title: favoriteItem.title,
-                                  location: favoriteItem.location!,
-                                  description: favoriteItem.description,
-                                  image: favoriteItem.image,
-                                );
-                              }
-                              return const SizedBox.shrink();
-                            }),
-                          );
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(15),
-                          child: Card(
-                            child: ListTile(
-                              leading: Image.network(
-                                favoriteItem.image,
-                                fit: BoxFit.fitHeight,
-                                width: 50,
-                              ),
-                              title: Text(favoriteItem.title),
-                              trailing: LikeButton(
-                                itemId: favoriteItem.title,
-                                itemData: favoriteItem.toJson(),
-                                userId: widget.userId,
+                                ),
                               ),
                             ),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-          ),
-        ],
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
       ),
     );
   }

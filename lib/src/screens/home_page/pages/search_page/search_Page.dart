@@ -225,103 +225,105 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final isDark = ref.watch(darkThemeProvider);
-    return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          SliverPadding(
-            padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
-            sliver: SliverAppBar(
-              toolbarHeight: 115,
-              flexibleSpace: SearchDropdown(
-                userId: widget.userId,
-              ),
-              backgroundColor: isDark ? const Color(0x000000) : white,
-              shadowColor: Colors.transparent,
-              foregroundColor: Colors.transparent,
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 30),
-              child: CategoryButtons(
-                userId: widget.userId,
-              ),
-            ),
-          ),
-          ...tables.map((table) {
-            if (!fetchedData.containsKey(table) ||
-                fetchedData[table]!.isEmpty) {
-              return const SliverToBoxAdapter(
-                child: Center(
-                  child: CircularProgressIndicator(
-                    color: blue,
-                  ),
+    return SafeArea(
+      child: Scaffold(
+        body: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
+              sliver: SliverAppBar(
+                toolbarHeight: 115,
+                flexibleSpace: SearchDropdown(
+                  userId: widget.userId,
                 ),
-              );
-            }
-
-            return SliverToBoxAdapter(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 18.0),
-                    child: Text(
-                      getRandomTitle(localizations!, table),
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
+                backgroundColor: isDark ? const Color(0x000000) : white,
+                shadowColor: Colors.transparent,
+                foregroundColor: Colors.transparent,
+              ),
+            ),
+            SliverToBoxAdapter(
+              child: Container(
+                margin: const EdgeInsets.symmetric(vertical: 30),
+                child: CategoryButtons(
+                  userId: widget.userId,
+                ),
+              ),
+            ),
+            ...tables.map((table) {
+              if (!fetchedData.containsKey(table) ||
+                  fetchedData[table]!.isEmpty) {
+                return const SliverToBoxAdapter(
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: blue,
                     ),
                   ),
-                  Container(
-                    height: 300,
-                    margin:
-                        const EdgeInsets.only(left: 18, top: 20, bottom: 20),
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: fetchedData[table]!.length,
-                      itemBuilder: (context, index) => Container(
-                        margin: const EdgeInsets.only(right: 10),
-                        child: fetchedData[table]![index],
+                );
+              }
+      
+              return SliverToBoxAdapter(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 18.0),
+                      child: Text(
+                        getRandomTitle(localizations!, table),
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                        ),
                       ),
+                    ),
+                    Container(
+                      height: 300,
+                      margin:
+                          const EdgeInsets.only(left: 18, top: 20, bottom: 20),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: fetchedData[table]!.length,
+                        itemBuilder: (context, index) => Container(
+                          margin: const EdgeInsets.only(right: 10),
+                          child: fetchedData[table]![index],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }),
+            SliverToBoxAdapter(
+              child: Column(
+                children: [
+                  Text(
+                    localizations!.getInspired,
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  RandomAdviceGroup(
+                    widgetGenerated: fetchedData,
+                    userId: widget.userId,
+                  ),
+                  Container(
+                    margin: const EdgeInsets.only(
+                      top: 10,
+                    ),
+                    child: TextButton(
+                      onPressed: () {
+                        launchUrl(
+                          Uri.parse('https://freepik.com'),
+                        );
+                      },
+                      child: Text(localizations.copyright),
                     ),
                   ),
                 ],
               ),
-            );
-          }),
-          SliverToBoxAdapter(
-            child: Column(
-              children: [
-                Text(
-                  localizations!.getInspired,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-                RandomAdviceGroup(
-                  widgetGenerated: fetchedData,
-                  userId: widget.userId,
-                ),
-                Container(
-                  margin: const EdgeInsets.only(
-                    top: 10,
-                  ),
-                  child: TextButton(
-                    onPressed: () {
-                      launchUrl(
-                        Uri.parse('https://freepik.com'),
-                      );
-                    },
-                    child: Text(localizations.copyright),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
+            )
+          ],
+        ),
       ),
     );
   }

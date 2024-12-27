@@ -1,3 +1,4 @@
+import 'package:amathia/src/costants/costants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
@@ -6,8 +7,8 @@ import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itinera
 
 class SaveItineraryButton extends ConsumerWidget {
   final String userId;
-  final String itineraryId; // id itinerario corrente, non nullo
-  final Map<String, dynamic> itemData; // Dati della card da aggiungere/rimuovere
+  final String itineraryId;
+  final Map<String, dynamic> itemData;
   final String type;
 
   SaveItineraryButton({
@@ -19,59 +20,60 @@ class SaveItineraryButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Recupera gli itinerari per il specifico userId
     final itineraries = ref.watch(itineraryNotifierProvider(userId));
-
-    // Verifica se l'elemento è già presente nell'itinerario corrente
     final isItemInItinerary = _isItemInItinerary(itineraryId, itineraries);
 
     return IconButton(
       icon: Icon(
-        isItemInItinerary ? Icons.delete : Icons.bookmark, // Icona in base alla presenza dell'elemento
+        isItemInItinerary ? Icons.delete : Icons.bookmark,
         color: isItemInItinerary ? Colors.red : Colors.green,
       ),
       onPressed: () async {
         if (isItemInItinerary) {
-          // Rimuove l'elemento dall'itinerario corrente
-          await ref.read(itineraryNotifierProvider(userId).notifier).removeItemFromItinerary(itineraryId, itemData);
+          await ref
+              .read(itineraryNotifierProvider(userId).notifier)
+              .removeItemFromItinerary(itineraryId, itemData);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text("Rimosso dall'itinerario")),
           );
         } else {
-          // Prima di aggiungere l'elemento, rimuovilo da qualsiasi altro itinerario
           await _removeItemFromOtherItineraries(ref, itineraries);
-
-          // Mostra il dialogo per selezionare un itinerario e aggiungere l'elemento
           _showItinerarySelectionDialog(context, ref, itineraries);
         }
       },
     );
   }
 
-  // Verifica se l'elemento è presente nell'itinerario
   bool _isItemInItinerary(String itineraryId, List<Itinerary> itineraries) {
     final itinerary = itineraries.firstWhere(
       (itinerary) => itinerary.id == itineraryId,
-      orElse: () => Itinerary(id: '', userId: userId, title: '', locations: [], type: type),
+      orElse: () => Itinerary(
+          id: '', userId: userId, title: '', locations: [], type: type),
     );
-    return itinerary.locations.any((location) => location['id'] == itemData['id']);
+    return itinerary.locations
+        .any((location) => location['id'] == itemData['id']);
   }
 
-  // Rimuove l'elemento da tutti gli itinerari in cui è presente
-  Future<void> _removeItemFromOtherItineraries(WidgetRef ref, List<Itinerary> itineraries) async {
+  Future<void> _removeItemFromOtherItineraries(
+      WidgetRef ref, List<Itinerary> itineraries) async {
     for (var itinerary in itineraries) {
       if (itinerary.id != itineraryId) {
-        final isItemInItinerary = itinerary.locations.any((location) => location['id'] == itemData['id']);
+        final isItemInItinerary = itinerary.locations
+            .any((location) => location['id'] == itemData['id']);
         if (isItemInItinerary) {
-          await ref.read(itineraryNotifierProvider(userId).notifier).removeItemFromItinerary(itinerary.id, itemData);
+          await ref
+              .read(itineraryNotifierProvider(userId).notifier)
+              .removeItemFromItinerary(itinerary.id, itemData);
         }
       }
     }
   }
 
-  // Mostra il dialogo per selezionare un itinerario
   void _showItinerarySelectionDialog(
-    BuildContext context, WidgetRef ref, List<Itinerary> itineraries) {
+      BuildContext context, WidgetRef ref, List<Itinerary> itineraries) {
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
+
     showDialog(
       context: context,
       builder: (context) {
@@ -84,6 +86,10 @@ class SaveItineraryButton extends ConsumerWidget {
                     const Text("Nessun itinerario trovato."),
                     ElevatedButton(
                       onPressed: () => createItinerary(context, ref),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: blue, // Sfondo blu
+                      ),
                       child: const Text("Crea un itinerario"),
                     ),
                   ],
@@ -98,28 +104,44 @@ class SaveItineraryButton extends ConsumerWidget {
                       return ListTile(
                         title: Text(itinerary.title),
                         onTap: () async {
-                          // Aggiungi l'elemento all'itinerario selezionato
                           await ref
                               .read(itineraryNotifierProvider(userId).notifier)
                               .addItemToItinerary(itinerary.id, itemData);
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("Aggiunto a ${itinerary.title}")),
+                            SnackBar(
+                                content: Text("Aggiunto a ${itinerary.title}")),
                           );
                         },
                       );
                     },
                   ),
                 ),
+          actions: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: primaryColor, // Testo blu
+                  ),
+                  child: const Text('Annulla'),
+                ),
+              ],
+            ),
+          ],
         );
       },
     );
   }
 
-  // Crea un nuovo itinerario
   void createItinerary(BuildContext context, WidgetRef ref) {
     final TextEditingController titleController = TextEditingController();
     final uuid = Uuid();
+
+    final theme = Theme.of(context);
+    final primaryColor = theme.colorScheme.primary;
 
     showDialog(
       context: context,
@@ -131,32 +153,41 @@ class SaveItineraryButton extends ConsumerWidget {
             decoration: const InputDecoration(hintText: 'Inserisci il titolo'),
           ),
           actions: [
-            ElevatedButton(
-              onPressed: () {
-                final newItinerary = Itinerary(
-                  type: type,
-                  id: uuid.v4(),
-                  userId: userId, // Può essere dinamico
-                  title: titleController.text,
-                  locations: [],
-                );
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    final newItinerary = Itinerary(
+                      type: type,
+                      id: uuid.v4(),
+                      userId: userId,
+                      title: titleController.text,
+                      locations: [],
+                    );
 
-                // Aggiunge il nuovo itinerario
-                ref
-                    .read(itineraryNotifierProvider(userId).notifier)
-                    .addItinerary(newItinerary);
+                    ref
+                        .read(itineraryNotifierProvider(userId).notifier)
+                        .addItinerary(newItinerary);
 
-                // Chiudi il dialogo di creazione
-                Navigator.pop(context);
-
-                // Riapri il dialogo per selezionare un itinerario, includendo il nuovo
-                _showItinerarySelectionDialog(context, ref, ref.read(itineraryNotifierProvider(userId)));
-              },
-              child: const Text('Crea'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Annulla'),
+                    Navigator.pop(context);
+                    _showItinerarySelectionDialog(context, ref,
+                        ref.read(itineraryNotifierProvider(userId)));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    foregroundColor: Colors.white,
+                    backgroundColor: blue, // Sfondo blu
+                  ),
+                  child: const Text('Crea'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  style: TextButton.styleFrom(
+                    foregroundColor: primaryColor, // Testo blu
+                  ),
+                  child: const Text('Annulla'),
+                ),
+              ],
             ),
           ],
         );
