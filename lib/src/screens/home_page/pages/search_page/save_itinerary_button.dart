@@ -27,7 +27,7 @@ class SaveItineraryButton extends ConsumerWidget {
 
     return IconButton(
       icon: Icon(
-        isItemInItinerary ? Icons.delete : Icons.add, // Icona in base alla presenza dell'elemento
+        isItemInItinerary ? Icons.delete : Icons.bookmark, // Icona in base alla presenza dell'elemento
         color: isItemInItinerary ? Colors.red : Colors.green,
       ),
       onPressed: () async {
@@ -98,8 +98,6 @@ class SaveItineraryButton extends ConsumerWidget {
                       return ListTile(
                         title: Text(itinerary.title),
                         onTap: () async {
-                          print("Itinerary notifier: ${itineraryNotifierProvider(userId).notifier}");
-                          print("Itinerary id: ${itinerary.id}, itemData: $itemData");
                           // Aggiungi l'elemento all'itinerario selezionato
                           await ref
                               .read(itineraryNotifierProvider(userId).notifier)

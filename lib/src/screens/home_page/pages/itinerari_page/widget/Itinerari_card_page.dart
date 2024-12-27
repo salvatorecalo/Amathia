@@ -45,13 +45,10 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                 final location = widget.itinerary.locations[index];
                 final type = location['type']; // Tipo di carta (es. Ricette)
                 final title = location['title'] ?? 'Unknown';
-                final imageUrl = supabase.storage
-                    .from(type)
-                    .getPublicUrl(location['image_id'] ?? '');
 
+                print(location['image']);
                 return GestureDetector(
                   onTap: () {
-                    // Navigazione alla carta completa
                     switch (type) {
                       case "Ricette":
                         Navigator.push(
@@ -60,7 +57,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             builder: (context) => RecipeOpenCard(
                               userId: widget.userId,
                               title: title,
-                              image: imageUrl,
+                              image: location['image'],
                               description: location['description_$language'] ?? '',
                               time: location['time'] ?? 'Unknown time',
                               peopleFor: location['peopleFor'] ?? 1,
@@ -76,7 +73,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             builder: (context) => MonumentOpenCard(
                               userId: widget.userId,
                               location: location['location'] ?? 'Unknown Location',
-                              image: imageUrl,
+                              image: location['image'],
                               title: title,
                               description: location['description_$language'] ?? '',
                             ),
@@ -90,7 +87,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             builder: (context) => NatureOpenCard(
                               userId: widget.userId,
                               location: location['location'] ?? 'Unknown Location',
-                              image: imageUrl,
+                              image: location['image'],
                               title: title,
                               description: location['description_$language'] ?? '',
                             ),
@@ -110,12 +107,11 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                         // Immagine della carta
                         Container(
                           width: 100,
-                          height: 100,
-                          margin: const EdgeInsets.all(8),
+                          height: 75,
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(8),
                             image: DecorationImage(
-                              image: NetworkImage(imageUrl),
+                              image: NetworkImage(location['image']),
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -123,7 +119,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                         // Titolo
                         Expanded(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
                             child: Text(
                               title,
                               style: const TextStyle(
