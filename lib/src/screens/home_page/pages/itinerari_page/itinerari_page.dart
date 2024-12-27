@@ -1,4 +1,3 @@
-import 'package:amathia/provider/itinerary_notifier.dart';
 import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/widget/Itinerari_card_page.dart';
@@ -7,8 +6,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
+// ignore: must_be_immutable
 class ItinerariesPage extends ConsumerStatefulWidget {
-  const ItinerariesPage({super.key});
+  String userId;
+  ItinerariesPage({super.key, required this.userId});
 
   @override
   _ItinerariesPageState createState() => _ItinerariesPageState();
@@ -17,6 +18,7 @@ class ItinerariesPage extends ConsumerStatefulWidget {
 class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   final TextEditingController searchController = TextEditingController();
   List<Itinerary> filteredItineraries = [];
+  String selectedType = "Ricette"; // Tipo predefinito
 
   @override
   void initState() {
@@ -26,7 +28,7 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
 
   void filterItineraries() {
     final query = searchController.text.toLowerCase();
-    final itineraries = ref.read(itineraryNotifierProvider);
+    final itineraries = ref.watch(itineraryNotifierProvider(widget.userId));
     setState(() {
       filteredItineraries = itineraries
           .where((it) => it.title.toLowerCase().contains(query))
@@ -37,7 +39,7 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context)!;
-    final itineraries = ref.watch(itineraryNotifierProvider);
+    final itineraries = ref.watch(itineraryNotifierProvider(widget.userId));
 
     return SafeArea(
       child: Scaffold(
@@ -69,22 +71,37 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                       itemCount: itineraries.length,
                       itemBuilder: (context, index) {
                         final itinerary = itineraries[index];
-                        return ListTile(
-                          title: Text(itinerary.title),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () => editItinerary(itinerary, ref),
+                        return TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => ItineraryDetailPage(
+                                  itinerary: itinerary,
+                                  type: itinerary.type,
+                                  userId: widget.userId,
+                                ),
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () =>
-                                    ref.read(itineraryNotifierProvider.notifier)
-                                        .deleteItinerary(itinerary.id),
-                              ),
-                            ],
+                            );
+                          },
+                          child: ListTile(
+                            title: Text(itinerary.title),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                IconButton(
+                                  icon: const Icon(Icons.edit),
+                                  onPressed: () =>
+                                      editItinerary(itinerary, ref),
+                                ),
+                                IconButton(
+                                  icon: const Icon(Icons.delete),
+                                  onPressed: () => ref
+                                      .read(itineraryNotifierProvider(widget.userId).notifier)
+                                      .deleteItinerary(itinerary.id),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -105,21 +122,28 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
       builder: (context) {
         return AlertDialog(
           title: const Text('Create Itinerary'),
-          content: TextField(
-            controller: titleController,
-            decoration: const InputDecoration(hintText: 'Enter Title'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                decoration: const InputDecoration(hintText: 'Enter Title'),
+              ),
+              
+            ],
           ),
           actions: [
             ElevatedButton(
               onPressed: () {
                 final newItinerary = Itinerary(
                   id: uuid.v4(),
-                  userId: 'user123', // Può essere dinamico
+                  userId: widget.userId, // Può essere dinamico
                   title: titleController.text,
                   locations: [],
+                  type: selectedType, // Aggiungi il tipo qui
                 );
                 ref
-                    .read(itineraryNotifierProvider.notifier)
+                    .read(itineraryNotifierProvider(widget.userId).notifier)
                     .addItinerary(newItinerary);
                 Navigator.pop(context);
               },
@@ -154,7 +178,7 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                 final updatedItinerary =
                     itinerary.copyWith(title: titleController.text);
                 ref
-                    .read(itineraryNotifierProvider.notifier)
+                    .read(itineraryNotifierProvider(widget.userId).notifier)
                     .updateItinerary(updatedItinerary);
                 Navigator.pop(context);
               },

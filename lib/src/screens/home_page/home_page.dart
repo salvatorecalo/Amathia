@@ -1,10 +1,8 @@
-import 'package:amathia/src/costants/costants.dart';
+import 'package:flutter/material.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/itinerari_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -14,7 +12,9 @@ class HomePage extends StatefulWidget {
 
   @override
   _HomePageState createState() => _HomePageState();
-}class _HomePageState extends State<HomePage> {
+}
+
+class _HomePageState extends State<HomePage> {
   int bottomSelectedIndex = 0; // Default index
   late PageController pageController;
 
@@ -70,7 +70,7 @@ class HomePage extends StatefulWidget {
       children: <Widget>[
         SearchPage(userId: widget.userId),
         FavoritePage(userId: widget.userId),
-        ItinerariesPage(),
+        ItinerariesPage(userId: widget.userId), // Pass userId here to the itineraries page
         const AccountPage(), // AccountPage is now part of the PageView
       ],
     );
@@ -78,24 +78,22 @@ class HomePage extends StatefulWidget {
 
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-
     List<BottomNavigationBarItem> buildBottomNavBarItems() {
       return [
         BottomNavigationBarItem(
           icon: const Icon(Icons.search),
-          label: localizations!.explore,
+          label: 'Esplora',
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.favorite),
-          label: localizations.favorite,
+          label: 'Preferiti',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.map),
-          label: localizations.itineraries,
+          icon: const Icon(Icons.map),
+          label: 'Itinerari',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.person),
+          icon: const Icon(Icons.person),
           label: 'Account',
         ),
       ];
@@ -105,7 +103,7 @@ class HomePage extends StatefulWidget {
       body: buildPageView(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: bottomSelectedIndex, // Sync the BottomNavigationBar with the page index
-        selectedItemColor: blue,
+        selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey, // Colore degli elementi non selezionati
         showUnselectedLabels: true,
         onTap: (index) {

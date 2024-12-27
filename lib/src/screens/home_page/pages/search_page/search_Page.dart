@@ -79,6 +79,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   time: e['time'],
                   peopleFor: e['peoplefor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_en'] ?? []),
+                  type: tableName, // Pass the type here
                 ),
               );
             } else if (tableName == "Monumenti") {
@@ -90,28 +91,31 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   image: image,
                   title: title,
                   description: e['description_en'],
+                  type: tableName, // Pass the type here
                 ),
               );
             } else if (tableName == "Natura") {
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: NatureCard(
-                    userId: widget.userId,
-                    location: location,
-                    image: image,
-                    title: title,
-                    description: e['description_en']),
+                  userId: widget.userId,
+                  location: location,
+                  image: image,
+                  title: title,
+                  description: e['description_en'],
+                  type: tableName, // Pass the type here
+                ),
               );
             } else if (tableName == "Borghi") {
-              print("itinery id city card: ${e['uuid']}");
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
+                  itineraryId: e['uuid'],
                   userId: widget.userId,
-                  itineraryId: e['uuid'], // uuid is the unique id for itinerary
                   description: e['description_en'],
                   image: image,
                   title: title,
+                  type: tableName, // Pass the type here
                 ),
               );
             }
@@ -128,6 +132,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   time: e['time'],
                   peopleFor: e['peoplefor'] ?? 1,
                   ingredients: List<String>.from(e['ingredients_it'] ?? []),
+                  type: tableName, // Pass the type here
                 ),
               );
             } else if (tableName == "Monumenti") {
@@ -139,6 +144,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   image: image,
                   title: title,
                   description: e['description_it'],
+                  type: tableName, // Pass the type here
                 ),
               );
             } else if (tableName == "Natura") {
@@ -150,10 +156,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   image: image,
                   title: title,
                   description: e['description_it'],
+                  type: tableName, // Pass the type here
                 ),
               );
             } else if (tableName == "Borghi") {
-              print("pippo fa le seghe ${e['uuid']}");
               return Container(
                 margin: const EdgeInsets.only(right: 10),
                 child: CityCard(
@@ -162,6 +168,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   description: e['description_it'],
                   image: image,
                   title: title,
+                  type: tableName, // Pass the type here
                 ),
               );
             }

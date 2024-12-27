@@ -9,6 +9,7 @@ class NatureCard extends StatelessWidget {
   String location;
   String description;
   final String userId;
+  String type;
   NatureCard({
     super.key,
     required this.title,
@@ -16,6 +17,7 @@ class NatureCard extends StatelessWidget {
     required this.location,
     required this.description,
     required this.userId,
+    required this.type,
   });
 
   @override

@@ -10,6 +10,7 @@ class CityCard extends StatelessWidget {
   String description;
   final String itineraryId;
   final String userId;
+  final String type;
   CityCard({
     super.key,
     required this.itineraryId,
@@ -17,6 +18,7 @@ class CityCard extends StatelessWidget {
     required this.image,
     required this.description,
     required this.userId,
+    required this.type,
   });
 
   @override
@@ -87,6 +89,7 @@ class CityCard extends StatelessWidget {
                         },
                       ),
                       SaveItineraryButton(
+                        type: type,
                         itineraryId:
                             itineraryId, // Passa l'id dell'itinerario corrente (vuoto se nessun itinerario)
                         userId: userId,
@@ -94,6 +97,7 @@ class CityCard extends StatelessWidget {
                           'title': title,
                           'image': image,
                           'description': description,
+                          'type': type,
                         },
                       ),
                     ],

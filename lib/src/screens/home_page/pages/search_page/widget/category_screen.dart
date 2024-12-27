@@ -64,12 +64,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 time: e['time'].toString(),
                 peopleFor: e['peopleFor'] ?? 1,
                 ingredients: List<String>.from(e['ingredients_en'] ?? []),
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Monumenti") {
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: MonumentsCard(
                 userId: widget.userId,
                 location: e['location'],
@@ -77,6 +77,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],
                 description: e['description_en'],
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Natura") {
@@ -89,13 +90,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],
                 description: e['description_en'],
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Borghi") {
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: CityCard(
+                type: widget.type, // Pass type to each card
                 userId: widget.userId,
                 itineraryId: e['id'],
                 description: e['description_en'],
@@ -110,7 +112,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
           if (widget.type == "Ricette") {
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: RecipeCard(
                 userId: widget.userId,
                 title: e['title'],
@@ -120,12 +121,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 time: e['time'].toString(),
                 peopleFor: e['peopleFor'] ?? 1,
                 ingredients: List<String>.from(e['ingredients_it'] ?? []),
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Monumenti") {
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: MonumentsCard(
                 userId: widget.userId,
                 location: e['location'],
@@ -133,12 +134,12 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],
                 description: e['description_it'],
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Natura") {
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: NatureCard(
                 userId: widget.userId,
                 location: e['location'],
@@ -146,14 +147,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],
                 description: e['description_it'],
+                type: widget.type, // Pass type to each card
               ),
             );
           } else if (widget.type == "Borghi") {
-            print("Francesco scrimieri ${e['id']}");
             return Container(
               margin: const EdgeInsets.all(20),
-
               child: CityCard(
+                type: widget.type, // Pass type to each card
                 itineraryId: e['uuid'],
                 userId: widget.userId,
                 description: e['description_it'],

@@ -1,154 +1,160 @@
-import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/main.dart';
+import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ItineraryDetailPage extends StatefulWidget {
-  final Itinerary itinerary;
+class ItineraryDetailPage extends ConsumerStatefulWidget {
+  final String userId; // ID utente
+  final Itinerary itinerary; // Itinerario con le location salvate
+  final String type;
 
-  const ItineraryDetailPage({Key? key, required this.itinerary})
-      : super(key: key);
+  const ItineraryDetailPage({
+    super.key,
+    required this.userId,
+    required this.itinerary,
+    required this.type,
+  });
 
   @override
-  State<ItineraryDetailPage> createState() => _ItineraryDetailPageState();
+  _ItineraryDetailPageState createState() => _ItineraryDetailPageState();
 }
 
-class _ItineraryDetailPageState extends State<ItineraryDetailPage> {
-  String selectedSortCriteria = 'title'; // Criterio di ordinamento predefinito
-
-  // Funzione per ordinare la lista di località in base al criterio selezionato
-  List<Map<String, dynamic>> _sortLocations(List<Map<String, dynamic>> locations) {
-    switch (selectedSortCriteria) {
-      case 'title':
-        locations.sort((a, b) => a['title'].compareTo(b['title']));
-        break;
-      case 'type':
-        locations.sort((a, b) => a['type'].compareTo(b['type']));
-        break;
-      case 'location':
-        locations.sort((a, b) => a['location'].compareTo(b['location']));
-        break;
-      default:
-        break;
-    }
-    return locations;
-  }
-
+class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context);
-
-    // Categorie
-    final Map<String, List<Map<String, dynamic>>> categorizedLocations = {
-      'Ricette': [],
-      'Borghi': [],
-      'Monumenti': [],
-      'Natura': [],
-    };
-
-    // Distribuisci le località nelle categorie
-    if (widget.itinerary.locations != null) {
-      for (var location in widget.itinerary.locations!) {
-        final type = location['type'] ?? 'Altro';
-        if (categorizedLocations.containsKey(type)) {
-          categorizedLocations[type]!.add(location);
-        }
-      }
-    }
+    final localizations = AppLocalizations.of(context); // Localizzazione
+    String language = Localizations.localeOf(context).languageCode; // Lingua corrente
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.itinerary.title,
-          style: const TextStyle(
-            color: white,
-          ),
-        ),
+        title: Text(widget.itinerary.title), // Nome dell'itinerario
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Dropdown per selezionare il criterio di ordinamento
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Text(
-                  localizations!.sortBy,
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 10),
-                DropdownButton<String>(
-                  value: selectedSortCriteria,
-                  onChanged: (value) {
-                    if (value != null) {
-                      setState(() {
-                        selectedSortCriteria = value;
-                      });
-                    }
-                  },
-                  items: [
-                    DropdownMenuItem(
-                      value: 'title',
-                      child: Text(localizations.sortByTitle),
-                    ),
-                    DropdownMenuItem(
-                      value: 'type',
-                      child: Text(localizations.sortByType),
-                    ),
-                    DropdownMenuItem(
-                      value: 'location',
-                      child: Text(localizations.sortByLocation),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          Expanded(
-            child: ListView(
-              children: categorizedLocations.entries.map((entry) {
-                final title = entry.key;
-                final items = _sortLocations(entry.value);
+      body: widget.itinerary.locations.isEmpty
+          ? Center(
+              child: Text("no location"), // Messaggio se vuoto
+            )
+          : ListView.builder(
+              padding: const EdgeInsets.all(10),
+              itemCount: widget.itinerary.locations.length,
+              itemBuilder: (context, index) {
+                final location = widget.itinerary.locations[index];
+                final type = location['type']; // Tipo di carta (es. Ricette)
+                final title = location['title'] ?? 'Unknown';
+                final imageUrl = supabase.storage
+                    .from(type)
+                    .getPublicUrl(location['image_id'] ?? '');
 
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Titolo della sezione
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        title,
-                        style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                    // Contenuto della sezione o messaggio vuoto
-                    items.isNotEmpty
-                        ? Column(
-                            children: items.map((location) {
-                              return ListTile(
-                                title: Text(location['title'] ?? localizations.titleNotAvailable),
-                                subtitle: Text(location['location'] ?? localizations.descriptionNotAvailable),
-                                onTap: () {
-                                  // Naviga a una pagina di dettaglio della carta se necessario
-                                },
-                              );
-                            }).toList(),
-                          )
-                        : Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Text(
-                              localizations.favoriteEmpty, // Messaggio sezione vuota
-                              style: const TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                return GestureDetector(
+                  onTap: () {
+                    // Navigazione alla carta completa
+                    switch (type) {
+                      case "Ricette":
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => RecipeOpenCard(
+                              userId: widget.userId,
+                              title: title,
+                              image: imageUrl,
+                              description: location['description_$language'] ?? '',
+                              time: location['time'] ?? 'Unknown time',
+                              peopleFor: location['peopleFor'] ?? 1,
+                              ingredients: location['ingredients'] ?? [],
                             ),
                           ),
-                  ],
+                        );
+                        break;
+                      case "Monumenti":
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => MonumentOpenCard(
+                              userId: widget.userId,
+                              location: location['location'] ?? 'Unknown Location',
+                              image: imageUrl,
+                              title: title,
+                              description: location['description_$language'] ?? '',
+                            ),
+                          ),
+                        );
+                        break;
+                      case "Natura":
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => NatureOpenCard(
+                              userId: widget.userId,
+                              location: location['location'] ?? 'Unknown Location',
+                              image: imageUrl,
+                              title: title,
+                              description: location['description_$language'] ?? '',
+                            ),
+                          ),
+                        );
+                        break;
+                      // Puoi aggiungere altri casi per altri tipi
+                      default:
+                        break;
+                    }
+                  },
+                  child: Card(
+                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Immagine della carta
+                        Container(
+                          width: 100,
+                          height: 100,
+                          margin: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            image: DecorationImage(
+                              image: NetworkImage(imageUrl),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        // Titolo
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
+                            child: Text(
+                              title,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ),
+                        // Pulsante per rimuovere
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            // Rimuovi l'elemento dall'itinerario
+                            await ref
+                                .read(itineraryNotifierProvider(widget.userId).notifier)
+                                .removeItemFromItinerary(
+                                  widget.itinerary.id,
+                                  location,
+                                );
+                            setState(() {
+                              widget.itinerary.locations.remove(location);
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
                 );
-              }).toList(),
+              },
             ),
-          ),
-        ],
-      ),
     );
   }
 }

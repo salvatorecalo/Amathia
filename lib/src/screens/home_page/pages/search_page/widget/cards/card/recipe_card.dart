@@ -9,6 +9,7 @@ class RecipeCard extends StatelessWidget {
   final String image;
   final String time;
   final int peopleFor;
+  String type;
   List ingredients;
   final String userId;
   RecipeCard({
@@ -20,6 +21,7 @@ class RecipeCard extends StatelessWidget {
     required this.peopleFor,
     required this.ingredients,
     required this.userId,
+    required this.type,
   });
 
   @override

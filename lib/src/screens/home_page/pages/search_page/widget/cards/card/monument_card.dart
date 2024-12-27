@@ -8,6 +8,7 @@ class MonumentsCard extends StatelessWidget {
   String location;
   String description;
   String image;
+  String type;
   final String userId;
   MonumentsCard({
     super.key,
@@ -16,6 +17,7 @@ class MonumentsCard extends StatelessWidget {
     required this.description,
     required this.image,
     required this.userId,
+    required this.type,
   });
 
   @override

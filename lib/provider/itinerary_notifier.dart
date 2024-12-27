@@ -11,11 +11,7 @@ class ItineraryNotifier extends StateNotifier<List<Itinerary>> {
   // Metodo per caricare gli itinerari (dovrebbe chiamare una sorgente dati esterna)
   Future<void> loadItineraries() async {
     try {
-      // Simulazione: carica dati iniziali
-      final dummyItineraries = [
-        Itinerary(id: '1', userId: userId, title: 'Itinerario 1', locations: []),
-        Itinerary(id: '2', userId: userId, title: 'Itinerario 2', locations: []),
-      ];
+      final List<Itinerary> dummyItineraries = [];
       state = dummyItineraries;
     } catch (e) {
       // Puoi aggiungere gestione degli errori
