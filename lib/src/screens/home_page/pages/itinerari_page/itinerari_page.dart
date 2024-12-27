@@ -1,4 +1,5 @@
 import 'package:amathia/provider/itinerary_provider.dart';
+import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/widget/Itinerari_card_page.dart';
 import 'package:flutter/material.dart';
@@ -97,7 +98,9 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                                 IconButton(
                                   icon: const Icon(Icons.delete),
                                   onPressed: () => ref
-                                      .read(itineraryNotifierProvider(widget.userId).notifier)
+                                      .read(itineraryNotifierProvider(
+                                              widget.userId)
+                                          .notifier)
                                       .deleteItinerary(itinerary.id),
                                 ),
                               ],
@@ -113,84 +116,124 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
     );
   }
 
-  void createItinerary(BuildContext context, WidgetRef ref) {
-    final TextEditingController titleController = TextEditingController();
-    final uuid = Uuid();
+void createItinerary(BuildContext context, WidgetRef ref) {
+  final TextEditingController titleController = TextEditingController();
+  final uuid = Uuid();
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Create Itinerary'),
-          content: Column(
+  showDialog(
+    context: context,
+    builder: (context) {
+      final theme = Theme.of(context);
+      final textColor = theme.colorScheme.onSurface; // Colore testo dinamico
+
+      return AlertDialog(
+        title: const Text('Create Itinerary'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(hintText: 'Enter Title'),
+            ),
+          ],
+        ),
+        actions: [
+          Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              TextField(
-                controller: titleController,
-                decoration: const InputDecoration(hintText: 'Enter Title'),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: white,
+                  backgroundColor: blue,
+                  minimumSize: const Size(double.infinity, 50), // Aggiungi una larghezza di 100%
+                ),
+                onPressed: () {
+                  final newItinerary = Itinerary(
+                    id: uuid.v4(),
+                    userId: widget.userId, // Può essere dinamico
+                    title: titleController.text,
+                    locations: [],
+                    type: selectedType, // Aggiungi il tipo qui
+                  );
+                  ref
+                      .read(itineraryNotifierProvider(widget.userId).notifier)
+                      .addItinerary(newItinerary);
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Create',
+                  style: TextStyle(
+                    color: white,
+                  ),
+                ),
               ),
-              
+              const SizedBox(height: 10),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: textColor, // Imposta il colore dinamico del testo
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
             ],
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                final newItinerary = Itinerary(
-                  id: uuid.v4(),
-                  userId: widget.userId, // Può essere dinamico
-                  title: titleController.text,
-                  locations: [],
-                  type: selectedType, // Aggiungi il tipo qui
-                );
-                ref
-                    .read(itineraryNotifierProvider(widget.userId).notifier)
-                    .addItinerary(newItinerary);
-                Navigator.pop(context);
-              },
-              child: const Text('Create'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        ],
+      );
+    },
+  );
+}
 
-  void editItinerary(Itinerary itinerary, WidgetRef ref) {
-    final TextEditingController titleController =
-        TextEditingController(text: itinerary.title);
+void editItinerary(Itinerary itinerary, WidgetRef ref) {
+  final TextEditingController titleController =
+      TextEditingController(text: itinerary.title);
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Edit Itinerary'),
-          content: TextField(
-            controller: titleController,
-            decoration: const InputDecoration(hintText: 'Enter new title'),
+  showDialog(
+    context: context,
+    builder: (context) {
+      final theme = Theme.of(context);
+      final textColor = theme.colorScheme.onSurface; // Colore testo dinamico
+
+      return AlertDialog(
+        title: const Text('Edit Itinerary'),
+        content: TextField(
+          controller: titleController,
+          decoration: const InputDecoration(hintText: 'Enter new title'),
+        ),
+        actions: [
+          Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: white,
+                  backgroundColor: blue,
+                  minimumSize: const Size(double.infinity, 50), // Aggiungi una larghezza di 100%
+                ),
+                onPressed: () {
+                  final updatedItinerary =
+                      itinerary.copyWith(title: titleController.text);
+                  ref
+                      .read(itineraryNotifierProvider(widget.userId).notifier)
+                      .updateItinerary(updatedItinerary);
+                  Navigator.pop(context);
+                },
+                child: const Text(
+                  'Save',
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextButton(
+                style: TextButton.styleFrom(
+                  foregroundColor: textColor, // Imposta il colore dinamico del testo
+                ),
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+            ],
           ),
-          actions: [
-            ElevatedButton(
-              onPressed: () {
-                final updatedItinerary =
-                    itinerary.copyWith(title: titleController.text);
-                ref
-                    .read(itineraryNotifierProvider(widget.userId).notifier)
-                    .updateItinerary(updatedItinerary);
-                Navigator.pop(context);
-              },
-              child: const Text('Save'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+        ],
+      );
+    },
+  );
+}
 }
