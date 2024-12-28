@@ -12,7 +12,10 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 class SearchDropdown extends ConsumerStatefulWidget {
   final String userId;
 
-  const SearchDropdown({super.key, required this.userId,});
+  const SearchDropdown({
+    super.key,
+    required this.userId,
+  });
   @override
   _SearchDropdownState createState() => _SearchDropdownState();
 }
@@ -107,6 +110,9 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
           onChanged: _onSearchTextChanged, // Usa il metodo debounced
           decoration: InputDecoration(
             labelText: 'Search...',
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
             prefixIcon: Icon(Icons.search),
           ),
         ),
@@ -160,8 +166,8 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   title: result['title'],
                                   description: result['description_it'],
                                   image: client.storage
-                                    .from(tableName)
-                                    .getPublicUrl(result['image']),
+                                      .from(tableName)
+                                      .getPublicUrl(result['image']),
                                   peopleFor: result['peopleFor'],
                                   time: result['time'],
                                   ingredients: result['ingredients_it'],
@@ -178,8 +184,8 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   description: result['description_it'],
                                   location: result['location'],
                                   image: client.storage
-                                    .from(tableName)
-                                    .getPublicUrl(result['image']),
+                                      .from(tableName)
+                                      .getPublicUrl(result['image']),
                                 ),
                               ),
                             );
@@ -192,8 +198,8 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   title: result['title'],
                                   description: result['description_it'],
                                   image: client.storage
-                                    .from(tableName)
-                                    .getPublicUrl(result['image']),
+                                      .from(tableName)
+                                      .getPublicUrl(result['image']),
                                 ),
                               ),
                             );
@@ -207,8 +213,8 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                                   location: result['location'],
                                   description: result['description_it'],
                                   image: client.storage
-                                    .from(tableName)
-                                    .getPublicUrl(result['image']),
+                                      .from(tableName)
+                                      .getPublicUrl(result['image']),
                                 ),
                               ),
                             );

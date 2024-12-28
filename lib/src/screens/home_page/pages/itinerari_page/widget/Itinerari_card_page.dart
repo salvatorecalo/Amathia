@@ -30,127 +30,129 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
     final localizations = AppLocalizations.of(context); // Localizzazione
     String language = Localizations.localeOf(context).languageCode; // Lingua corrente
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.itinerary.title), // Nome dell'itinerario
-      ),
-      body: widget.itinerary.locations.isEmpty
-          ? Center(
-              child: Text("no location"), // Messaggio se vuoto
-            )
-          : ListView.builder(
-              padding: const EdgeInsets.all(10),
-              itemCount: widget.itinerary.locations.length,
-              itemBuilder: (context, index) {
-                final location = widget.itinerary.locations[index];
-                final type = location['type']; // Tipo di carta (es. Ricette)
-                final title = location['title'] ?? 'Unknown';
-
-                print(location['image']);
-                return GestureDetector(
-                  onTap: () {
-                    switch (type) {
-                      case "Ricette":
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => RecipeOpenCard(
-                              userId: widget.userId,
-                              title: title,
-                              image: location['image'],
-                              description: location['description_$language'] ?? '',
-                              time: location['time'] ?? 'Unknown time',
-                              peopleFor: location['peopleFor'] ?? 1,
-                              ingredients: location['ingredients'] ?? [],
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.itinerary.title), // Nome dell'itinerario
+        ),
+        body: widget.itinerary.locations.isEmpty
+            ? Center(
+                child: Text("no location"), // Messaggio se vuoto
+              )
+            : ListView.builder(
+                padding: const EdgeInsets.all(10),
+                itemCount: widget.itinerary.locations.length,
+                itemBuilder: (context, index) {
+                  final location = widget.itinerary.locations[index];
+                  final type = location['type']; // Tipo di carta (es. Ricette)
+                  final title = location['title'] ?? 'Unknown';
+      
+                  print(location['image']);
+                  return GestureDetector(
+                    onTap: () {
+                      switch (type) {
+                        case "Ricette":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RecipeOpenCard(
+                                userId: widget.userId,
+                                title: title,
+                                image: location['image'],
+                                description: location['description_$language'] ?? '',
+                                time: location['time'] ?? 'Unknown time',
+                                peopleFor: location['peopleFor'] ?? 1,
+                                ingredients: location['ingredients'] ?? [],
+                              ),
                             ),
-                          ),
-                        );
-                        break;
-                      case "Monumenti":
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => MonumentOpenCard(
-                              userId: widget.userId,
-                              location: location['location'] ?? 'Unknown Location',
-                              image: location['image'],
-                              title: title,
-                              description: location['description_$language'] ?? '',
+                          );
+                          break;
+                        case "Monumenti":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MonumentOpenCard(
+                                userId: widget.userId,
+                                location: location['location'] ?? 'Unknown Location',
+                                image: location['image'],
+                                title: title,
+                                description: location['description_$language'] ?? '',
+                              ),
                             ),
-                          ),
-                        );
-                        break;
-                      case "Natura":
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => NatureOpenCard(
-                              userId: widget.userId,
-                              location: location['location'] ?? 'Unknown Location',
-                              image: location['image'],
-                              title: title,
-                              description: location['description_$language'] ?? '',
+                          );
+                          break;
+                        case "Natura":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => NatureOpenCard(
+                                userId: widget.userId,
+                                location: location['location'] ?? 'Unknown Location',
+                                image: location['image'],
+                                title: title,
+                                description: location['description_$language'] ?? '',
+                              ),
                             ),
-                          ),
-                        );
-                        break;
-                      // Puoi aggiungere altri casi per altri tipi
-                      default:
-                        break;
-                    }
-                  },
-                  child: Card(
-                    margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Immagine della carta
-                        Container(
-                          width: 100,
-                          height: 75,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            image: DecorationImage(
-                              image: NetworkImage(location['image']),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                        ),
-                        // Titolo
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
-                            child: Text(
-                              title,
-                              style: const TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
+                          );
+                          break;
+                        // Puoi aggiungere altri casi per altri tipi
+                        default:
+                          break;
+                      }
+                    },
+                    child: Card(
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Immagine della carta
+                          Container(
+                            width: 100,
+                            height: 75,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(8),
+                              image: DecorationImage(
+                                image: NetworkImage(location['image']),
+                                fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                        ),
-                        // Pulsante per rimuovere
-                        IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            // Rimuovi l'elemento dall'itinerario
-                            await ref
-                                .read(itineraryNotifierProvider(widget.userId).notifier)
-                                .removeItemFromItinerary(
-                                  widget.itinerary.id,
-                                  location,
-                                );
-                            setState(() {
-                              widget.itinerary.locations.remove(location);
-                            });
-                          },
-                        ),
-                      ],
+                          // Titolo
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
+                              child: Text(
+                                title,
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                          // Pulsante per rimuovere
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () async {
+                              // Rimuovi l'elemento dall'itinerario
+                              await ref
+                                  .read(itineraryNotifierProvider(widget.userId).notifier)
+                                  .removeItemFromItinerary(
+                                    widget.itinerary.id,
+                                    location,
+                                  );
+                              setState(() {
+                                widget.itinerary.locations.remove(location);
+                              });
+                            },
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
-            ),
+                  );
+                },
+              ),
+      ),
     );
   }
 }

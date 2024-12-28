@@ -125,71 +125,88 @@ class AccountPage extends ConsumerWidget {
 
             // Pulsante Cancella Account
             ElevatedButton(
-  onPressed: () {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          backgroundColor: Colors.white,
-          title: Text(
-            localizations.deleteAccount,
-            style: const TextStyle(fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            localizations.warningDelete,
-            style: const TextStyle(fontSize: 16),
-          ),
-          actions: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Pulsante Conferma
-                ElevatedButton(
-                  onPressed: () async {
-                    try {
-                      await supabase.auth.admin
-                          .deleteUser(supabase.auth.currentUser!.id);
-                      final prefs = await SharedPreferences.getInstance();
-                      await prefs.clear();
-                      Navigator.of(context).pushReplacementNamed('/login');
-                    } catch (error) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(localizations.unexpectedError),
+              onPressed: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    final isDarkMode =
+                        Theme.of(context).brightness == Brightness.dark;
+                    return AlertDialog(
+                      backgroundColor:
+                          isDarkMode ? Colors.grey[900] : Colors.white,
+                      title: Text(
+                        localizations.deleteAccount,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: isDarkMode ? Colors.white : Colors.black,
                         ),
-                      );
-                    }
+                      ),
+                      content: Text(
+                        localizations.warningDelete,
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: isDarkMode ? Colors.white70 : Colors.black87,
+                        ),
+                      ),
+                      actions: [
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Pulsante Conferma
+                            ElevatedButton(
+                              onPressed: () async {
+                                try {
+                                  await supabase.auth.admin.deleteUser(
+                                      supabase.auth.currentUser!.id);
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.clear();
+                                  Navigator.of(context)
+                                      .pushReplacementNamed('/login');
+                                } catch (error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content:
+                                          Text(localizations.unexpectedError),
+                                    ),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.red,
+                              ),
+                              child: Text("ok"),
+                            ),
+                            const SizedBox(height: 10),
+                            // Pulsante Annulla
+                            TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                localizations.cancel,
+                                style: TextStyle(
+                                  color:
+                                      isDarkMode ? Colors.white : Colors.black,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    );
                   },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: Colors.red,
-                  ),
-                  child: Text("ok"),
-                ),
-                const SizedBox(height: 10),
-                // Pulsante Annulla
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  child: Text(localizations.cancel),
-                ),
-              ],
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red,
+              ),
+              child: Text(
+                localizations.deleteAccount,
+                style: const TextStyle(color: Colors.white),
+              ),
             ),
-          ],
-        );
-      },
-    );
-  },
-  style: ElevatedButton.styleFrom(
-    backgroundColor: Colors.red,
-  ),
-  child: Text(
-    localizations.deleteAccount,
-    style: const TextStyle(color: Colors.white),
-  ),
-),
-
           ],
         ),
       ),
