@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SaveItineraryButton extends ConsumerWidget {
   final String userId;
@@ -22,7 +23,7 @@ class SaveItineraryButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final itineraries = ref.watch(itineraryNotifierProvider(userId));
     final isItemInItinerary = _isItemInItinerary(itineraryId, itineraries);
-
+    final localizations = AppLocalizations.of(context);
     return IconButton(
       icon: Icon(
         isItemInItinerary ? Icons.delete : Icons.bookmark,
@@ -34,7 +35,7 @@ class SaveItineraryButton extends ConsumerWidget {
               .read(itineraryNotifierProvider(userId).notifier)
               .removeItemFromItinerary(itineraryId, itemData);
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text("Rimosso dall'itinerario")),
+            SnackBar(content: Text(localizations!.removeFromItinerary)),
           );
         } else {
           await _removeItemFromOtherItineraries(ref, itineraries);
@@ -77,20 +78,21 @@ class SaveItineraryButton extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) {
+        final localization = AppLocalizations.of(context);
         return AlertDialog(
-          title: const Text("Seleziona un Itinerario"),
+          title: Text(localization!.selectItinerary),
           content: itineraries.isEmpty
               ? Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Text("Nessun itinerario trovato."),
+                    Text(localization!.noItineraryFound),
                     ElevatedButton(
                       onPressed: () => createItinerary(context, ref),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: blue, // Sfondo blu
                       ),
-                      child: const Text("Crea un itinerario"),
+                      child: Text(localization.createitinerary),
                     ),
                   ],
                 )
@@ -110,7 +112,10 @@ class SaveItineraryButton extends ConsumerWidget {
                           Navigator.pop(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
-                                content: Text("Aggiunto a ${itinerary.title}")),
+                              content: Text(
+                                localization.addedToItinerary(itinerary.title),
+                              ),
+                            ),
                           );
                         },
                       );
@@ -126,7 +131,7 @@ class SaveItineraryButton extends ConsumerWidget {
                   style: TextButton.styleFrom(
                     foregroundColor: primaryColor, // Testo blu
                   ),
-                  child: const Text('Annulla'),
+                  child: Text(localization.cancel),
                 ),
               ],
             ),
@@ -139,7 +144,7 @@ class SaveItineraryButton extends ConsumerWidget {
   void createItinerary(BuildContext context, WidgetRef ref) {
     final TextEditingController titleController = TextEditingController();
     final uuid = Uuid();
-
+    final localization = AppLocalizations.of(context);
     final theme = Theme.of(context);
     final primaryColor = theme.colorScheme.primary;
 
@@ -147,10 +152,10 @@ class SaveItineraryButton extends ConsumerWidget {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Crea Itinerario'),
+          title: Text(localization!.createitinerary),
           content: TextField(
             controller: titleController,
-            decoration: const InputDecoration(hintText: 'Inserisci il titolo'),
+            decoration: InputDecoration(hintText: localization!.insertTitle),
           ),
           actions: [
             Column(
@@ -178,14 +183,14 @@ class SaveItineraryButton extends ConsumerWidget {
                     foregroundColor: Colors.white,
                     backgroundColor: blue, // Sfondo blu
                   ),
-                  child: const Text('Crea'),
+                  child: Text(localization!.create),
                 ),
                 TextButton(
                   onPressed: () => Navigator.pop(context),
                   style: TextButton.styleFrom(
                     foregroundColor: primaryColor, // Testo blu
                   ),
-                  child: const Text('Annulla'),
+                  child: Text(localization.cancel),
                 ),
               ],
             ),

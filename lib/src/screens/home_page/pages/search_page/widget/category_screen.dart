@@ -99,7 +99,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: CityCard(
                 type: widget.type, // Pass type to each card
                 userId: widget.userId,
-                itineraryId: e['id'],
+                itineraryId: e['uuid'],
                 description: e['description_en'],
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),

@@ -27,7 +27,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    
+
     // Carica i preferiti ogni volta che la pagina viene visualizzata
     if (!_isInitialized) {
       _isInitialized = true; // Evita chiamate multiple in caso di rebuild
@@ -194,20 +194,44 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                           },
                           child: Container(
                             margin: const EdgeInsets.all(15),
-                            child: Card(
-                              child: ListTile(
-                                leading: Image.network(
-                                  favoriteItem.image,
-                                  fit: BoxFit.fitHeight,
-                                  width: 50,
+                            child: Column(
+                              children: [
+                                SizedBox(
+                                  width: double
+                                      .infinity, // La larghezza occupa tutta la carta
+                                  height:
+                                      100, // Impostiamo l'altezza massima dell'immagine a 300px
+                                  child: Image.network(
+                                    favoriteItem.image,
+                                    fit: BoxFit
+                                        .cover, // L'immagine si adatta mantenendo il giusto rapporto
+                                  ),
                                 ),
-                                title: Text(favoriteItem.title),
-                                trailing: LikeButton(
-                                  itemId: favoriteItem.title,
-                                  itemData: favoriteItem.toJson(),
-                                  userId: widget.userId,
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(left: 40),
+                                      child: Text(
+                                        favoriteItem.title,
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 40),
+                                      child: LikeButton(
+                                        itemId: favoriteItem.title,
+                                        itemData: favoriteItem.toJson(),
+                                        userId: widget.userId,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         );

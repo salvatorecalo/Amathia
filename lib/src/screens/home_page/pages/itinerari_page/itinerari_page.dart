@@ -79,7 +79,17 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
             Expanded(
               child: itineraries.isEmpty
                   ? Center(
-                      child: Text(localizations.itinineraryEmpty),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            'assets/no_favorite.png',
+                            width: 200,
+                          ),
+                          Text(localizations.itinineraryEmpty),
+                        ],
+                      ),
                     )
                   : ListView.builder(
                       itemCount: itineraries.length,
@@ -138,15 +148,16 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
       builder: (context) {
         final theme = Theme.of(context);
         final textColor = theme.colorScheme.onSurface; // Colore testo dinamico
-
+        final localizations = AppLocalizations.of(context);
         return AlertDialog(
-          title: const Text('Create Itinerary'),
+          title: Text(localizations!.createitinerary),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: titleController,
-                decoration: const InputDecoration(hintText: 'Enter Title'),
+                decoration:
+                    InputDecoration(hintText: localizations.insertTitle),
               ),
             ],
           ),
@@ -174,8 +185,8 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                         .addItinerary(newItinerary);
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    'Create',
+                  child: Text(
+                    localizations.create,
                     style: TextStyle(
                       color: white,
                     ),
@@ -188,7 +199,9 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                         textColor, // Imposta il colore dinamico del testo
                   ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(
+                    localizations.cancel,
+                  ),
                 ),
               ],
             ),
@@ -207,12 +220,12 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
       builder: (context) {
         final theme = Theme.of(context);
         final textColor = theme.colorScheme.onSurface; // Colore testo dinamico
-
+        final localization = AppLocalizations.of(context);
         return AlertDialog(
-          title: const Text('Edit Itinerary'),
+          title: Text(localization!.editTitle),
           content: TextField(
             controller: titleController,
-            decoration: const InputDecoration(hintText: 'Enter new title'),
+            decoration: InputDecoration(hintText: localization.editTitle),
           ),
           actions: [
             Column(
@@ -233,8 +246,8 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                         .updateItinerary(updatedItinerary);
                     Navigator.pop(context);
                   },
-                  child: const Text(
-                    'Save',
+                  child: Text(
+                    localization.save,
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -244,7 +257,7 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                         textColor, // Imposta il colore dinamico del testo
                   ),
                   onPressed: () => Navigator.pop(context),
-                  child: const Text('Cancel'),
+                  child: Text(localization.cancel),
                 ),
               ],
             ),

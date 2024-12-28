@@ -42,7 +42,7 @@
   "skip": "Salta",
   "next": "Avanti",
   "istruzioniInviate": "Istruzioni inviate",
-    "passwordRecoveryInstructions": "Abbiamo inviato una mail con le istruzioni per il recupero password a {email}",
+  "passwordRecoveryInstructions": "Abbiamo inviato una mail con le istruzioni per il recupero password a {email}",
   "ricetteTitle1": "Ricette Deliziose",
   "ricetteTitle2": "Cucina con Gusto",
   "ricetteTitle3": "Piatti del Giorno",
@@ -88,7 +88,7 @@
   "monumentsSuggestionText": "Consigliami un monumento da visitare",
   "natureSuggestionText": "Consigliami una posto da scoprire",
   "done": "Completa",
-   "createitinerary": "Crea itinerario",
+  "createitinerary": "Crea itinerario",
   "insertTitle": "Inserisci il titolo",
   "create": "Crea",
   "cancel": "Annulla",
@@ -111,5 +111,9 @@
   "deleteAccount": "Cancella Account",
   "warningDelete": "ATTENZIONE: Questa azione è irreversibile! Eliminando il tuo account, perderai tutti i dati salvati. Sei sicuro di voler procedere?",
   "itinineraryEmpty": "Sembra che non ci sia niente qui...\n Crea un itinerario e goditi il ​​viaggio!",
-  "copyright": "La maggior parte delle immagini è presa da Freepik.com"
+  "copyright": "La maggior parte delle immagini è presa da Freepik.com",
+  "noItineraryFound": "Nessun itinerario trovato",
+  "selectItinerary": "Seleiona un itinerario",
+  "removeFromItinerary": "Rimosso dall'itinerario",
+  "addedToItinerary": "Aggiunto all'itinerario {itineraryTitle}"
 }
