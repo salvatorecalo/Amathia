@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 
@@ -45,14 +46,17 @@ class CityCard extends StatelessWidget {
           children: [
             // Restrizione per evitare overflow immagine
             ClipRRect(
-              child: Image.network(
-                image,
+              child: CachedNetworkImage(
+                imageUrl: image,
                 width: double.infinity,
                 height: 100,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
+                errorWidget: (context, error, stackTrace) {
                   return const Icon(
                       Icons.error); // Mostra un'icona in caso di errore
+                },
+                placeholder: (context, url) {
+                    return Center(child: const CircularProgressIndicator());
                 },
               ),
             ),

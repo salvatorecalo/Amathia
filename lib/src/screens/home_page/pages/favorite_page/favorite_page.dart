@@ -5,9 +5,11 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/ope
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class FavoritePage extends ConsumerStatefulWidget {
   final String userId; // Passa l'ID utente come argomento
@@ -134,8 +136,8 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Image.asset(
-                            'assets/no_favorite.png',
+                          CachedNetworkImage(
+                            imageUrl: 'assets/no_favorite.png',
                             width: 200,
                           ),
                           Text(

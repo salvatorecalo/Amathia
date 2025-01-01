@@ -1,5 +1,6 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -35,12 +36,19 @@ class RecipeOpenCard extends StatelessWidget {
       child: SafeArea(
         child: Stack(
           children: [
-            Image.network(
-              image,
-              fit: BoxFit.fitHeight,
+            CachedNetworkImage(
+              imageUrl: image,
               width: double.infinity,
               height: 350,
+              fit: BoxFit.cover,
               alignment: Alignment.center,
+              errorWidget: (context, error, stackTrace) {
+                return const Icon(
+                    Icons.error); // Mostra un'icona in caso di errore
+              },
+              placeholder: (context, url) {
+                  return Center(child: const CircularProgressIndicator());
+              },
             ),
             Positioned(
               top: 10,

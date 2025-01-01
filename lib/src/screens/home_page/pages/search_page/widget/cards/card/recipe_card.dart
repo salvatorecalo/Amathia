@@ -1,6 +1,7 @@
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/save_itinerary_button.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 // ignore: must_be_immutable
@@ -52,11 +53,20 @@ class RecipeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Image.network(
-              image,
-              width: double.infinity,
-              height: 100,
-              fit: BoxFit.cover,
+            ClipRRect(
+              child: CachedNetworkImage(
+                imageUrl: image,
+                width: double.infinity,
+                height: 100,
+                fit: BoxFit.cover,
+                errorWidget: (context, error, stackTrace) {
+                  return const Icon(
+                      Icons.error); // Mostra un'icona in caso di errore
+                },
+                placeholder: (context, url) {
+                    return Center(child: const CircularProgressIndicator());
+                },
+              ),
             ),
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
