@@ -115,5 +115,7 @@
   "noItineraryFound": "Nessun itinerario trovato",
   "selectItinerary": "Seleiona un itinerario",
   "removeFromItinerary": "Rimosso dall'itinerario",
-  "addedToItinerary": "Aggiunto all'itinerario {itineraryTitle}"
+  "addedToItinerary": "Aggiunto all'itinerario {itineraryTitle}",
+  "search": "Cerca..."
+
 }

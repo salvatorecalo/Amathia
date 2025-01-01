@@ -136,8 +136,8 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          CachedNetworkImage(
-                            imageUrl: 'assets/no_favorite.png',
+                          Image.asset(
+                            'assets/no_favorite.png',
                             width: 200,
                           ),
                           Text(

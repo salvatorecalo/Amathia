@@ -200,12 +200,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     ),
                     Container(
                       height: 300,
-                      margin: const EdgeInsets.only(left: 18, top: 20, bottom: 20),
+                      margin: const EdgeInsets.only(top: 20, bottom: 20, left: 18),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: fetchedData[table]!.length,
                         itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 10),
+                          margin: const EdgeInsets.only(right: 10),
                           child: fetchedData[table]![index],
                         ),
                       ),
