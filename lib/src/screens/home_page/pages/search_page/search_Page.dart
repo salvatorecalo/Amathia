@@ -17,7 +17,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 extension LocalizationExtension on AppLocalizations {
   String? getString(String key) {
-    final Map<String, String> localizedStrings = {
+    final localizedStrings = {
       'ricetteTitle1': ricetteTitle1,
       'ricetteTitle2': ricetteTitle2,
       'ricetteTitle3': ricetteTitle3,
@@ -31,17 +31,13 @@ extension LocalizationExtension on AppLocalizations {
       'naturaTitle2': naturaTitle2,
       'naturaTitle3': naturaTitle3,
     };
-
     return localizedStrings[key];
   }
 }
 
 class SearchPage extends ConsumerStatefulWidget {
   final String userId;
-  const SearchPage({
-    super.key,
-    required this.userId,
-  });
+  const SearchPage({super.key, required this.userId});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -55,124 +51,61 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   bool isDataFetched = false;
 
   Future<void> fetchAllTables(AppLocalizations localizations) async {
-    if (isDataFetched) return;
-    if (!mounted) return;
+    if (isDataFetched || !mounted) return;
+
     for (String tableName in tables) {
       try {
         final response = await client.from(tableName).select("*");
         final data = response as List<dynamic>;
-        String language = Localizations.localeOf(context).languageCode;
+        final language = Localizations.localeOf(context).languageCode;
+
         final widgetGenerated = data.map<Widget>((e) {
           final title = e['title'] ?? localizations.titleNotAvailable;
           final image = client.storage.from(tableName).getPublicUrl(e['image']);
           final location = e['location'] ?? localizations.titleNotAvailable;
+          final description = language == 'en' ? e['description_en'] : e['description_it'];
 
-          if (language == 'en') {
-            if (tableName == "Ricette") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: RecipeCard(
-                  userId: widget.userId,
-                  title: title,
-                  image: image,
-                  description: e['description_en'],
-                  time: e['time'],
-                  peopleFor: e['peoplefor'] ?? 1,
-                  ingredients: List<String>.from(e['ingredients_en'] ?? []),
-                  type: tableName, // Pass the type here
-                ),
+          switch (tableName) {
+            case 'Ricette':
+              return RecipeCard(
+                userId: widget.userId,
+                title: title,
+                image: image,
+                description: description,
+                time: e['time'],
+                peopleFor: e['peoplefor'] ?? 1,
+                ingredients: List<String>.from(e['ingredients_${language}'] ?? []),
+                type: tableName,
               );
-            } else if (tableName == "Monumenti") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: MonumentsCard(
-                  userId: widget.userId,
-                  location: location,
-                  image: image,
-                  title: title,
-                  description: e['description_en'],
-                  type: tableName, // Pass the type here
-                ),
+            case 'Monumenti':
+              return MonumentsCard(
+                userId: widget.userId,
+                location: location,
+                image: image,
+                title: title,
+                description: description,
+                type: tableName,
               );
-            } else if (tableName == "Natura") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: NatureCard(
-                  userId: widget.userId,
-                  location: location,
-                  image: image,
-                  title: title,
-                  description: e['description_en'],
-                  type: tableName, // Pass the type here
-                ),
+            case 'Natura':
+              return NatureCard(
+                userId: widget.userId,
+                location: location,
+                image: image,
+                title: title,
+                description: description,
+                type: tableName,
               );
-            } else if (tableName == "Borghi") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: CityCard(
-                  itineraryId: e['uuid'],
-                  userId: widget.userId,
-                  description: e['description_en'],
-                  image: image,
-                  title: title,
-                  type: tableName, // Pass the type here
-                ),
+            case 'Borghi':
+              return CityCard(
+                itineraryId: e['uuid'],
+                userId: widget.userId,
+                description: description,
+                image: image,
+                title: title,
+                type: tableName,
               );
-            }
-            return const SizedBox.shrink();
-          } else {
-            if (tableName == "Ricette") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: RecipeCard(
-                  userId: widget.userId,
-                  title: title,
-                  image: image,
-                  description: e['description_it'],
-                  time: e['time'],
-                  peopleFor: e['peoplefor'] ?? 1,
-                  ingredients: List<String>.from(e['ingredients_it'] ?? []),
-                  type: tableName, // Pass the type here
-                ),
-              );
-            } else if (tableName == "Monumenti") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: MonumentsCard(
-                  userId: widget.userId,
-                  location: location,
-                  image: image,
-                  title: title,
-                  description: e['description_it'],
-                  type: tableName, // Pass the type here
-                ),
-              );
-            } else if (tableName == "Natura") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: NatureCard(
-                  userId: widget.userId,
-                  location: location,
-                  image: image,
-                  title: title,
-                  description: e['description_it'],
-                  type: tableName, // Pass the type here
-                ),
-              );
-            } else if (tableName == "Borghi") {
-              return Container(
-                margin: const EdgeInsets.only(right: 10),
-                child: CityCard(
-                  itineraryId: e['uuid'],
-                  userId: widget.userId,
-                  description: e['description_it'],
-                  image: image,
-                  title: title,
-                  type: tableName, // Pass the type here
-                ),
-              );
-            }
-            return const SizedBox.shrink();
+            default:
+              return const SizedBox.shrink();
           }
         }).toList();
 
@@ -205,19 +138,15 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   }
 
   String getRandomTitle(AppLocalizations localizations, String tableName) {
-    // Se il titolo è già stato fetchato, restituiscilo
     if (fetchedTitles.containsKey(tableName)) {
       return fetchedTitles[tableName]!;
     }
 
-    // Altrimenti genera un nuovo titolo casuale
-    final randomIndex = Random().nextInt(3) + 1; // Genera numeri da 1 a 3
+    final randomIndex = Random().nextInt(3) + 1;
     final titleKey = '${tableName.toLowerCase()}Title$randomIndex';
-    final title =
-        localizations.getString(titleKey) ?? localizations.titleNotAvailable;
+    final title = localizations.getString(titleKey) ?? localizations.titleNotAvailable;
 
     fetchedTitles[tableName] = title;
-
     return title;
   }
 
@@ -225,6 +154,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
     final isDark = ref.watch(darkThemeProvider);
+
     return SafeArea(
       child: Scaffold(
         body: CustomScrollView(
@@ -233,9 +163,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 18),
               sliver: SliverAppBar(
                 toolbarHeight: 115,
-                flexibleSpace: SearchDropdown(
-                  userId: widget.userId,
-                ),
+                flexibleSpace: SearchDropdown(userId: widget.userId),
                 backgroundColor: isDark ? const Color(0x000000) : white,
                 shadowColor: Colors.transparent,
                 foregroundColor: Colors.transparent,
@@ -244,23 +172,18 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 30),
-                child: CategoryButtons(
-                  userId: widget.userId,
-                ),
+                child: CategoryButtons(userId: widget.userId),
               ),
             ),
             ...tables.map((table) {
-              if (!fetchedData.containsKey(table) ||
-                  fetchedData[table]!.isEmpty) {
+              if (!fetchedData.containsKey(table) || fetchedData[table]!.isEmpty) {
                 return const SliverToBoxAdapter(
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color: blue,
-                    ),
+                    child: CircularProgressIndicator(color: blue),
                   ),
                 );
               }
-      
+
               return SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -277,13 +200,12 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     ),
                     Container(
                       height: 300,
-                      margin:
-                          const EdgeInsets.only(left: 18, top: 20, bottom: 20),
+                      margin: const EdgeInsets.only(left: 18, top: 20, bottom: 20),
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount: fetchedData[table]!.length,
                         itemBuilder: (context, index) => Container(
-                          margin: const EdgeInsets.only(right: 10),
+                          margin: const EdgeInsets.symmetric(horizontal: 10),
                           child: fetchedData[table]![index],
                         ),
                       ),
@@ -297,7 +219,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 children: [
                   Text(
                     localizations!.getInspired,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,
                     ),
@@ -307,21 +229,17 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                     userId: widget.userId,
                   ),
                   Container(
-                    margin: const EdgeInsets.only(
-                      top: 10,
-                    ),
+                    margin: const EdgeInsets.only(top: 10),
                     child: TextButton(
                       onPressed: () {
-                        launchUrl(
-                          Uri.parse('https://freepik.com'),
-                        );
+                        launchUrl(Uri.parse('https://freepik.com'));
                       },
                       child: Text(localizations.copyright),
                     ),
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
