@@ -183,7 +183,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                   ),
                 );
               }
-
               return SliverToBoxAdapter(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
