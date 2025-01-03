@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'package:amathia/main.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -51,25 +53,25 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
     final naturaResponse = await _supabase
         .from('Natura')
         .select()
-        .textSearch('title, location', searchText);
+        .ilike('title, location', '%$searchText%');
     if (naturaResponse.isNotEmpty) results['Natura'] = naturaResponse;
 
     final ricetteResponse = await _supabase
         .from('Ricette')
         .select()
-        .textSearch('title', searchText);
+        .ilike('title', '%$searchText%');
     if (ricetteResponse.isNotEmpty) results['Ricette'] = ricetteResponse;
 
     final borghiResponse = await _supabase
         .from('Borghi')
         .select()
-        .textSearch('title ,location', searchText);
+        .ilike('title ,location', '%$searchText%');
     if (borghiResponse.isNotEmpty) results['Borghi'] = borghiResponse;
 
     final monumentiResponse = await _supabase
         .from('Monumenti')
         .select()
-        .textSearch('title, location', searchText);
+        .ilike('title, location', '%$searchText%');
     if (monumentiResponse.isNotEmpty) results['Monumenti'] = monumentiResponse;
 
     setState(() {
@@ -126,6 +128,19 @@ class _SearchDropdownState extends ConsumerState<SearchDropdown> {
                   if (index < currentIndex + tableResults.length) {
                     final result = tableResults[index - currentIndex];
                     return ListTile(
+                      leading: CachedNetworkImage(
+                        imageUrl: supabase.storage.from(tableName).getPublicUrl(result['image']),
+                        height: 100,
+                        width: 150,
+                        errorWidget: (context, error, stackTrace) {
+                          return const Icon(
+                              Icons.error); // Mostra un'icona in caso di errore
+                        },
+                        placeholder: (context, url) {
+                          return Center(
+                              child: const CircularProgressIndicator());
+                        },
+                      ),
                       title: Text(
                         result['title'] ?? 'No title',
                         style: TextStyle(

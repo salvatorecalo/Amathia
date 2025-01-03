@@ -2,35 +2,61 @@ import 'dart:math';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/ranDom_advice_thing.dart';
 import 'package:flutter/material.dart';
 
-class RandomAdviceGroup extends StatelessWidget {
+class RandomAdviceGroup extends StatefulWidget {
   final Map<String, List<Widget>> widgetGenerated;
   final String userId;
-  const RandomAdviceGroup({super.key, required this.widgetGenerated, required this.userId,});
+  const RandomAdviceGroup({super.key, required this.widgetGenerated, required this.userId});
+
+  @override
+  State<RandomAdviceGroup> createState() => _RandomAdviceGroupState();
+}
+
+class _RandomAdviceGroupState extends State<RandomAdviceGroup> {
+  // Variabile per memorizzare gli indici random selezionati per ciascuna categoria
+  late Map<String, int> randomIndices;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inizializza la mappa degli indici casuali
+    randomIndices = {};
+    widget.widgetGenerated.forEach((key, value) {
+      randomIndices[key] = Random().nextInt(value.length); // Imposta un indice casuale per ogni categoria
+    });
+  }
 
   Widget extractWidget(MapEntry<String, List<Widget>> entry) {
-    // Check if the list is empty before generating a random index
+    // Verifica se la lista è vuota prima di generare un indice casuale
     if (entry.value.isEmpty) {
-      // Handle the empty list case, for example, return a default widget or an error widget
-      return const Text(
-          "No advice available"); // Or you could return any default widget
+      return const Text("No advice available"); // O puoi restituire un widget di default
     }
 
-    final randomIndex = Random().nextInt(entry.value.length);
-    if (entry.value[randomIndex] is Container &&
-        (entry.value[randomIndex] as Container).child != null) {
-      return (entry.value[randomIndex] as Container).child!;
-    }
+    final randomIndex = randomIndices[entry.key] ?? 0;
     return entry.value[randomIndex];
+  }
+
+  // Funzione per aggiornare un nuovo widget casuale quando l'utente interagisce
+  void updateRandomWidget(String tableName) {
+    setState(() {
+      // Seleziona un nuovo indice casuale per la categoria
+      randomIndices[tableName] = Random().nextInt(widget.widgetGenerated[tableName]!.length);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      children: widgetGenerated.entries.map((entry) {
-        return RandomAdviceThing(
-          userId: userId,
-          tableName: entry.key,
-          randomWidget: extractWidget(entry),
+      children: widget.widgetGenerated.entries.map((entry) {
+        return GestureDetector(
+          onTap: () {
+            // Quando l'utente preme sul widget, cambia la selezione casuale
+            updateRandomWidget(entry.key);
+          },
+          child: RandomAdviceThing(
+            userId: widget.userId,
+            tableName: entry.key,
+            randomWidget: extractWidget(entry), // Restituisce il widget casuale selezionato
+          ),
         );
       }).toList(),
     );
