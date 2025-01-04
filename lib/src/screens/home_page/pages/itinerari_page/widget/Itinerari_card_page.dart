@@ -1,6 +1,6 @@
-import 'package:amathia/main.dart';
 import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
+import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/city_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/monument_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
@@ -31,7 +31,6 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
     final localizations = AppLocalizations.of(context); // Localizzazione
     String language =
         Localizations.localeOf(context).languageCode; // Lingua corrente
-
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
@@ -49,9 +48,9 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                   final type = location['type']; // Tipo di carta (es. Ricette)
                   final title = location['title'] ?? 'Unknown';
 
-                  print(location['image']);
                   return GestureDetector(
                     onTap: () {
+                      //print("LOCATION: ${location}");
                       switch (type) {
                         case "Ricette":
                           Navigator.push(
@@ -62,7 +61,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                                 title: title,
                                 image: location['image'],
                                 description:
-                                    location['description_$language'] ?? '',
+                                    location['description'] ?? '',
                                 time: location['time'] ?? 'Unknown time',
                                 peopleFor: location['peopleFor'] ?? 1,
                                 ingredients: location['ingredients'] ?? [],
@@ -81,7 +80,7 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                                 image: location['image'],
                                 title: title,
                                 description:
-                                    location['description_$language'] ?? '',
+                                    location['description'] ?? '',
                               ),
                             ),
                           );
@@ -97,12 +96,24 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                                 image: location['image'],
                                 title: title,
                                 description:
-                                    location['description_$language'] ?? '',
+                                    location['description'] ?? '',
                               ),
                             ),
                           );
                           break;
-                        // Puoi aggiungere altri casi per altri tipi
+                        case "Borghi":
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CityOpenCard(
+                                userId: widget.userId,
+                                image: location['image'],
+                                title: title,
+                                description: location['description'],
+                              ),
+                            ),
+                          );
+                          break;
                         default:
                           break;
                       }

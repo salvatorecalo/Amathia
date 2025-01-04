@@ -111,5 +111,6 @@
   "selectItinerary": "Select an itinerary",
   "removeFromItinerary": "Removed from itinerary",
   "addedToItinerary": "Added to itinerary {itineraryTitle}",
-  "search": "Search..."
+  "search": "Search...",
+  "itinerariText": "Itineraries"
 }

@@ -4,6 +4,7 @@ import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/itinerari_page.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/search_Page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
   final String userId;
@@ -78,19 +79,20 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final localization = AppLocalizations.of(context);
     List<BottomNavigationBarItem> buildBottomNavBarItems() {
       return [
         BottomNavigationBarItem(
           icon: const Icon(Icons.search),
-          label: 'Esplora',
+          label: localization!.search,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.favorite),
-          label: 'Preferiti',
+          label: localization.favorite,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.map),
-          label: 'Itinerari',
+          label: localization.itinerariText,
         ),
         BottomNavigationBarItem(
           icon: const Icon(Icons.person),
