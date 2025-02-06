@@ -12,9 +12,11 @@ class NatureOpenCard extends StatelessWidget {
   final String description;
   final String image;
   final String userId;
+  final String itineraryId;
 
   const NatureOpenCard({
     super.key,
+    required this.itineraryId,
     required this.userId,
     required this.title,
     required this.location,
@@ -27,7 +29,7 @@ class NatureOpenCard extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final localizations = AppLocalizations.of(context);
-    
+
     return Material(
       child: SafeArea(
         child: Stack(
@@ -43,7 +45,7 @@ class NatureOpenCard extends StatelessWidget {
                     Icons.error); // Mostra un'icona in caso di errore
               },
               placeholder: (context, url) {
-                  return Center(child: const CircularProgressIndicator());
+                return Center(child: const CircularProgressIndicator());
               },
             ),
             Positioned(
@@ -105,9 +107,9 @@ class NatureOpenCard extends StatelessWidget {
                               ),
                             ),
                             LikeButton(
-                              userId: userId,
                               itemId: title, // Unique identifier for the item
                               itemData: {
+                                'userId': userId,
                                 'title': title,
                                 'image': image,
                                 'location': location,
@@ -118,9 +120,9 @@ class NatureOpenCard extends StatelessWidget {
                             const SizedBox(width: 10),
                             SaveItineraryButton(
                               type: 'Natura',
-                              itineraryId: '',
-                              userId: userId,
+                              itineraryId: itineraryId,
                               itemData: {
+                                'userId': userId,
                                 'title': title,
                                 'image': image,
                                 'description': description,

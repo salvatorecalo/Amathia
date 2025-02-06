@@ -5,17 +5,16 @@ import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/ope
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/nature_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/cards/opened/recipe_card_open.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/like_button.dart';
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class FavoritePage extends ConsumerStatefulWidget {
   final String userId; // Passa l'ID utente come argomento
-
-  const FavoritePage(
-      {super.key, required this.userId}); // Aggiungi userId al costruttore
+  const FavoritePage({
+    super.key,
+    required this.userId,
+  }); // Aggiungi userId al costruttore
 
   @override
   _FavoritePageState createState() => _FavoritePageState();
@@ -57,7 +56,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
         : favorites.where((item) {
             return item.type == selectedCategory;
           }).toList();
-
+    print("Filtered favorites $favorites");
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -158,6 +157,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                               MaterialPageRoute(builder: (context) {
                                 if (favoriteItem.type == 'Ricette') {
                                   return RecipeOpenCard(
+                                    itineraryId: '',
                                     title: favoriteItem.title,
                                     userId: widget.userId,
                                     description: favoriteItem.description,
@@ -168,6 +168,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                   );
                                 } else if (favoriteItem.type == 'Borghi') {
                                   return CityOpenCard(
+                                    itineraryId: '',
                                     userId: widget.userId,
                                     title: favoriteItem.title,
                                     description: favoriteItem.description,
@@ -175,6 +176,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                   );
                                 } else if (favoriteItem.type == 'Monumenti') {
                                   return MonumentOpenCard(
+                                    itineraryId: favoriteItem.title,
                                     userId: widget.userId,
                                     title: favoriteItem.title,
                                     location: favoriteItem.location!,
@@ -183,6 +185,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                   );
                                 } else if (favoriteItem.type == 'Natura') {
                                   return NatureOpenCard(
+                                    itineraryId: '',
                                     userId: widget.userId,
                                     title: favoriteItem.title,
                                     location: favoriteItem.location!,
@@ -228,7 +231,6 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                                       child: LikeButton(
                                         itemId: favoriteItem.title,
                                         itemData: favoriteItem.toJson(),
-                                        userId: widget.userId,
                                       ),
                                     ),
                                   ],

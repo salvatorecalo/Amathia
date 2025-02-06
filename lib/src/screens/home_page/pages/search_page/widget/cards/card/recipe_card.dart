@@ -10,12 +10,14 @@ class RecipeCard extends StatelessWidget {
   final String description;
   final String image;
   final String time;
+  final String itineraryId;
   final int peopleFor;
   String type;
   List ingredients;
   final String userId;
   RecipeCard({
     super.key,
+    required this.itineraryId,
     required this.title,
     required this.description,
     required this.image,
@@ -34,6 +36,8 @@ class RecipeCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => RecipeOpenCard(
+                                            itineraryId: itineraryId,
+
               title: title,
               description: description,
               peopleFor: peopleFor,
@@ -64,7 +68,7 @@ class RecipeCard extends StatelessWidget {
                       Icons.error); // Mostra un'icona in caso di errore
                 },
                 placeholder: (context, url) {
-                    return Center(child: const CircularProgressIndicator());
+                  return Center(child: const CircularProgressIndicator());
                 },
               ),
             ),
@@ -85,16 +89,17 @@ class RecipeCard extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
-                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
+                          overflow: TextOverflow
+                              .ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
                       Row(
                         children: [
                           LikeButton(
-                            userId: userId,
                             itemId: title, // Unique identifier for the item
                             itemData: {
                               'title': title,
+                              'userId': userId,
                               'image': image,
                               'type': 'Ricette',
                               'peoplefor': peopleFor,
@@ -107,9 +112,10 @@ class RecipeCard extends StatelessWidget {
                           // Aggiungi SaveItineraryButton
                           SaveItineraryButton(
                             type: type,
-                            itineraryId: '', // Passa l'id dell'itinerario corrente, vuoto se non presente
-                            userId: userId,
+                            itineraryId:
+                                itineraryId, // Passa l'id dell'itinerario corrente, vuoto se non presente
                             itemData: {
+                              'userId': userId,
                               'title': title,
                               'image': image,
                               'description': description,

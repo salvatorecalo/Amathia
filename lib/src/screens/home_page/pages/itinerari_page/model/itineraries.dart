@@ -1,52 +1,55 @@
 class Itinerary {
-  final String id;
+  final String id; // ID univoco generato per il database
   final String userId;
   final String title;
-  final List<dynamic> locations;
-  final String type; // Added type field
+  final List<Map<String, dynamic>> locations; // Lista di oggetti ben definiti
+  final String type;
 
   Itinerary({
     required this.id,
     required this.userId,
     required this.title,
     this.locations = const [],
-    required this.type, // Added type to the constructor
+    required this.type,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
+      'userId': userId,
       'title': title,
       'locations': locations,
-      'type': type, // Include type in the toJson method
+      'type': type,
     };
   }
 
   factory Itinerary.fromJson(Map<String, dynamic> json) {
     return Itinerary(
       id: json['id'] as String,
-      userId: json['user_id'] as String,
+      userId: json['userId'] as String,
       title: json['title'] as String,
-      locations: json['locations'] as List<dynamic>? ?? [],
-      type: json['type'] as String, // Parse type from JSON
+      locations: (json['locations'] as List<dynamic>?)
+              ?.map((item) => item as Map<String, dynamic>)
+              .toList() ??
+          [],
+      type: json['type'] as String,
     );
   }
 
-  // Metodo copyWith
   Itinerary copyWith({
     String? id,
+    String? itineraryId,
     String? userId,
     String? title,
-    List<dynamic>? locations,
-    String? type, // Allow changing the type via copyWith
+    List<Map<String, dynamic>>? locations,
+    String? type,
   }) {
     return Itinerary(
       id: id ?? this.id,
       userId: userId ?? this.userId,
       title: title ?? this.title,
       locations: locations ?? this.locations,
-      type: type ?? this.type, // Copy the type if provided
+      type: type ?? this.type,
     );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:amathia/main.dart';
 import 'package:flutter/material.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';

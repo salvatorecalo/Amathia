@@ -12,39 +12,46 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RandomAdviceThing extends StatelessWidget {
   final String tableName;
+  final String itineraryId;
   final Widget randomWidget;
   final String userId;
-  const RandomAdviceThing({super.key, required this.tableName, required this.randomWidget, required this.userId,});
-  
+  const RandomAdviceThing({
+    super.key,
+    required this.tableName,
+    required this.randomWidget,
+    required this.userId,
+    required this.itineraryId,
+  });
+
   @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
-    String getString(tableName){
+    String getString(tableName) {
       String txt;
-        if (tableName == "Ricette"){
-          return txt = localizations!.recipeSuggestionText;
-        } else if (tableName == "Monumenti"){
-          return txt = localizations!.monumentsSuggestionText;
-        } else if (tableName == "Natura"){
-          return txt = localizations!.natureSuggestionText;
-        } else if (tableName == "Borghi") {
-          return txt = localizations!.citySuggestionText;
-        }
-        return "";
+      if (tableName == "Ricette") {
+        return txt = localizations!.recipeSuggestionText;
+      } else if (tableName == "Monumenti") {
+        return txt = localizations!.monumentsSuggestionText;
+      } else if (tableName == "Natura") {
+        return txt = localizations!.natureSuggestionText;
+      } else if (tableName == "Borghi") {
+        return txt = localizations!.citySuggestionText;
+      }
+      return "";
     }
 
-    Color getColor(tableName){
+    Color getColor(tableName) {
       Color color;
-        if (tableName == "Ricette"){
-          return color = Colors.orangeAccent;
-        } else if (tableName == "Monumenti"){
-          return color = Colors.pinkAccent;
-        } else if (tableName == "Natura"){
-          return color = Colors.greenAccent;
-        } else if (tableName == "Borghi") {
-          return color = Colors.blueAccent;
-        }
-        return Colors.grey;
+      if (tableName == "Ricette") {
+        return color = Colors.orangeAccent;
+      } else if (tableName == "Monumenti") {
+        return color = Colors.pinkAccent;
+      } else if (tableName == "Natura") {
+        return color = Colors.greenAccent;
+      } else if (tableName == "Borghi") {
+        return color = Colors.blueAccent;
+      }
+      return Colors.grey;
     }
 
     return GestureDetector(
@@ -54,6 +61,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => RecipeOpenCard(
+                itineraryId: itineraryId,
                 userId: userId,
                 title: (randomWidget as RecipeCard).title,
                 image: (randomWidget as RecipeCard).image,
@@ -70,6 +78,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => MonumentOpenCard(
+                itineraryId: itineraryId,
                 userId: userId,
                 title: (randomWidget as MonumentsCard).title,
                 image: (randomWidget as MonumentsCard).image,
@@ -84,6 +93,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => NatureOpenCard(
+                itineraryId: itineraryId,
                 userId: userId,
                 title: (randomWidget as NatureCard).title,
                 image: (randomWidget as NatureCard).image,
@@ -98,6 +108,7 @@ class RandomAdviceThing extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) => CityOpenCard(
+                itineraryId: itineraryId,
                 userId: userId,
                 title: (randomWidget as CityCard).title,
                 image: (randomWidget as CityCard).image,
@@ -114,9 +125,18 @@ class RandomAdviceThing extends StatelessWidget {
           elevation: 4,
           margin: const EdgeInsets.symmetric(vertical: 10),
           child: ListTile(
-            title: Text(tableName, style: TextStyle(color: white),),
-            subtitle: Text(getString(tableName), style: TextStyle(color: white),),
-            trailing: Icon(Icons.arrow_forward, color: white,),
+            title: Text(
+              tableName,
+              style: TextStyle(color: white),
+            ),
+            subtitle: Text(
+              getString(tableName),
+              style: TextStyle(color: white),
+            ),
+            trailing: Icon(
+              Icons.arrow_forward,
+              color: white,
+            ),
           ),
         ),
       ),

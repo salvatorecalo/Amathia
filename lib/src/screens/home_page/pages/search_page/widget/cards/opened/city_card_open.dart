@@ -11,10 +11,12 @@ class CityOpenCard extends StatelessWidget {
   final String description;
   final String image;
   final String userId;
+  final String itineraryId;
 
   const CityOpenCard({
     super.key,
     required this.userId,
+    required this.itineraryId,
     required this.title,
     required this.description,
     required this.image,
@@ -42,7 +44,7 @@ class CityOpenCard extends StatelessWidget {
                     Icons.error); // Mostra un'icona in caso di errore
               },
               placeholder: (context, url) {
-                  return Center(child: const CircularProgressIndicator());
+                return Center(child: const CircularProgressIndicator());
               },
             ),
             Positioned(
@@ -85,7 +87,8 @@ class CityOpenCard extends StatelessWidget {
                       horizontal: 20.0,
                       vertical: 20,
                     ),
-                    child: SingleChildScrollView( // Aggiungi lo scroll
+                    child: SingleChildScrollView(
+                      // Aggiungi lo scroll
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -97,7 +100,8 @@ class CityOpenCard extends StatelessWidget {
                                   style: theme.textTheme.titleLarge?.copyWith(
                                     fontWeight: FontWeight.w600,
                                     fontSize: 24,
-                                    overflow: TextOverflow.ellipsis, // Previeni l'overflow
+                                    overflow: TextOverflow
+                                        .ellipsis, // Previeni l'overflow
                                   ),
                                   maxLines: 1,
                                 ),
@@ -106,8 +110,8 @@ class CityOpenCard extends StatelessWidget {
                                 children: [
                                   LikeButton(
                                     itemId: title,
-                                    userId: userId,
                                     itemData: {
+                                      'userId': userId,
                                       'title': title,
                                       'image': image,
                                       'type': 'Borghi',
@@ -117,9 +121,9 @@ class CityOpenCard extends StatelessWidget {
                                   const SizedBox(width: 10),
                                   SaveItineraryButton(
                                     type: 'Borghi',
-                                    itineraryId: '',
-                                    userId: userId,
+                                    itineraryId: itineraryId,
                                     itemData: {
+                                      'userId': userId,
                                       'title': title,
                                       'image': image,
                                       'description': description,

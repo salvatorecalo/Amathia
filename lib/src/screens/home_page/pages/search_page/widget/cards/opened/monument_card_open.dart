@@ -11,10 +11,12 @@ class MonumentOpenCard extends StatelessWidget {
   final String location;
   final String description;
   final String image;
+  final String itineraryId;
   final String userId;
 
   const MonumentOpenCard({
     super.key,
+    required this.itineraryId,
     required this.userId,
     required this.title,
     required this.location,
@@ -44,7 +46,7 @@ class MonumentOpenCard extends StatelessWidget {
                     Icons.error); // Mostra un'icona in caso di errore
               },
               placeholder: (context, url) {
-                  return Center(child: const CircularProgressIndicator());
+                return Center(child: const CircularProgressIndicator());
               },
             ),
             Positioned(
@@ -105,9 +107,9 @@ class MonumentOpenCard extends StatelessWidget {
                                 ),
                               ),
                               LikeButton(
-                                userId: userId,
                                 itemId: title,
                                 itemData: {
+                                  'userId': userId,
                                   'title': title,
                                   'image': image,
                                   'type': 'Monumenti',
@@ -118,8 +120,8 @@ class MonumentOpenCard extends StatelessWidget {
                               SaveItineraryButton(
                                 type: 'Monumenti',
                                 itineraryId: '',
-                                userId: userId,
                                 itemData: {
+                                  'userId': userId,
                                   'title': title,
                                   'image': image,
                                   'description': description,

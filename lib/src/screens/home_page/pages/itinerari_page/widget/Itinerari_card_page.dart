@@ -10,10 +10,10 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ItineraryDetailPage extends ConsumerStatefulWidget {
-  final String userId; // ID utente
-  final Itinerary itinerary; // Itinerario con le location salvate
+  final String userId;
+  final Itinerary itinerary;
   final String type;
-
+ 
   const ItineraryDetailPage({
     super.key,
     required this.userId,
@@ -28,40 +28,36 @@ class ItineraryDetailPage extends ConsumerStatefulWidget {
 class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
   @override
   Widget build(BuildContext context) {
-    final localizations = AppLocalizations.of(context); // Localizzazione
-    String language =
-        Localizations.localeOf(context).languageCode; // Lingua corrente
+    final localizations = AppLocalizations.of(context);
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
-          title: Text(widget.itinerary.title), // Nome dell'itinerario
+          title: Text(widget.itinerary.title),
         ),
         body: widget.itinerary.locations.isEmpty
-            ? Center(
-                child: Text("no location"), // Messaggio se vuoto
-              )
+            ? const Center(child: Text("No locations"))
             : ListView.builder(
                 padding: const EdgeInsets.all(10),
                 itemCount: widget.itinerary.locations.length,
                 itemBuilder: (context, index) {
                   final location = widget.itinerary.locations[index];
-                  final type = location['type']; // Tipo di carta (es. Ricette)
+                  final type = location['type'];
                   final title = location['title'] ?? 'Unknown';
+                  final id = widget.itinerary.id; // Changed here
 
                   return GestureDetector(
                     onTap: () {
-                      //print("LOCATION: ${location}");
                       switch (type) {
                         case "Ricette":
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => RecipeOpenCard(
+                                itineraryId: id,  // Changed here
                                 userId: widget.userId,
                                 title: title,
-                                image: location['image'],
-                                description:
-                                    location['description'] ?? '',
+                                image: location['image'] ?? '',
+                                description: location['description'] ?? '',
                                 time: location['time'] ?? 'Unknown time',
                                 peopleFor: location['peopleFor'] ?? 1,
                                 ingredients: location['ingredients'] ?? [],
@@ -74,13 +70,12 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => MonumentOpenCard(
+                                itineraryId: id,  // Changed here
                                 userId: widget.userId,
-                                location:
-                                    location['location'] ?? 'Unknown Location',
-                                image: location['image'],
+                                location: location['location'] ?? 'Unknown Location',
+                                image: location['image'] ?? '',
                                 title: title,
-                                description:
-                                    location['description'] ?? '',
+                                description: location['description'] ?? '',
                               ),
                             ),
                           );
@@ -90,13 +85,12 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => NatureOpenCard(
+                                itineraryId: id,  // Changed here
                                 userId: widget.userId,
-                                location:
-                                    location['location'] ?? 'Unknown Location',
-                                image: location['image'],
+                                location: location['location'] ?? 'Unknown Location',
+                                image: location['image'] ?? '',
                                 title: title,
-                                description:
-                                    location['description'] ?? '',
+                                description: location['description'] ?? '',
                               ),
                             ),
                           );
@@ -106,10 +100,11 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => CityOpenCard(
+                                itineraryId: id,  // Changed here
                                 userId: widget.userId,
-                                image: location['image'],
+                                image: location['image'] ?? '',
                                 title: title,
-                                description: location['description'],
+                                description: location['description'] ?? '',
                               ),
                             ),
                           );
@@ -119,12 +114,10 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                       }
                     },
                     child: Card(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8, horizontal: 16),
+                      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          // Immagine della carta
                           Container(
                             width: 100,
                             height: 75,
@@ -132,19 +125,15 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                               borderRadius: BorderRadius.circular(8),
                               image: DecorationImage(
                                 image: CachedNetworkImageProvider(
-                                  location['image'],
-                                  maxWidth: 200,
-                                  maxHeight: 200,
+                                  location['image'] ?? '',
                                 ),
                                 fit: BoxFit.cover,
                               ),
                             ),
                           ),
-                          // Titolo
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 16, horizontal: 10),
+                              padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 10),
                               child: Text(
                                 title,
                                 style: const TextStyle(
@@ -154,18 +143,12 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                               ),
                             ),
                           ),
-                          // Pulsante per rimuovere
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () async {
-                              // Rimuovi l'elemento dall'itinerario
                               await ref
-                                  .read(itineraryNotifierProvider(widget.userId)
-                                      .notifier)
-                                  .removeItemFromItinerary(
-                                    widget.itinerary.id,
-                                    location,
-                                  );
+                                  .read(itineraryNotifierProvider(widget.userId).notifier)
+                                  .removeItemFromItinerary(id, location);  // Changed here
                               setState(() {
                                 widget.itinerary.locations.remove(location);
                               });

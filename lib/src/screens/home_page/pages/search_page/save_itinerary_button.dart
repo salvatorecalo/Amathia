@@ -7,13 +7,11 @@ import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itinera
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class SaveItineraryButton extends ConsumerWidget {
-  final String userId;
   final String itineraryId;
   final Map<String, dynamic> itemData;
   final String type;
 
   SaveItineraryButton({
-    required this.userId,
     required this.itineraryId,
     required this.itemData,
     required this.type,
@@ -21,7 +19,8 @@ class SaveItineraryButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final itineraries = ref.watch(itineraryNotifierProvider(userId));
+    final itineraries =
+        ref.watch(itineraryNotifierProvider(itemData['userId']));
     final isItemInItinerary = _isItemInItinerary(itineraryId, itineraries);
     final localizations = AppLocalizations.of(context);
     return IconButton(
@@ -32,7 +31,7 @@ class SaveItineraryButton extends ConsumerWidget {
       onPressed: () async {
         if (isItemInItinerary) {
           await ref
-              .read(itineraryNotifierProvider(userId).notifier)
+              .read(itineraryNotifierProvider(itemData['userId']).notifier)
               .removeItemFromItinerary(itineraryId, itemData);
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(localizations!.removeFromItinerary)),
@@ -49,7 +48,11 @@ class SaveItineraryButton extends ConsumerWidget {
     final itinerary = itineraries.firstWhere(
       (itinerary) => itinerary.id == itineraryId,
       orElse: () => Itinerary(
-          id: '', userId: userId, title: '', locations: [], type: type),
+          id: '',
+          userId: itemData['userId'],
+          title: '',
+          locations: [],
+          type: type),
     );
     return itinerary.locations
         .any((location) => location['id'] == itemData['id']);
@@ -63,7 +66,7 @@ class SaveItineraryButton extends ConsumerWidget {
             .any((location) => location['id'] == itemData['id']);
         if (isItemInItinerary) {
           await ref
-              .read(itineraryNotifierProvider(userId).notifier)
+              .read(itineraryNotifierProvider(itemData['userId']).notifier)
               .removeItemFromItinerary(itinerary.id, itemData);
         }
       }
@@ -85,7 +88,7 @@ class SaveItineraryButton extends ConsumerWidget {
               ? Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Text(localization!.noItineraryFound),
+                    Text(localization.noItineraryFound),
                     ElevatedButton(
                       onPressed: () => createItinerary(context, ref),
                       style: ElevatedButton.styleFrom(
@@ -99,27 +102,46 @@ class SaveItineraryButton extends ConsumerWidget {
               : SizedBox(
                   height: 300,
                   width: 300,
-                  child: ListView.builder(
-                    itemCount: itineraries.length,
-                    itemBuilder: (context, index) {
-                      final itinerary = itineraries[index];
-                      return ListTile(
-                        title: Text(itinerary.title),
-                        onTap: () async {
-                          await ref
-                              .read(itineraryNotifierProvider(userId).notifier)
-                              .addItemToItinerary(itinerary.id, itemData);
-                          Navigator.pop(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                localization.addedToItinerary(itinerary.title),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
+                  child: Column(
+                    children: [
+                      // Pulsante per creare un nuovo itinerario
+                      ElevatedButton(
+                        onPressed: () => createItinerary(
+                            context, ref), // Funzione per creare un itinerario
+                        child: Text('Create New Itinerary'),
+                      ),
+                      // Spazio tra il bottone e la lista
+                      SizedBox(height: 16),
+                      // Lista degli itinerari
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: itineraries.length,
+                          itemBuilder: (context, index) {
+                            final itinerary = itineraries[index];
+                            return ListTile(
+                              title: Text(itinerary.title),
+                              onTap: () async {
+                                print("ItemData itinerari: ${itemData}");
+                                await ref
+                                    .read(itineraryNotifierProvider(
+                                            itemData['userId'])
+                                        .notifier)
+                                    .addItemToItinerary(itinerary.id, itemData);
+                                Navigator.pop(context);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      localization
+                                          .addedToItinerary(itinerary.title),
+                                    ),
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ),
           actions: [
@@ -140,63 +162,77 @@ class SaveItineraryButton extends ConsumerWidget {
       },
     );
   }
+void createItinerary(BuildContext context, WidgetRef ref) {
+  final TextEditingController titleController = TextEditingController();
+  final uuid = Uuid();
+  final localization = AppLocalizations.of(context);
+  final theme = Theme.of(context);
+  final primaryColor = theme.colorScheme.primary;
 
-  void createItinerary(BuildContext context, WidgetRef ref) {
-    final TextEditingController titleController = TextEditingController();
-    final uuid = Uuid();
-    final localization = AppLocalizations.of(context);
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text(localization!.createitinerary),
+        content: TextField(
+          controller: titleController,
+          decoration: InputDecoration(hintText: localization!.insertTitle),
+        ),
+        actions: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  final newItinerary = Itinerary(
+                    id: uuid.v4(),
+                    userId: itemData['userId'] ?? '',
+                    title: titleController.text,
+                    locations: [
+                      itemData
+                    ], // Aggiungi l'elemento all'itinerario direttamente
+                    type: type,
+                  );
 
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text(localization!.createitinerary),
-          content: TextField(
-            controller: titleController,
-            decoration: InputDecoration(hintText: localization!.insertTitle),
+                  print('Userid: ${itemData['userId']}');
+
+                  // 🔹 Aggiungi l'itinerario al provider
+                  await ref
+                      .read(itineraryNotifierProvider(itemData['userId'])
+                          .notifier)
+                      .addItinerary(newItinerary);
+
+                  Navigator.pop(context);
+
+                  // 🔹 Aggiorna la lista degli itinerari
+                  ref.refresh(itineraryNotifierProvider(itemData['userId']));
+
+                  // 🔹 Mostra la lista aggiornata
+                  _showItinerarySelectionDialog(
+                    context,
+                    ref,
+                    ref.read(itineraryNotifierProvider(itemData['userId'])),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  backgroundColor: blue, // Sfondo blu
+                ),
+                child: Text(localization.create),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: primaryColor, // Testo blu
+                ),
+                child: Text(localization.cancel),
+              ),
+            ],
           ),
-          actions: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ElevatedButton(
-                  onPressed: () {
-                    final newItinerary = Itinerary(
-                      type: type,
-                      id: uuid.v4(),
-                      userId: userId,
-                      title: titleController.text,
-                      locations: [],
-                    );
+        ],
+      );
+    },
+  );
+}
 
-                    ref
-                        .read(itineraryNotifierProvider(userId).notifier)
-                        .addItinerary(newItinerary);
-
-                    Navigator.pop(context);
-                    _showItinerarySelectionDialog(context, ref,
-                        ref.read(itineraryNotifierProvider(userId)));
-                  },
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white,
-                    backgroundColor: blue, // Sfondo blu
-                  ),
-                  child: Text(localization!.create),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  style: TextButton.styleFrom(
-                    foregroundColor: primaryColor, // Testo blu
-                  ),
-                  child: Text(localization.cancel),
-                ),
-              ],
-            ),
-          ],
-        );
-      },
-    );
-  }
 }

@@ -11,9 +11,11 @@ class NatureCard extends StatelessWidget {
   String location;
   String description;
   final String userId;
+  final String itineraryId;
   String type;
   NatureCard({
     super.key,
+    required this.itineraryId,
     required this.title,
     required this.image,
     required this.location,
@@ -30,6 +32,8 @@ class NatureCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => NatureOpenCard(
+                                            itineraryId: itineraryId,
+
               userId: userId,
               title: title,
               location: location,
@@ -57,7 +61,7 @@ class NatureCard extends StatelessWidget {
                       Icons.error); // Mostra un'icona in caso di errore
                 },
                 placeholder: (context, url) {
-                    return Center(child: const CircularProgressIndicator());
+                  return Center(child: const CircularProgressIndicator());
                 },
               ),
             ),
@@ -81,15 +85,16 @@ class NatureCard extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
-                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
+                          overflow: TextOverflow
+                              .ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
                       Row(
                         children: [
                           LikeButton(
-                            userId: userId,
                             itemId: title, // Unique identifier for the item
                             itemData: {
+                              'userId': userId,
                               'title': title,
                               'image': image,
                               'location': location,
@@ -103,9 +108,10 @@ class NatureCard extends StatelessWidget {
                           // Aggiungi SaveItineraryButton
                           SaveItineraryButton(
                             type: type,
-                            itineraryId: '', // Passa l'id dell'itinerario corrente, vuoto se non presente
-                            userId: userId,
+                            itineraryId:
+                                itineraryId, // Passa l'id dell'itinerario corrente, vuoto se non presente
                             itemData: {
+                              'userId': userId,
                               'title': title,
                               'image': image,
                               'location': location,

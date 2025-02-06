@@ -9,11 +9,13 @@ class MonumentsCard extends StatelessWidget {
   String title;
   String location;
   String description;
+  final String itineraryId;
   String image;
   String type;
   final String userId;
   MonumentsCard({
     super.key,
+    required this.itineraryId,
     required this.title,
     required this.location,
     required this.description,
@@ -30,6 +32,8 @@ class MonumentsCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => MonumentOpenCard(
+                                            itineraryId: itineraryId,
+
               userId: userId,
               title: title,
               location: location,
@@ -57,7 +61,7 @@ class MonumentsCard extends StatelessWidget {
                       Icons.error); // Mostra un'icona in caso di errore
                 },
                 placeholder: (context, url) {
-                    return Center(child: const CircularProgressIndicator());
+                  return Center(child: const CircularProgressIndicator());
                 },
               ),
             ),
@@ -81,15 +85,16 @@ class MonumentsCard extends StatelessWidget {
                             fontSize: 16,
                             fontWeight: FontWeight.w700,
                           ),
-                          overflow: TextOverflow.ellipsis, // Troncamento del testo se troppo lungo
+                          overflow: TextOverflow
+                              .ellipsis, // Troncamento del testo se troppo lungo
                         ),
                       ),
                       Row(
                         children: [
                           LikeButton(
-                            userId: userId,
                             itemId: title, // Unique identifier for the item
                             itemData: {
+                              'userId': userId,
                               'title': title,
                               'image': image,
                               'type': 'Monumenti',
@@ -103,9 +108,9 @@ class MonumentsCard extends StatelessWidget {
                           SaveItineraryButton(
                             type: type,
                             itineraryId:
-                                '', // Passa l'id dell'itinerario corrente, vuoto se non presente
-                            userId: userId,
+                                itineraryId, // Passa l'id dell'itinerario corrente, vuoto se non presente
                             itemData: {
+                              'userId': userId,
                               'title': title,
                               'image': image,
                               'location': location,
@@ -133,7 +138,8 @@ class MonumentsCard extends StatelessWidget {
                         location,
                         style: const TextStyle(
                           fontSize: 18,
-                          overflow: TextOverflow.ellipsis, // Evita overflow del testo
+                          overflow:
+                              TextOverflow.ellipsis, // Evita overflow del testo
                         ),
                       ),
                     ],

@@ -12,7 +12,7 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     final response = await Supabase.instance.client
         .from('favorites')
         .select()
-        .eq('user_id', userId);
+        .eq('userId', userId);
 
     final data = response as List<dynamic>;
     state = data.map((item) => Favorite.fromJson(item)).toList();
@@ -23,7 +23,6 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     final response = await Supabase.instance.client
         .from('favorites')
         .insert(favorite.toJson());
-
     state = [...state, favorite];
   }
 
@@ -31,7 +30,7 @@ class FavoriteNotifier extends StateNotifier<List<Favorite>> {
     final response = await Supabase.instance.client
         .from('favorites')
         .delete()
-        .eq('user_id', userId)
+        .eq('userId', userId)
         .eq('title', title);
     state = state.where((favorite) => favorite.title != title).toList();
   }

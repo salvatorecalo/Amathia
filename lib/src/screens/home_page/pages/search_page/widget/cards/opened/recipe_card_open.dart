@@ -11,12 +11,14 @@ class RecipeOpenCard extends StatelessWidget {
   final String image;
   final String time;
   final int peopleFor;
+  final String itineraryId;
   final String userId;
   final List<dynamic> ingredients;
 
   const RecipeOpenCard({
     super.key,
     required this.title,
+    required this.itineraryId,
     required this.userId,
     required this.description,
     required this.image,
@@ -47,7 +49,7 @@ class RecipeOpenCard extends StatelessWidget {
                     Icons.error); // Mostra un'icona in caso di errore
               },
               placeholder: (context, url) {
-                  return Center(child: const CircularProgressIndicator());
+                return Center(child: const CircularProgressIndicator());
               },
             ),
             Positioned(
@@ -82,7 +84,8 @@ class RecipeOpenCard extends StatelessWidget {
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
                     ),
-                    color: isDarkTheme ? colorScheme.surface : colorScheme.surface,
+                    color:
+                        isDarkTheme ? colorScheme.surface : colorScheme.surface,
                   ),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
@@ -110,9 +113,9 @@ class RecipeOpenCard extends StatelessWidget {
                                 ),
                               ),
                               LikeButton(
-                                userId: userId,
                                 itemId: title,
                                 itemData: {
+                                  'userId': userId,
                                   'title': title,
                                   'image': image,
                                   'type': 'Ricette',
@@ -122,12 +125,14 @@ class RecipeOpenCard extends StatelessWidget {
                                   'description': description,
                                 },
                               ),
-                              const SizedBox(width: 10,),
+                              const SizedBox(
+                                width: 10,
+                              ),
                               SaveItineraryButton(
                                 type: 'Ricette',
-                                itineraryId: '',
-                                userId: userId,
+                                itineraryId: itineraryId,
                                 itemData: {
+                                  'userId': userId,
                                   'title': title,
                                   'image': image,
                                   'description': description,

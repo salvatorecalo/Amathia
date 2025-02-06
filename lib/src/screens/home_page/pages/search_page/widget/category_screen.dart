@@ -56,6 +56,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Container(
               margin: const EdgeInsets.all(10),
               child: RecipeCard(
+                itineraryId: e['uuid'],
+
                 userId: widget.userId,
                 title: e['title'],
                 image:
@@ -71,6 +73,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Container(
               margin: const EdgeInsets.all(20),
               child: MonumentsCard(
+                itineraryId: e['uuid'],
+
                 userId: widget.userId,
                 location: e['location'],
                 image:
@@ -84,6 +88,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
             return Container(
               margin: const EdgeInsets.all(20),
               child: NatureCard(
+                itineraryId: e['uuid'],
+
                 userId: widget.userId,
                 location: e['location'],
                 image:
@@ -119,6 +125,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 description: e['description_it'],
                 time: e['time'].toString(),
+                itineraryId: e['uuid'],
+
                 peopleFor: e['peopleFor'] ?? 1,
                 ingredients: List<String>.from(e['ingredients_it'] ?? []),
                 type: widget.type, // Pass type to each card
@@ -133,6 +141,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],
+                itineraryId: e['uuid'],
+
                 description: e['description_it'],
                 type: widget.type, // Pass type to each card
               ),
@@ -143,6 +153,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
               child: NatureCard(
                 userId: widget.userId,
                 location: e['location'],
+                itineraryId: e['uuid'],
+
                 image:
                     client.storage.from(widget.type).getPublicUrl(e['image']),
                 title: e['title'],

@@ -112,5 +112,7 @@
   "removeFromItinerary": "Removed from itinerary",
   "addedToItinerary": "Added to itinerary {itineraryTitle}",
   "search": "Search...",
-  "itinerariText": "Itineraries"
+  "itinerariText": "Itineraries",
+  "contribuiteText": "There're a lot of data to intert into the database so it's difficult for me to insert all data, if you want to contribuite by adding data, edit them conact me on my email: salvacalo.04@gmail.com",
+  "resultEmpty": "Result will appear while you search..."
 }

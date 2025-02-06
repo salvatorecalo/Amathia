@@ -1,4 +1,4 @@
-package com.example.amathia
+package com.amathia
 
 import io.flutter.embedding.android.FlutterActivity
 

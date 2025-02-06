@@ -5,7 +5,14 @@ import 'package:flutter/material.dart';
 class RandomAdviceGroup extends StatefulWidget {
   final Map<String, List<Widget>> widgetGenerated;
   final String userId;
-  const RandomAdviceGroup({super.key, required this.widgetGenerated, required this.userId});
+  final String itineraryId;
+
+  const RandomAdviceGroup({
+    super.key,
+    required this.widgetGenerated,
+    required this.userId,
+    required this.itineraryId,
+  });
 
   @override
   State<RandomAdviceGroup> createState() => _RandomAdviceGroupState();
@@ -21,14 +28,16 @@ class _RandomAdviceGroupState extends State<RandomAdviceGroup> {
     // Inizializza la mappa degli indici casuali
     randomIndices = {};
     widget.widgetGenerated.forEach((key, value) {
-      randomIndices[key] = Random().nextInt(value.length); // Imposta un indice casuale per ogni categoria
+      randomIndices[key] = Random().nextInt(
+          value.length); // Imposta un indice casuale per ogni categoria
     });
   }
 
   Widget extractWidget(MapEntry<String, List<Widget>> entry) {
     // Verifica se la lista è vuota prima di generare un indice casuale
     if (entry.value.isEmpty) {
-      return const Text("No advice available"); // O puoi restituire un widget di default
+      return const Text(
+          "No advice available"); // O puoi restituire un widget di default
     }
 
     final randomIndex = randomIndices[entry.key] ?? 0;
@@ -39,7 +48,8 @@ class _RandomAdviceGroupState extends State<RandomAdviceGroup> {
   void updateRandomWidget(String tableName) {
     setState(() {
       // Seleziona un nuovo indice casuale per la categoria
-      randomIndices[tableName] = Random().nextInt(widget.widgetGenerated[tableName]!.length);
+      randomIndices[tableName] =
+          Random().nextInt(widget.widgetGenerated[tableName]!.length);
     });
   }
 
@@ -53,9 +63,11 @@ class _RandomAdviceGroupState extends State<RandomAdviceGroup> {
             updateRandomWidget(entry.key);
           },
           child: RandomAdviceThing(
+            itineraryId: widget.itineraryId,
             userId: widget.userId,
             tableName: entry.key,
-            randomWidget: extractWidget(entry), // Restituisce il widget casuale selezionato
+            randomWidget: extractWidget(
+                entry), // Restituisce il widget casuale selezionato
           ),
         );
       }).toList(),

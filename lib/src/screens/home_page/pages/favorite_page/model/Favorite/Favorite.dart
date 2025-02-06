@@ -7,12 +7,13 @@ class Favorite {
   final int? peoplefor;
   final String? time;
   final List<String>? ingredients;
-
+  final String userId;
   Favorite({
     required this.title,
     required this.type,
     required this.image,
     required this.description,
+    required this.userId,
     this.location,
     this.peoplefor,
     this.time,
@@ -22,6 +23,7 @@ class Favorite {
   factory Favorite.fromJson(Map<String, dynamic> json) {
     return Favorite(
       title: json['title'],
+      userId: json['userId'],
       type: json['type'],
       image: json['image'],
       description: json['description'],
@@ -44,6 +46,7 @@ class Favorite {
       'peoplefor': peoplefor,
       'time': time,
       'ingredients': ingredients,
+      'userId': userId,
     };
   }
 }

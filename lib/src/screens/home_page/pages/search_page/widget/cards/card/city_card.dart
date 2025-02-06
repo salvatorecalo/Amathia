@@ -30,6 +30,7 @@ class CityCard extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => CityOpenCard(
+              itineraryId: itineraryId,
               userId: userId,
               title: title,
               description: description,
@@ -84,8 +85,8 @@ class CityCard extends StatelessWidget {
                     children: [
                       LikeButton(
                         itemId: title,
-                        userId: userId,
                         itemData: {
+                          'userId': userId,
                           'title': title,
                           'image': image,
                           'type': 'Borghi',
@@ -96,8 +97,8 @@ class CityCard extends StatelessWidget {
                         type: type,
                         itineraryId:
                             itineraryId, // Passa l'id dell'itinerario corrente (vuoto se nessun itinerario)
-                        userId: userId,
                         itemData: {
+                          'userId': userId,
                           'title': title,
                           'image': image,
                           'description': description,
