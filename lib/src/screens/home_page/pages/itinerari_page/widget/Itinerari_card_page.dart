@@ -146,9 +146,12 @@ class _ItineraryDetailPageState extends ConsumerState<ItineraryDetailPage> {
                           IconButton(
                             icon: const Icon(Icons.delete, color: Colors.red),
                             onPressed: () async {
+                              // Rimuovi l'elemento dall'itinerario nel database
                               await ref
                                   .read(itineraryNotifierProvider(widget.userId).notifier)
-                                  .removeItemFromItinerary(id, location);  // Changed here
+                                  .removeItemFromItinerary(widget.itinerary.id, location);  // Cambiato qui
+
+                              // Rimuovi l'elemento localmente
                               setState(() {
                                 widget.itinerary.locations.remove(location);
                               });

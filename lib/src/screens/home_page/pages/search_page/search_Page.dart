@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 import 'package:amathia/provider/dark_theme_provider.dart';
+import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/costants/costants.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/random_advice_group.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/searchbar.dart';
@@ -132,15 +133,25 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       });
     }
   }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    final localizations = AppLocalizations.of(context);
-    if (localizations != null && !isDataFetched) {
-      fetchAllTables(localizations);
-    }
+@override
+void didChangeDependencies() async {
+  super.didChangeDependencies();
+  
+  final localizations = AppLocalizations.of(context);
+  if (localizations != null && !isDataFetched) {
+    fetchAllTables(localizations);
   }
+
+  // Carica gli itinerari
+  await ref.read(itineraryNotifierProvider(widget.userId).notifier).loadItineraries();
+  
+  // Ora puoi stampare le locations
+  final itineraries = ref.read(itineraryNotifierProvider(widget.userId));
+  print("Controlla locations: ${itineraries.map((itinerary) => itinerary.locations).toList()}");
+
+  // Se è necessario fare qualcosa con gli itinerari caricati, fallo qui
+}
+
 
   String getRandomTitle(AppLocalizations localizations, String tableName) {
     if (fetchedTitles.containsKey(tableName)) {
@@ -176,7 +187,10 @@ class _SearchPageState extends ConsumerState<SearchPage> {
                 flexibleSpace: GestureDetector(
                   onTap: () {
                     showSearch(
-                        context: context, delegate: CustomSearchDelegate());
+  context: context,
+  delegate: CustomSearchDelegate(userId: widget.userId),
+);
+
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 20.0),
@@ -255,7 +269,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
               child: Column(
                 children: [
                   Text(
-                    localizations!.getInspired,
+                    localizations.getInspired,
                     style: const TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.w700,

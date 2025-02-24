@@ -1,14 +1,13 @@
 name: amathia
 description: "A new Flutter project."
-publish_to: 'Play Store' # Remove this line  if you wish to publish to pub.dev
-version: 1.0.1+4
+publish_to: 'Play Store'
+version: 1.0.1+7
 environment:
   sdk: '>=3.3.0 <4.0.0'
 dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.6
-  flutter_native_splash: ^2.4.3
   flutter_svg: ^2.0.10+1
   shared_preferences: ^2.2.2
   google_fonts: ^6.1.0
@@ -32,13 +31,7 @@ dev_dependencies:
   build_runner: ^2.4.13
   custom_lint: ^0.6.7
   riverpod_lint: ^2.3.13
-flutter_native_splash:
-  color: "#ffffff"  # Colore di sfondo della splash screen (puoi usare un codice esadecimale)
-  image: assets/splash_screen.jpg  # Percorso dell'immagine della splash screen
-  android: true  # Abilita la splash screen su Android
-  ios: true  # Abilita la splash screen su iOS
-  web: true  # Abilita la splash screen sul web
-  fullscreen: true  # Se vuoi che la splash screen copra tutto lo schermo
+
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true

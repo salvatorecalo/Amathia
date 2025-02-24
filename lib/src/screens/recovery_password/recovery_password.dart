@@ -66,7 +66,7 @@ class _RecoveryPasswordPageState extends State<RecoveryPasswordPage> {
       child: Stack(
         children: [
           Image.asset(
-            'assets/recovery_password.png',
+            'assets/recovery_password.webp',
             fit: BoxFit.fill,
             width: double.infinity,
             height: 300,

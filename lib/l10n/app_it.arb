@@ -119,6 +119,6 @@
   "addedToItinerary": "Aggiunto all'itinerario {itineraryTitle}",
   "search": "Cerca...",
   "contribuiteText": "Ci sono un sacco di dati da inserire nel database e da solo mi è difficile capire cosa manca o no, se vuoi contribuire aggiungendo o modificando le informazioni su questa app invia una mail a salvacalo.04@gmail.com",
-  "resultEmpty": "Cerca per far apparire qualcosa..."
+  "resultEmpty": "Non sembra esserci nulla qua..."
 
 }

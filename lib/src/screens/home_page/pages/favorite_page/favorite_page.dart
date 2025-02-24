@@ -56,7 +56,6 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
         : favorites.where((item) {
             return item.type == selectedCategory;
           }).toList();
-    print("Filtered favorites $favorites");
     return SafeArea(
       child: Scaffold(
         body: Column(
@@ -136,7 +135,7 @@ class _FavoritePageState extends ConsumerState<FavoritePage> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Image.asset(
-                            'assets/no_favorite.png',
+                            'assets/no_favorite.webp',
                             width: 200,
                           ),
                           Text(

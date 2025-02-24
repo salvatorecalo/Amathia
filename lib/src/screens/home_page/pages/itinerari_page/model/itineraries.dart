@@ -1,8 +1,8 @@
 class Itinerary {
-  final String id; // ID univoco generato per il database
+  final String id;
   final String userId;
   final String title;
-  final List<Map<String, dynamic>> locations; // Lista di oggetti ben definiti
+  final List<Map<String, dynamic>> locations;
   final String type;
 
   Itinerary({
@@ -12,6 +12,12 @@ class Itinerary {
     this.locations = const [],
     required this.type,
   });
+
+  // Metodo toString per una rappresentazione utile
+  @override
+  String toString() {
+    return 'Itinerary(id: $id, title: $title, locations: $locations, type: $type)';
+  }
 
   Map<String, dynamic> toJson() {
     return {
@@ -27,18 +33,17 @@ class Itinerary {
     return Itinerary(
       id: json['id'] as String,
       userId: json['userId'] as String,
-      title: json['title'] as String,
+      title: json['title'] as String? ?? '',
       locations: (json['locations'] as List<dynamic>?)
               ?.map((item) => item as Map<String, dynamic>)
               .toList() ??
           [],
-      type: json['type'] as String,
+      type: json['type'] as String? ?? '',
     );
   }
 
   Itinerary copyWith({
     String? id,
-    String? itineraryId,
     String? userId,
     String? title,
     List<Map<String, dynamic>>? locations,

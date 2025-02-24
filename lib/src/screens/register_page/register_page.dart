@@ -106,7 +106,7 @@ class _RegisterPageState extends State<RegisterPage> {
           child: Stack(
             children: [
               Image.asset(
-                'assets/esperienze_register_page.png',
+                'assets/esperienze_register_page.webp',
                 fit: BoxFit.fill,
                 width: double.infinity,
                 height: 300,

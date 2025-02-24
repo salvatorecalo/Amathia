@@ -38,21 +38,21 @@ class _OnBoardState extends State<OnBoard> {
 
     screens = <OnboardModel>[
       OnboardModel(
-        img: "assets/santAndrea_onboard.png",
+        img: "assets/santAndrea_onboard.webp",
         text: localizations!.explore,
         desc: localizations.exploredesc,
         bg: isDarkTheme ? Colors.black : Colors.white,
         button: Colors.white,
       ),
       OnboardModel(
-        img: 'assets/chiesa_lecce_onboard.png',
+        img: 'assets/chiesa_lecce_onboard.webp',
         text: localizations.visit,
         desc: localizations.visitdesc,
         bg: isDarkTheme ? const Color(0xFF4756DF) : Colors.white,
         button: Colors.white,
       ),
       OnboardModel(
-        img: 'assets/pomodoro_onboard.png',
+        img: 'assets/pomodoro_onboard.webp',
         text: localizations.discover,
         desc: localizations.discovertext,
         bg: isDarkTheme ? Colors.black : Colors.white,

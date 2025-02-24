@@ -59,7 +59,8 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled true // Puoi impostarlo su true se usi R8/ProGuard per ottimizzare la tua app
+            shrinkResources true
+            minifyEnabled true
         }
     }
 }
