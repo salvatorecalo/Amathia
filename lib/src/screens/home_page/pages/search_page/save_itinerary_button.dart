@@ -190,7 +190,7 @@ class SaveItineraryButton extends ConsumerWidget {
                         itineraryNotifierProvider(itemData['userId']).notifier)
                     .addItinerary(newItinerary);
 
-                Navigator.pop(context);
+Navigator.of(context, rootNavigator: true).popUntil((route) => route.isFirst);
               },
               child: Text('Create'),
             ),
