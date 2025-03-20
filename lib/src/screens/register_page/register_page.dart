@@ -6,8 +6,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -34,16 +34,69 @@ class _RegisterPageState extends State<RegisterPage> {
     final localizations = AppLocalizations.of(context);
 
     Future<String> setError(e) async {
-      erroreLogin = e.statusCode;
-      if (e.statusCode == "400") {
-        erroreLogin = localizations!.alreadyHaveAccountText;
-      } else if (e.statusCode == '429') {
-        erroreLogin = localizations!.tooManyRequests;
-      } else if (e.statusCode == '500') {
-        erroreLogin = localizations!.serverError;
-      }
+      String erroreLogin;
+
+        switch (e.statusCode) {
+          case 400:
+            erroreLogin = localizations!.badRequest;
+            break;
+          case 401:
+            erroreLogin = localizations!.unauthorized;
+            break;
+          case 403:
+            erroreLogin = localizations!.forbidden;
+            break;
+          case 404:
+            erroreLogin = localizations!.notFound;
+            break;
+          case 422:
+            erroreLogin = localizations!.unprocessableEntity;
+            break;
+          case 429:
+            erroreLogin = localizations!.tooManyRequests;
+            break;
+          case 500:
+            erroreLogin = localizations!.serverError;
+            break;
+          case 501:
+            erroreLogin = localizations!.notImplemented;
+            break;
+          default:
+            erroreLogin = localizations!.unknownError;
+        }
+
+        // Gestione dei codici di errore specifici
+        switch (e.code) {
+          case 'anonymous_provider_disabled':
+            erroreLogin = localizations.anonymousProviderDisabled;
+            break;
+          case 'bad_jwt':
+            erroreLogin = localizations.invalidToken;
+            break;
+          case 'email_already_exists':
+            erroreLogin = localizations.emailAlreadyExists;
+            break;
+          case 'invalid_email':
+            erroreLogin = localizations.invalidEmail;
+            break;
+          case 'invalid_password':
+            erroreLogin = localizations.invalidPassword;
+            break;
+          case 'user_not_found':
+            erroreLogin = localizations.userNotFound;
+            break;
+          case 'user_disabled':
+            erroreLogin = localizations.userDisabled;
+            break;
+          case 'password_validation_failed':
+            erroreLogin = localizations.passwordValidationFailed;
+            break;
+          default:
+            erroreLogin = localizations.unknownError;
+        }
       return erroreLogin;
     }
+
 
     Future<void> signUpNewUser() async {
     try {

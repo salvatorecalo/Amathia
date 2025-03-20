@@ -114,5 +114,23 @@
   "search": "Search...",
   "itinerariText": "Itineraries",
   "contribuiteText": "There're a lot of data to intert into the database so it's difficult for me to insert all data, if you want to contribuite by adding data, edit them conact me on my email: salvacalo.04@gmail.com",
-  "resultEmpty": "There is nothing to see here"
+  "resultEmpty": "There is nothing to see here",
+   "badRequest": "Invalid request. Please check your input.",
+    "unauthorized": "You are not authorized to perform this action.",
+    "forbidden": "Access denied. You do not have permission.",
+    "notFound": "The requested resource was not found.",
+    "unprocessableEntity": "Validation failed. Please check the data entered.",
+    "tooManyRequests": "Too many requests. Please try again later.",
+    "serverError": "An unexpected error occurred. Please try again later.",
+    "notImplemented": "This feature is not available yet.",
+    "unknownError": "An unknown error occurred. Please contact support.",
+
+    "anonymousProviderDisabled": "Anonymous sign-in is disabled.",
+    "invalidToken": "Invalid token. Please log in again.",
+    "emailAlreadyExists": "This email is already registered.",
+    "invalidEmail": "Please enter a valid email address.",
+    "invalidPassword": "Incorrect password. Please try again.",
+    "userNotFound": "User not found. Please check your email.",
+    "userDisabled": "This user account has been disabled.",
+    "passwordValidationFailed": "Password does not meet security requirements."
 }

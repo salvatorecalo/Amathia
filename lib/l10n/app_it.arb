@@ -119,6 +119,24 @@
   "addedToItinerary": "Aggiunto all'itinerario {itineraryTitle}",
   "search": "Cerca...",
   "contribuiteText": "Ci sono un sacco di dati da inserire nel database e da solo mi è difficile capire cosa manca o no, se vuoi contribuire aggiungendo o modificando le informazioni su questa app invia una mail a salvacalo.04@gmail.com",
-  "resultEmpty": "Non sembra esserci nulla qua..."
+  "resultEmpty": "Non sembra esserci nulla qua...",
+   "badRequest": "Richiesta non valida. Controlla i dati inseriti.",
+    "unauthorized": "Non sei autorizzato a eseguire questa azione.",
+    "forbidden": "Accesso negato. Non hai i permessi necessari.",
+    "notFound": "Risorsa richiesta non trovata.",
+    "unprocessableEntity": "Errore di validazione. Controlla i dati inseriti.",
+    "tooManyRequests": "Troppe richieste. Riprova più tardi.",
+    "serverError": "Si è verificato un errore imprevisto. Riprova più tardi.",
+    "notImplemented": "Questa funzionalità non è ancora disponibile.",
+    "unknownError": "Si è verificato un errore sconosciuto. Contatta il supporto.",
+
+    "anonymousProviderDisabled": "Accesso anonimo disabilitato.",
+    "invalidToken": "Token non valido. Effettua di nuovo il login.",
+    "emailAlreadyExists": "Questa email è già registrata.",
+    "invalidEmail": "Inserisci un indirizzo email valido.",
+    "invalidPassword": "Password errata. Riprova.",
+    "userNotFound": "Utente non trovato. Controlla l'email inserita.",
+    "userDisabled": "Questo account è stato disabilitato.",
+    "passwordValidationFailed": "La password non soddisfa i requisiti di sicurezza."
 
 }
