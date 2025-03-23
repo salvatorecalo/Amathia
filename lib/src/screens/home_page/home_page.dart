@@ -1,4 +1,3 @@
-import 'package:amathia/main.dart';
 import 'package:flutter/material.dart';
 import 'package:amathia/src/screens/home_page/pages/account_page/account_page.dart';
 import 'package:amathia/src/screens/home_page/pages/favorite_page/favorite_page.dart';
@@ -8,9 +7,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class HomePage extends StatefulWidget {
-  final String userId;
 
-  const HomePage({super.key, required this.userId});
+  const HomePage({super.key});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -70,9 +68,9 @@ class _HomePageState extends State<HomePage> {
       controller: pageController,
       onPageChanged: pageChanged,
       children: <Widget>[
-        SearchPage(userId: widget.userId),
-        FavoritePage(userId: widget.userId),
-        ItinerariesPage(userId: widget.userId), // Pass userId here to the itineraries page
+        SearchPage(),
+        FavoritePage(),
+        ItinerariesPage(), // Pass userId here to the itineraries page
         const AccountPage(), // AccountPage is now part of the PageView
       ],
     );

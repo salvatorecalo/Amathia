@@ -17,8 +17,16 @@ class _OnBoardState extends State<OnBoard> {
   int currentIndex = 0;
   late PageController _pageController;
   late List<OnboardModel> screens;
-  bool _isCompleting = false; // Per evitare doppie chiamate
-
+  bool _isCompleting = false;
+  Future<void> completeOnBoarding(bool isCompleting) async {
+    if (_isCompleting) return;
+    _isCompleting = true;
+    await widget.onComplete();
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const LoginPage()),
+    );
+  }
   @override
   void initState() {
     super.initState();
@@ -125,7 +133,7 @@ class _OnBoardState extends State<OnBoard> {
                               // Bottone "Skip"
                               TextButton(
                                 onPressed: () async {
-                                  await _completeOnBoarding();
+                                  await completeOnBoarding;
                                 },
                                 child: Text(
                                   localizations.skip,
@@ -138,7 +146,7 @@ class _OnBoardState extends State<OnBoard> {
                               InkWell(
                                 onTap: () async {
                                   if (index == screens.length - 1) {
-                                    await _completeOnBoarding();
+                                    await completeOnBoarding;
                                   } else {
                                     _pageController.nextPage(
                                       duration:
@@ -189,16 +197,6 @@ class _OnBoardState extends State<OnBoard> {
           },
         ),
       ),
-    );
-  }
-
-  Future<void> _completeOnBoarding() async {
-    if (_isCompleting) return;
-    _isCompleting = true;
-    await widget.onComplete();
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const LoginPage()),
     );
   }
 }

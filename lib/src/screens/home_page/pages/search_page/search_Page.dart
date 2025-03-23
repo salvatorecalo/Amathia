@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:amathia/provider/dark_theme_provider.dart';
 import 'package:amathia/provider/itinerary_provider.dart';
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/logic/user_logic/user_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/random_advice_group.dart';
 import 'package:amathia/src/screens/home_page/pages/search_page/widget/searchbar.dart';
 import 'package:flutter/material.dart';
@@ -37,8 +38,7 @@ extension LocalizationExtension on AppLocalizations {
 }
 
 class SearchPage extends ConsumerStatefulWidget {
-  final String userId;
-  const SearchPage({super.key, required this.userId});
+  const SearchPage({super.key});
 
   @override
   _SearchPageState createState() => _SearchPageState();
@@ -51,7 +51,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
   final Map<String, String> fetchedTitles = {};
   bool isDataFetched = false;
 
-  Future<void> fetchAllTables(AppLocalizations localizations) async {
+  Future<void> fetchAllTables(
+      AppLocalizations localizations, String userId) async {
     if (isDataFetched || !mounted) return;
 
     for (String tableName in tables) {
@@ -71,20 +72,20 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             case 'Ricette':
               return RecipeCard(
                 itineraryId: e['uuid'],
-                userId: widget.userId,
+                userId: userId,
                 title: title,
                 image: image,
                 description: description,
                 time: e['time'],
                 peopleFor: e['peoplefor'] ?? 1,
                 ingredients:
-                    List<String>.from(e['ingredients_${language}'] ?? []),
+                    List<String>.from(e['ingredients_$language'] ?? []),
                 type: tableName,
               );
             case 'Monumenti':
               return MonumentsCard(
                 itineraryId: e['uuid'],
-                userId: widget.userId,
+                userId: userId,
                 location: location,
                 image: image,
                 title: title,
@@ -94,7 +95,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             case 'Natura':
               return NatureCard(
                 itineraryId: e['uuid'],
-                userId: widget.userId,
+                userId: userId,
                 location: location,
                 image: image,
                 title: title,
@@ -104,7 +105,7 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             case 'Borghi':
               return CityCard(
                 itineraryId: e['uuid'],
-                userId: widget.userId,
+                userId: userId,
                 description: description,
                 image: image,
                 title: title,
@@ -121,9 +122,8 @@ class _SearchPageState extends ConsumerState<SearchPage> {
             fetchedData[tableName] = widgetGenerated;
           });
         }
-      } catch (e, stacktrace) {
-        print("Errore nella fetch della tabella $tableName: $e");
-        print(stacktrace);
+      } catch (e) {
+        debugPrint("Errore nella fetch della tabella $tableName: $e");
       }
     }
 
@@ -133,26 +133,6 @@ class _SearchPageState extends ConsumerState<SearchPage> {
       });
     }
   }
-@override
-void didChangeDependencies() async {
-  super.didChangeDependencies();
-  
-  final localizations = AppLocalizations.of(context);
-  if (localizations != null && !isDataFetched) {
-    fetchAllTables(localizations);
-  }
-
-  // Carica gli itinerari
-  await ref.read(itineraryNotifierProvider(widget.userId).notifier).loadItineraries();
-  
-  // Ora puoi stampare le locations
-  final itineraries = ref.read(itineraryNotifierProvider(widget.userId));
-  print("Controlla locations: ${itineraries.map((itinerary) => itinerary.locations).toList()}");
-
-  // Se è necessario fare qualcosa con gli itinerari caricati, fallo qui
-}
-
-
   String getRandomTitle(AppLocalizations localizations, String tableName) {
     if (fetchedTitles.containsKey(tableName)) {
       return fetchedTitles[tableName]!;
@@ -168,9 +148,24 @@ void didChangeDependencies() async {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final userId = ref.watch(userIdProvider);
+    final localizations = AppLocalizations.of(context);
+    if (userId != null && localizations != null) {
+      fetchAllTables(localizations, userId);
+      ref.read(itineraryNotifierProvider(userId).notifier).loadItineraries();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final localizations = AppLocalizations.of(context);
+    final userId = ref.watch(userIdProvider);
     final isDark = ref.watch(darkThemeProvider);
+    if (userId == null) {
+      return Center(child: CircularProgressIndicator());
+    }
 
     return SafeArea(
       child: Scaffold(
@@ -187,10 +182,9 @@ void didChangeDependencies() async {
                 flexibleSpace: GestureDetector(
                   onTap: () {
                     showSearch(
-  context: context,
-  delegate: CustomSearchDelegate(userId: widget.userId),
-);
-
+                      context: context,
+                      delegate: CustomSearchDelegate(userId: userId),
+                    );
                   },
                   child: Container(
                     margin: const EdgeInsets.symmetric(vertical: 20.0),
@@ -222,7 +216,7 @@ void didChangeDependencies() async {
             SliverToBoxAdapter(
               child: Container(
                 margin: const EdgeInsets.symmetric(vertical: 30),
-                child: CategoryButtons(userId: widget.userId),
+                child: CategoryButtons(userId: userId),
               ),
             ),
             ...tables.map((table) {
@@ -283,7 +277,7 @@ void didChangeDependencies() async {
                             .firstOrNull ??
                         '',
                     widgetGenerated: fetchedData,
-                    userId: widget.userId,
+                    userId: userId,
                   ),
                   Container(
                     margin: const EdgeInsets.only(top: 10),

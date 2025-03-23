@@ -1,60 +1,45 @@
-import 'package:amathia/main.dart';
 import 'package:amathia/src/costants/costants.dart';
+import 'package:amathia/src/logic/user_logic/user_logic.dart';
+import 'package:amathia/src/logic/user_logic/user_provider.dart';
 import 'package:amathia/src/screens/recovery_password/recovery_password.dart';
 import 'package:amathia/src/screens/register_page/register_page.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  ConsumerState<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  late final TextEditingController _emailController = TextEditingController();
-  late final TextEditingController _passwordController = TextEditingController();
+class _LoginPageState extends ConsumerState<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-  String erroreLogin = "";
-  bool _obsureText = true;
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool _obscureText = true;
+  String _errorMessage = "";
 
-  Future<String> setError(AuthException e) async {
-    erroreLogin = e.message; // Use the exception message directly
-    if (e.statusCode == "400") {
-      erroreLogin = "Credenziali Invalide, ricontrolla e riprova";
-    }
-    return erroreLogin;
-  }
-
-  Future<void> signIn() async {
+  Future<void> _signIn() async {
     setState(() {
-      erroreLogin = "";
+      _errorMessage = "";
     });
 
-    try {
-      final response = await supabase.auth.signInWithPassword(
-        email: _emailController.text.trim(),
-        password: _passwordController.text.trim(),
-      );
+    final authController = ref.read(authControllerProvider);
 
-      if (response.session != null) {
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setBool('isLoggedIn', true);
-        Navigator.of(context).pushReplacementNamed('/homepage');
-      } else {
-        setState(() {
-          erroreLogin = response.toString();
-        });
-        _showErrorDialog();
-      }
-    } on AuthException catch (e) {
+    final error = await authController.signIn(
+      _emailController.text.trim(),
+      _passwordController.text.trim(),
+    );
+
+    if (error == null) {
+      ref.invalidate(authStateProvider); // Aggiorna subito la sessione
+    } else {
       setState(() {
-        erroreLogin = e.message;
+        _errorMessage = error;
       });
       _showErrorDialog();
     }
@@ -63,36 +48,26 @@ class _LoginPageState extends State<LoginPage> {
   void _showErrorDialog() {
     showDialog<void>(
       context: context,
-      barrierDismissible: false,
       builder: (BuildContext context) {
-        final theme = Theme.of(context);
-        final colorScheme = theme.colorScheme;
+        final colorScheme = Theme.of(context).colorScheme;
 
         return AlertDialog(
           backgroundColor: colorScheme.error,
           title: Text(
-            'Errore',
+            "Error",
             style: TextStyle(color: colorScheme.onError),
           ),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: <Widget>[
-                Text(
-                  erroreLogin,
-                  style: TextStyle(color: colorScheme.onError),
-                ),
-              ],
-            ),
+          content: Text(
+            _errorMessage,
+            style: TextStyle(color: colorScheme.onError),
           ),
           actions: <Widget>[
             TextButton(
+              onPressed: () => Navigator.of(context).pop(),
               child: Text(
                 'OK',
                 style: TextStyle(color: colorScheme.onError),
               ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
             ),
           ],
         );
@@ -102,251 +77,197 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final localizations = AppLocalizations.of(context)!;
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final isDarkTheme = theme.brightness == Brightness.dark;
-    final localizations = AppLocalizations.of(context);
 
-    return Material(
-      child: SafeArea(
-        child: Scaffold(
-          body: Form(
-            key: _formKey,
+    return Scaffold(
+      body: SafeArea(
+        child: Form(
+          key: _formKey,
+          child: SizedBox(
+            height: MediaQuery.of(context).size.height,
             child: Stack(
+              fit: StackFit.expand,
               children: [
                 Image.asset(
                   'assets/smiling-young-friends-taking-selfie-cellphone.webp',
                   fit: BoxFit.fitHeight,
                   width: double.infinity,
-                  height: 350,
+                  height: 300,
                   alignment: Alignment.center,
                 ),
-                SizedBox(
-                  height: double.infinity,
-                  child: FractionallySizedBox(
-                    alignment: Alignment.bottomCenter,
-                    heightFactor: 0.8,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(30),
-                          topRight: Radius.circular(30),
-                        ),
-                        color: isDarkTheme
-                            ? colorScheme.surface
-                            : colorScheme.surface,
+                FractionallySizedBox(
+                  alignment: Alignment.bottomCenter,
+                  heightFactor: 0.8,
+                  widthFactor: 1,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(30),
+                        topRight: Radius.circular(30),
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: ListView(
+                      color: isDarkTheme ? colorScheme.surface : Colors.white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: ListView(
+                        children: [
+                          // Testo di benvenuto
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              localizations.loginText,
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: colorScheme.onSurface,
+                              ),
+                            ),
+                          ),
+
+                          // Email
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: TextFormField(
+                              controller: _emailController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              validator: (value) {
+                                if (value == null || value.trim().isEmpty) {
+                                  return localizations.mailEmpty;
+                                } else if (!EmailValidator.validate(value.trim())) {
+                                  return localizations.mailInvalid;
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                hintText: localizations.enterMail,
+                                prefixIcon: Icon(
+                                  Icons.email,
+                                  color: colorScheme.onSurface,
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Password
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: TextFormField(
+                              controller: _passwordController,
+                              autovalidateMode: AutovalidateMode.onUserInteraction,
+                              obscureText: _obscureText,
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return localizations.passwordEmpty;
+                                } else if (value.length < 8 || value.length > 72) {
+                                  return localizations.passwordShort;
+                                } else if (!RegExp(r'[A-Z]').hasMatch(value)) {
+                                  return localizations.passwordUpperCharacter;
+                                } else if (!RegExp(r'[0-9]').hasMatch(value)) {
+                                  return localizations.passwordNumberCharacter;
+                                } else if (!RegExp(r'[!@#%^&*(),.?":{}|<>]').hasMatch(value)) {
+                                  return localizations.passwordSpecialCharacter;
+                                }
+                                return null;
+                              },
+                              decoration: InputDecoration(
+                                border: const OutlineInputBorder(),
+                                hintText: localizations.enterPassword,
+                                prefixIcon: Icon(
+                                  Icons.key,
+                                  color: colorScheme.onSurface,
+                                ),
+                                suffixIcon: GestureDetector(
+                                  onTap: () {
+                                    setState(() => _obscureText = !_obscureText);
+                                  },
+                                  child: Icon(
+                                    _obscureText ? Icons.visibility : Icons.visibility_off,
+                                    color: colorScheme.onSurface,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          // Password Dimenticata
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (context) => const RecoveryPasswordPage()),
+                                );
+                              },
+                              child: Text(
+                                localizations.passwordLost,
+                                style: const TextStyle(color: Colors.blue),
+                              ),
+                            ),
+                          ),
+
+                          // Bottone Login
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_formKey.currentState!.validate()) {
+                                  _signIn();
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                minimumSize: const Size.fromHeight(40),
+                                backgroundColor: Colors.blue,
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 12.0),
+                                child: Text(localizations.loginText, style: const TextStyle(fontSize: 18)),
+                              ),
+                            ),
+                          ),
+
+                          // Registrazione
+                    // Registrazione
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyle(color: colorScheme.onSurface), // Stile di default
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: const TextStyle(height: 1.5, fontSize: 16),
-                                  children: [
-                                    TextSpan(
-                                      text: localizations!.loginText1,
-                                      style: TextStyle(
-                                        color: isDarkTheme
-                                            ? colorScheme.onSurface
-                                            : colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: localizations.loginText2,
-                                      style: const TextStyle(color: blue),
-                                    ),
-                                    TextSpan(
-                                      text: localizations.loginText3,
-                                      style: TextStyle(
-                                        color: isDarkTheme
-                                            ? colorScheme.onSurface
-                                            : colorScheme.onSurface,
-                                      ),
-                                    ),
-                                    TextSpan(
-                                      text: localizations.loginText4,
-                                      style: const TextStyle(color: blue),
-                                    ),
-                                    TextSpan(
-                                      text: localizations.loginText5,
-                                      style:
-                                          TextStyle(color: colorScheme.onSurface),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            TextSpan(
+                              text: localizations.dontHaveAnAccount,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 10),
-                              child: TextFormField(
-                                controller: _emailController,
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value == null || value.trim().isEmpty) {
-                                    return localizations.mailEmpty;
-                                  } else if (!EmailValidator.validate(
-                                      value.trim())) {
-                                    return localizations.mailInvalid;
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  hintText: localizations.enterMail,
-                                  prefixIcon: Icon(
-                                    Icons.email,
-                                    color: isDarkTheme
-                                        ? colorScheme.onSurface
-                                        : colorScheme.onSurface,
-                                  ),
-                                ),
+                            TextSpan(
+                              text: localizations.registerNow,
+                              style: const TextStyle(
+                                color: Colors.blue,
+                                fontWeight: FontWeight.bold,
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 10),
-                              child: TextFormField(
-                                controller: _passwordController,
-                                autovalidateMode:
-                                    AutovalidateMode.onUserInteraction,
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return localizations.passwordEmpty;
-                                  } else if (value.length < 8) {
-                                    return localizations.passwordShort;
-                                  } else if (!value.contains(RegExp(r'[A-Z]'))) {
-                                    return localizations.passwordUpperCharacter;
-                                  } else if (!value.contains(RegExp(r'[0-9]'))) {
-                                    return localizations.passwordNumberCharacter;
-                                  } else if (!value.contains(
-                                      RegExp(r'[!@#%^&*(),.?":{}|<>]'))) {
-                                    return localizations.passwordSpecialCharacter;
-                                  }
-                                  return null;
-                                },
-                                decoration: InputDecoration(
-                                  border: const OutlineInputBorder(),
-                                  hintText: localizations.enterPassword,
-                                  prefixIcon: Icon(
-                                    Icons.key,
-                                    color: isDarkTheme
-                                        ? colorScheme.onSurface
-                                        : colorScheme.onSurface,
-                                  ),
-                                  suffixIcon: GestureDetector(
-                                    onTap: () {
-                                      setState(() => _obsureText = !_obsureText);
-                                    },
-                                    child: Icon(
-                                      _obsureText
-                                          ? Icons.visibility
-                                          : Icons.visibility_off,
-                                      color: isDarkTheme
-                                          ? colorScheme.onSurface
-                                          : colorScheme.onSurface,
-                                    ),
-                                  ),
-                                ),
-                                obscureText: _obsureText,
-                              ),
-                            ),
-                            SizedBox(
-                              width: double.maxFinite,
-                              child: GestureDetector(
-                                onTap: () {
-                                  Navigator.pushReplacement(
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            const RecoveryPasswordPage()),
+                                      builder: (context) => const RegisterPage(),
+                                    ),
                                   );
                                 },
-                                child: Text(
-                                  localizations.passwordLost,
-                                  textAlign: TextAlign.right,
-                                  style: const TextStyle(
-                                    color: blue,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 8, vertical: 16),
-                              child: ElevatedButton(
-                                onPressed: () async {
-                                  if (_formKey.currentState!.validate()) {
-                                    signIn();
-                                  }
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  minimumSize: const Size.fromHeight(40),
-                                  foregroundColor: white,
-                                  backgroundColor: blue,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                  ),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 24.0, vertical: 12.0),
-                                  child: Text(
-                                    localizations.loginText,
-                                    style: const TextStyle(fontSize: 18),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 24.0),
-                              child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                  style: TextStyle(
-                                    height: 1.5,
-                                    fontSize: 16,
-                                    color: isDarkTheme
-                                        ? colorScheme.onSurface
-                                        : colorScheme.onSurface,
-                                  ),
-                                  children: [
-                                    TextSpan(
-                                      text: localizations.dontHaveAnAccount,
-                                    ),
-                                    TextSpan(
-                                      text: " ${localizations.registerText}",
-                                      style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: blue),
-                                      recognizer: TapGestureRecognizer()
-                                        ..onTap = () {
-                                          Navigator.pushReplacement(
-                                            context,
-                                            MaterialPageRoute(
-                                              builder: (context) =>
-                                                  const RegisterPage(),
-                                            ),
-                                          );
-                                        },
-                                    ),
-                                  ],
-                                ),
-                              ),
                             ),
                           ],
                         ),
                       ),
                     ),
-                  ),
+                  ]),
+                )
                 ),
-              ],
+                )],
             ),
           ),
         ),

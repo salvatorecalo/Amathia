@@ -1,14 +1,13 @@
 import 'package:amathia/provider/itinerary_provider.dart';
+import 'package:amathia/src/logic/user_logic/user_provider.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/model/itineraries.dart';
 import 'package:amathia/src/screens/home_page/pages/itinerari_page/widget/Itinerari_card_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-
 class ItinerariesPage extends ConsumerStatefulWidget {
-  final String userId;
-  ItinerariesPage({super.key, required this.userId});
+  ItinerariesPage({super.key});
 
   @override
   _ItinerariesPageState createState() => _ItinerariesPageState();
@@ -23,18 +22,20 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
     super.initState();
     searchController.addListener(() => filterItineraries());
 
-    // Usa Future.microtask per evitare problemi con ref.read in initState
     Future.microtask(() {
-      ref
-          .read(itineraryNotifierProvider(widget.userId).notifier)
-          .loadItineraries();
+      final userId = ref.read(userIdProvider);
+      if (userId != null) {
+        ref.read(itineraryNotifierProvider(userId).notifier).loadItineraries();
+      }
     });
   }
 
   void filterItineraries() {
     final query = searchController.text.toLowerCase();
-    final itineraries = ref.watch(itineraryNotifierProvider(widget.userId));
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) return;
 
+    final itineraries = ref.watch(itineraryNotifierProvider(userId));
     setState(() {
       filteredItineraries = itineraries
           .where((itinerary) => itinerary.title.toLowerCase().contains(query))
@@ -44,7 +45,12 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
 
   @override
   Widget build(BuildContext context) {
-    final itineraries = ref.watch(itineraryNotifierProvider(widget.userId));
+    final userId = ref.watch(userIdProvider);
+    if (userId == null) {
+      return Center(child: CircularProgressIndicator());
+    }
+
+    final itineraries = ref.watch(itineraryNotifierProvider(userId));
     final localizations = AppLocalizations.of(context);
 
     return SafeArea(
@@ -57,8 +63,8 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
                 'Itineraries',
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
             const SizedBox(height: 10),
@@ -82,58 +88,58 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
             Expanded(
               child: itineraries.isEmpty
                   ? Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset(
-                            'assets/noItinerary.webp',
-                            width: 300,
-                          ),
-                          Text(
-                            localizations!.favoriteEmpty,
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: filteredItineraries.isNotEmpty
-                          ? filteredItineraries.length
-                          : itineraries.length,
-                      itemBuilder: (context, index) {
-                        final itinerary = filteredItineraries.isNotEmpty
-                            ? filteredItineraries[index]
-                            : itineraries[index];
-
-                        return ListTile(
-                          title: Text(itinerary.title),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () => editItinerary(itinerary, ref),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () =>
-                                    deleteItinerary(itinerary.id, ref),
-                              ),
-                            ],
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => ItineraryDetailPage(
-                                        userId: widget.userId,
-                                        itinerary: itinerary,
-                                        type: itinerary.type)));
-                          },
-                        );
-                      },
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      'assets/noItinerary.webp',
+                      width: 300,
                     ),
+                    Text(
+                      localizations!.favoriteEmpty,
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+              )
+                  : ListView.builder(
+                itemCount: filteredItineraries.isNotEmpty
+                    ? filteredItineraries.length
+                    : itineraries.length,
+                itemBuilder: (context, index) {
+                  final itinerary = filteredItineraries.isNotEmpty
+                      ? filteredItineraries[index]
+                      : itineraries[index];
+
+                  return ListTile(
+                    title: Text(itinerary.title),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () => editItinerary(itinerary, ref),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () =>
+                              deleteItinerary(itinerary.id, ref),
+                        ),
+                      ],
+                    ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ItineraryDetailPage(
+                                  userId: userId,
+                                  itinerary: itinerary,
+                                  type: itinerary.type)));
+                    },
+                  );
+                },
+              ),
             ),
           ],
         ),
@@ -142,6 +148,9 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   }
 
   void createItinerary(BuildContext context, WidgetRef ref) {
+    final userId = ref.read(userIdProvider);
+    if (userId == null) return;
+
     final TextEditingController titleController = TextEditingController();
     final uuid = Uuid();
 
@@ -159,15 +168,14 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
               onPressed: () async {
                 final newItinerary = Itinerary(
                   id: uuid.v4(),
-                  userId: widget.userId,
+                  userId: userId,
                   title: titleController.text,
                   locations: [],
                   type: 'Trip',
                 );
 
-                // Aggiungi il nuovo itinerario tramite il provider
                 await ref
-                    .read(itineraryNotifierProvider(widget.userId).notifier)
+                    .read(itineraryNotifierProvider(userId).notifier)
                     .addItinerary(newItinerary);
 
                 Navigator.pop(context);
@@ -185,8 +193,11 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   }
 
   void editItinerary(Itinerary itinerary, WidgetRef ref) {
+    final userId = ref.read(userIdProvider);
+    if (userId == null) return;
+
     final TextEditingController titleController =
-        TextEditingController(text: itinerary.title);
+    TextEditingController(text: itinerary.title);
 
     showDialog(
       context: context,
@@ -201,11 +212,10 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
             ElevatedButton(
               onPressed: () async {
                 final updatedItinerary =
-                    itinerary.copyWith(title: titleController.text);
+                itinerary.copyWith(title: titleController.text);
 
-                // Modifica l'itinerario tramite il provider
                 await ref
-                    .read(itineraryNotifierProvider(widget.userId).notifier)
+                    .read(itineraryNotifierProvider(userId).notifier)
                     .renameItinerary(itinerary.id, updatedItinerary.title);
 
                 Navigator.pop(context);
@@ -223,6 +233,9 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
   }
 
   void deleteItinerary(String itineraryId, WidgetRef ref) {
+    final userId = ref.read(userIdProvider);
+    if (userId == null) return;
+
     showDialog(
       context: context,
       builder: (context) {
@@ -237,7 +250,7 @@ class _ItinerariesPageState extends ConsumerState<ItinerariesPage> {
             ElevatedButton(
               onPressed: () async {
                 await ref
-                    .read(itineraryNotifierProvider(widget.userId).notifier)
+                    .read(itineraryNotifierProvider(userId).notifier)
                     .removeItinerary(itineraryId);
 
                 Navigator.pop(context);
