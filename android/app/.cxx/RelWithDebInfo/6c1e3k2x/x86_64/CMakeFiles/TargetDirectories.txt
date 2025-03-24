@@ -1,0 +1,2 @@
+/Users/salvatorecalo/StudioProjects/Amathia/android/app/.cxx/RelWithDebInfo/6c1e3k2x/x86_64/CMakeFiles/edit_cache.dir
+/Users/salvatorecalo/StudioProjects/Amathia/android/app/.cxx/RelWithDebInfo/6c1e3k2x/x86_64/CMakeFiles/rebuild_cache.dir
