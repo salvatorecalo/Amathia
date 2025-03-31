@@ -1,3 +1,3 @@
 # Amathia
 
-## applicazione flutter creata per digitalizzare la cultura salentina ai turisti
+THE SOLUTION OF THIS IS ISSUE IS JUST DELETE THE PROJECT AND RECLONE IT
